@@ -92,10 +92,10 @@ fn read_pool(svm: &LiteSVM, pool_state: &Pubkey) -> sixsec::state::PoolState {
 #[test]
 fn init_pool_creates_account_with_zero_reserves() {
     let mut ctx = setup();
-    assert!(
-        send(&mut ctx.svm, init_pool_ix(&ctx), &ctx.admin),
-        "init_pool должен пройти"
-    );
+    // Инструкция строится отдельным statement: иначе ctx заимствуется и как &mut
+    // (через ctx.svm), и как & (через init_pool_ix) в одном выражении — E0502.
+    let ix = init_pool_ix(&ctx);
+    assert!(send(&mut ctx.svm, ix, &ctx.admin), "init_pool должен пройти");
 
     let pool = read_pool(&ctx.svm, &ctx.pool_state);
     assert_eq!(pool.admin, ctx.admin.pubkey());
@@ -116,7 +116,8 @@ fn init_pool_keeps_moderator_distinct_from_admin() {
         ctx.admin.pubkey(),
         "предусловие теста: разные ключи"
     );
-    assert!(send(&mut ctx.svm, init_pool_ix(&ctx), &ctx.admin));
+    let ix = init_pool_ix(&ctx);
+    assert!(send(&mut ctx.svm, ix, &ctx.admin));
 
     let pool = read_pool(&ctx.svm, &ctx.pool_state);
     assert_eq!(pool.moderator_authority, ctx.moderator);
@@ -129,9 +130,10 @@ fn init_pool_twice_is_rejected() {
     // PDA один на программу: повторная инициализация не должна перезаписывать
     // казначейские параметры (иначе лимит вывода можно обнулить post-factum).
     let mut ctx = setup();
-    assert!(send(&mut ctx.svm, init_pool_ix(&ctx), &ctx.admin));
+    let ix = init_pool_ix(&ctx);
+    assert!(send(&mut ctx.svm, ix.clone(), &ctx.admin));
     assert!(
-        !send(&mut ctx.svm, init_pool_ix(&ctx), &ctx.admin),
+        !send(&mut ctx.svm, ix, &ctx.admin),
         "повторный init_pool обязан быть отклонён"
     );
 
