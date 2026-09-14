@@ -106,6 +106,16 @@ pub mod sixsec {
             SixsecError::InsufficientPoolReserve
         );
 
+        // КРИТИЧНО: резерв обязан накапливаться в пуле, а не только на задании.
+        // Без этой строки total_reserved навсегда остаётся нулём, can_reserve
+        // всегда проходит, и каждое следующее задание резервирует весь пул
+        // заново — ровно тот сценарий, против которого написан ADR-0009.
+        let pool_state = &mut ctx.accounts.pool_state;
+        pool_state.total_reserved = pool_state
+            .total_reserved
+            .checked_add(reserve)
+            .ok_or(SixsecError::ReserveOverflow)?;
+
         let task = &mut ctx.accounts.task;
         task.task_id = task_id;
         task.creator = ctx.accounts.creator.key();
@@ -425,7 +435,7 @@ pub struct CreateTask<'info> {
         bump
     )]
     pub task: Account<'info, TaskAccount>,
-    #[account(seeds = [POOL_STATE_SEED], bump)]
+    #[account(mut, seeds = [POOL_STATE_SEED], bump)]
     pub pool_state: Account<'info, PoolState>,
     /// ADR-0010: mint награды — аргумент, проверяется ончейн.
     pub reward_mint: InterfaceAccount<'info, Mint>,
