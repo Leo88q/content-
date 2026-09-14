@@ -9,7 +9,11 @@ on:
 env:
   # Пины из ADR-0005. Менять только новым ADR.
   ANCHOR_VERSION: "1.2.0"
-  SOLANA_VERSION: "4.1.2"
+  # 3.1.10 вместо рекомендованных для Anchor 1.2.0 4.1.2 — вынужденно, см. ADR-0013.
+  # litesvm 0.10 (единственная линия, совместимая по типам с solana-* ^3, которые
+  # пинит anchor-lang 1.2.0) тянет solana-bpf-loader-program = "3.1.0" и не может
+  # загрузить ELF, собранный платформенными инструментами 4.x: InvalidAccountData.
+  SOLANA_VERSION: "3.1.10"
 
 permissions:
   contents: read
