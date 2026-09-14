@@ -59,20 +59,22 @@ jobs:
         id: tests
         continue-on-error: true
         run: |
+          # pipefail обязателен: без него код возврата пайплайна берётся у tee,
+          # и падение cargo выглядело бы как успех (ровно так и случилось в run 34906081661).
+          set -uo pipefail
           {
             echo "===== cargo test --lib ====="
             cargo test --lib --package sixsec -- --nocapture 2>&1
-            echo "EXIT_CODE=$?"
           } | tee -a /tmp/ci.log
 
       - name: Clippy
         id: clippy
         continue-on-error: true
         run: |
+          set -uo pipefail
           {
             echo "===== cargo clippy ====="
             cargo clippy --package sixsec --all-targets 2>&1
-            echo "EXIT_CODE=$?"
           } | tee -a /tmp/ci.log
 
       # Настоящая компиляция программы в BPF. Без этого шага on-chain код
@@ -81,11 +83,16 @@ jobs:
         id: build
         continue-on-error: true
         run: |
+          set -uo pipefail
           {
             echo "===== anchor build ====="
-            anchor build 2>&1
-            echo "EXIT_CODE=$?"
+            anchor build --verifiable=false 2>&1
           } | tee -a /tmp/ci.log
+          # anchor build может вернуть 0, не произведя IDL. Проверяем факт сборки,
+          # а не код возврата: отсутствие IDL = программа не собралась.
+          test -f target/idl/sixsec.json
+          test -f target/deploy/sixsec.so
+          ls -l target/idl/ target/deploy/
 
       - name: Upload IDL artifact
         if: always()
@@ -105,9 +112,6 @@ jobs:
         run: |
           set -uo pipefail
           FAILED="no"
-          for s in tests clippy build; do
-            :
-          done
           if [ "${{ steps.tests.outcome }}" != "success" ] \
              || [ "${{ steps.clippy.outcome }}" != "success" ] \
              || [ "${{ steps.build.outcome }}" != "success" ]; then
