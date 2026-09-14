@@ -1,0 +1,73 @@
+# === СЕКРЕТЫ: никогда не коммитить (правило из мастер-промпта, раздел 0) ===
+# Приватные ключи, сид-фразы, API-токены — только через env / секрет-менеджер.
+.env
+.env.*
+!.env.example
+*.env
+
+# Solana / Anchor ключевые файлы
+*-keypair.json
+*-keypair.txt
+*.keypair.json
+id.json
+target/deploy/*.json
+!target/deploy/*-keypair.json.example
+.anchor
+deploy/keys/
+secrets/
+treasury/
+
+# Прочие креды
+*.pem
+*.p12
+*.pfx
+*.keystore
+credentials
+credentials.json
+.aws/
+gcloud-key*.json
+service-account*.json
+
+# === Сборка и зависимости ===
+node_modules/
+target/
+dist/
+build/
+out/
+.next/
+.nuxt/
+.turbo/
+.parcel-cache/
+.vite/
+*.tsbuildinfo
+
+# === Кэши инструментов ===
+.cache/
+.local/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+coverage/
+.nox/
+.tox/
+.venv/
+
+# === Медиа и артефакты пайплайна (не в Git; хранилище — Arweave/IPFS/S3) ===
+media/
+clips/
+submissions/
+*.mp4
+*.mov
+*.webm
+*.wav
+*.mp3
+
+# === Локальные конфиги и мусор ===
+.DS_Store
+*.log
+*.sqlite
+*.db
+.idea/
+.vscode/*
+!.vscode/settings.json.example
