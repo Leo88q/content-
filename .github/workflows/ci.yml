@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [arena/01a0a1f6-content, main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  # Пины из ADR-0005. Менять только новым ADR.
+  ANCHOR_VERSION: "1.2.0"
+  SOLANA_VERSION: "4.1.2"
+
+jobs:
+  program:
+    # ubuntu-24.04 намеренно: пре собранный бинарник Anchor требует GLIBC >= 2.39.
+    # На ubuntu-22.04 (glibc 2.35) он не запустится.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry and target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('programs/**/Cargo.toml') }}
+
+      - name: Install Solana CLI ${{ env.SOLANA_VERSION }}
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/anza-xyz/agave/releases/download/v${SOLANA_VERSION}/solana-release-x86_64-unknown-linux-gnu.tar.bz2" -o solana.tar.bz2
+          tar jxf solana.tar.bz2
+          echo "$PWD/solana-release/bin" >> "$GITHUB_PATH"
+          ./solana-release/bin/solana --version
+
+      - name: Install Anchor CLI ${{ env.ANCHOR_VERSION }}
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/coral-xyz/anchor/releases/download/v${ANCHOR_VERSION}/anchor-${ANCHOR_VERSION}-x86_64-unknown-linux-gnu" -o anchor
+          chmod +x anchor
+          sudo mv anchor /usr/local/bin/anchor
+          anchor --version
+
+      # Настоящая проверка чистой логики пула призов (ADR-0009):
+      # резерв по худшему случаю, переполнение, лимиты вывода, валидация тира.
+      - name: Unit tests (pool reservation logic)
+        run: cargo test --lib --package sixsec -- --nocapture
+
+      - name: Clippy
+        run: cargo clippy --package sixsec --all-targets -- -D warnings
+
+      # Настоящая компиляция программы в BPF. Без этого шага on-chain код
+      # считался бы непроверенным.
+      - name: Build program (BPF)
+        run: anchor build
+
+      - name: Upload IDL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixsec-idl
+          path: target/idl/
+          if-no-files-found: warn

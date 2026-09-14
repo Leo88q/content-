@@ -1,0 +1,26 @@
+[package]
+name = "sixsec"
+version = "0.1.0"
+description = "SixSec — маркетплейс микрозаданий для генерации промо-контента"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "sixsec"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+# Пины зафиксированы в ADR-0005. Anchor 1.2.0 сам тянет solana-* линии ^3 —
+# не поднимать до ^4, это сломает сборку.
+anchor-lang = { version = "1.2.0", features = ["init-if-needed"] }
+anchor-spl = "1.2.0"
+
+[dev-dependencies]
+# Юнит-тесты чистой логики (резервирование пула) идут без валидатора.

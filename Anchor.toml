@@ -1,0 +1,23 @@
+[toolchain]
+anchor_version = "1.2.0"
+solana_version = "4.1.2"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+sixsec = "SixSec1111111111111111111111111111111111111"
+
+[programs.devnet]
+sixsec = "SixSec1111111111111111111111111111111111111"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "echo 'integration tests: pending Phase 2 — см. PROGRESS.md'"
