@@ -102,6 +102,42 @@ jobs:
           path: target/idl/
           if-no-files-found: ignore
 
+      # Зелёный статус сам по себе не доказывает, что тесты действительно
+      # запустились (в run 34906081661 шаги "прошли" за 0-1 секунду, не сделав
+      # ничего). Поэтому публикуем фактический результат всегда, а не только при падении.
+      - name: Publish verification summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          {
+            echo "### Фактические результаты прогона"
+            echo
+            echo "**cargo test:**"
+            echo '```'
+            grep -E "^running [0-9]+ test|^test result:" /tmp/ci.log || echo "НЕТ СТРОК О РЕЗУЛЬТАТЕ ТЕСТОВ"
+            echo '```'
+            echo
+            echo "**Инструкции в собранном IDL:**"
+            echo '```'
+            if [ -f target/idl/sixsec.json ]; then
+              jq -r '"name: \(.name)", "instructions: \(.instructions | length)", (.instructions[].name)' target/idl/sixsec.json
+              echo "accounts: $(jq -r '.accounts | length' target/idl/sixsec.json)"
+              echo "errors:   $(jq -r '.errors | length' target/idl/sixsec.json)"
+              echo "events:   $(jq -r '.events | length' target/idl/sixsec.json)"
+            else
+              echo "IDL ОТСУТСТВУЕТ — программа не собралась"
+            fi
+            echo '```'
+            echo
+            echo "**Артефакты сборки:**"
+            echo '```'
+            ls -l target/deploy/*.so target/idl/*.json 2>/dev/null || echo "нет артефактов"
+            echo '```'
+          } > /tmp/summary.md
+          gh issue comment 1 --body-file /tmp/summary.md
+
       # Логи раннеров из этой песочницы не скачать (хосты blob.core.windows.net
       # и results-receiver.actions недоступны), поэтому при падении CI сам
       # публикует лог в issue — туда доступ через api.github.com есть.
