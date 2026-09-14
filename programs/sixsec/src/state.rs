@@ -222,6 +222,73 @@ pub fn validate_tier(
     Ok(tier)
 }
 
+// ---------------------------------------------------------------------------
+// Игровой слой: профиль воркера и trust score
+// ---------------------------------------------------------------------------
+//
+// On-chain здесь только то, что является границей безопасности (ADR-0011):
+// trust_score решает, идёт заявка в полную ручную модерацию или в облегчённую,
+// а за модерацией стоит payout из пула призов. Опыт, уровни и дерево навыков
+// живут off-chain намеренно.
+
+/// Диапазон trust score.
+pub const MAX_TRUST: u16 = 1000;
+
+/// Порог облегчённой модерации. Константа программы, а не настройка бэкенда:
+/// иначе его можно поднять одним UPDATE и выпустить брак в контент-пайплайн.
+pub const LIGHT_MODERATION_THRESHOLD: u16 = 700;
+
+/// Асимметрия намеренная: набрать рейтинг дороже, чем потерять.
+/// Один авто-отклон отбивается только тремя одобрениями (40 / 15 = 2.67).
+pub const TRUST_GAIN_APPROVED: u16 = 15;
+pub const TRUST_LOSS_REJECTED: u16 = 25;
+pub const TRUST_LOSS_AUTO_REJECTED: u16 = 40;
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq, Debug)]
+pub enum ModerationTier {
+    /// Каждая заявка проверяется вручную.
+    Full,
+    /// Авто-префильтр + выборочный ручной контроль.
+    Light,
+}
+
+/// Профиль воркера. PDA `["profile", worker]`.
+///
+/// Мутируется ТОЛЬКО в инструкции `moderate` (ADR-0012): если trust score
+/// можно изменить из игрового слоя, «прокачка» становится обходом модерации.
+#[account]
+#[derive(Debug)]
+pub struct WorkerProfile {
+    pub worker: Pubkey,
+    pub trust_score: u16,
+    pub approved_count: u32,
+    pub rejected_count: u32,
+    pub auto_rejected_count: u32,
+    pub last_updated: i64,
+}
+
+/// Насыщение обязано быть saturating: без него переполнение u16 на 65536-м
+/// одобрении обнулило бы рейтинг проверенного воркера.
+pub fn trust_after_approval(trust: u16) -> u16 {
+    trust.saturating_add(TRUST_GAIN_APPROVED).min(MAX_TRUST)
+}
+
+pub fn trust_after_rejection(trust: u16) -> u16 {
+    trust.saturating_sub(TRUST_LOSS_REJECTED)
+}
+
+pub fn trust_after_auto_rejection(trust: u16) -> u16 {
+    trust.saturating_sub(TRUST_LOSS_AUTO_REJECTED)
+}
+
+pub fn moderation_tier(trust: u16) -> ModerationTier {
+    if trust >= LIGHT_MODERATION_THRESHOLD {
+        ModerationTier::Light
+    } else {
+        ModerationTier::Full
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -371,5 +438,109 @@ mod tests {
     fn validate_tier_rejects_zero_tier_count() {
         let t = tiers4(100, 200, 300, 400);
         assert!(matches!(validate_tier(0, &t, 0), Err(SixsecError::NoTiers)));
+    }
+}
+
+#[cfg(test)]
+mod trust_tests {
+    use super::*;
+
+    #[test]
+    fn approval_raises_score() {
+        assert_eq!(trust_after_approval(500), 515);
+    }
+
+    #[test]
+    fn approval_saturates_at_max_not_wraps() {
+        // Без min(MAX_TRUST) рейтинг ушёл бы за потолок; без saturating_add —
+        // переполнился бы и обнулился на 65536-м одобрении.
+        assert_eq!(trust_after_approval(MAX_TRUST), MAX_TRUST);
+        assert_eq!(trust_after_approval(MAX_TRUST - 5), MAX_TRUST);
+    }
+
+    #[test]
+    fn rejection_floors_at_zero_not_wraps() {
+        assert_eq!(trust_after_rejection(10), 0);
+        assert_eq!(trust_after_rejection(0), 0, "u16 не должен заворачиваться в 65511");
+    }
+
+    #[test]
+    fn auto_rejection_floors_at_zero() {
+        assert_eq!(trust_after_auto_rejection(20), 0);
+        assert_eq!(trust_after_auto_rejection(0), 0);
+    }
+
+    #[test]
+    fn auto_rejection_is_harsher_than_manual_rejection() {
+        // Явный брак, пойманный префильтром, — более сильный сигнал,
+        // чем субъективное решение модератора.
+        assert!(TRUST_LOSS_AUTO_REJECTED > TRUST_LOSS_REJECTED);
+        assert_eq!(trust_after_auto_rejection(500), 460);
+        assert_eq!(trust_after_rejection(500), 475);
+    }
+
+    #[test]
+    fn one_auto_reject_costs_three_approvals() {
+        // 40 / 15 = 2.67 -> нужно три одобрения, чтобы отбить один авто-отклон.
+        // Это и есть защита от фарма объёмом.
+        let start = 500;
+        let after_abuse = trust_after_auto_rejection(start);
+        assert_eq!(after_abuse, 460);
+
+        let mut t = after_abuse;
+        t = trust_after_approval(t);
+        t = trust_after_approval(t);
+        assert!(t < start, "двух одобрений недостаточно");
+        t = trust_after_approval(t);
+        assert!(t >= start, "три одобрения отбивают авто-отклон");
+    }
+
+    #[test]
+    fn volume_farming_sinks_faster_than_it_climbs() {
+        // Фармер чередует брак и годноту 1:1. За цикл рейтинг обязан падать.
+        let mut t = 500u16;
+        for _ in 0..10 {
+            t = trust_after_auto_rejection(t);
+            t = trust_after_approval(t);
+        }
+        assert!(t < 500, "при 1:1 рейтинг должен снижаться, а не держаться");
+    }
+
+    #[test]
+    fn moderation_tier_boundary_is_inclusive_at_threshold() {
+        assert_eq!(
+            moderation_tier(LIGHT_MODERATION_THRESHOLD - 1),
+            ModerationTier::Full
+        );
+        assert_eq!(
+            moderation_tier(LIGHT_MODERATION_THRESHOLD),
+            ModerationTier::Light,
+            "ровно на пороге тир уже облегчённый"
+        );
+    }
+
+    #[test]
+    fn fresh_account_cannot_reach_light_tier_by_default() {
+        // Из нуля нужно 47 одобрений подряд (700 / 15 = 46.67).
+        // Проверяем, что облегчённая модерация недостижима «с наскока».
+        let mut t = 0u16;
+        for _ in 0..46 {
+            t = trust_after_approval(t);
+        }
+        assert_eq!(moderation_tier(t), ModerationTier::Full);
+        t = trust_after_approval(t);
+        assert_eq!(moderation_tier(t), ModerationTier::Light);
+    }
+
+    #[test]
+    fn tier_is_reversible_after_abuse() {
+        // Облегчённый тир не даётся навсегда: после серии брака воркер
+        // обязан вернуться в полную ручную модерацию.
+        let mut t = LIGHT_MODERATION_THRESHOLD;
+        assert_eq!(moderation_tier(t), ModerationTier::Light);
+        for _ in 0..8 {
+            t = trust_after_auto_rejection(t);
+        }
+        assert_eq!(moderation_tier(t), ModerationTier::Full);
     }
 }

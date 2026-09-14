@@ -32,6 +32,7 @@ pub const PRIZE_POOL_SEED: &[u8] = b"prize_pool";
 pub const TASK_SEED: &[u8] = b"task";
 pub const CLAIM_SEED: &[u8] = b"claim";
 pub const SUBMISSION_SEED: &[u8] = b"submission";
+pub const PROFILE_SEED: &[u8] = b"profile";
 
 /// Пространство аккаунтов: 8 (дискриминатор) + размер структуры + запас на String.
 const TASK_SPACE: usize = 8 + 8 + 32 + (4 + MAX_URI_LEN) + 1
@@ -41,6 +42,7 @@ const CLAIM_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 1;
 const SUBMISSION_SPACE: usize = 8 + 32 + 32 + 32 + 32 + (4 + MAX_URI_LEN) + 32
     + 8 + 1 + (1 + 1) + (1 + 32) + (1 + 4 + MAX_REASON_LEN);
 const POOL_STATE_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 8 + 8;
+const PROFILE_SPACE: usize = 8 + 32 + 2 + 4 + 4 + 4 + 8;
 
 #[program]
 pub mod sixsec {
@@ -60,6 +62,21 @@ pub mod sixsec {
         pool.epoch = 0;
         pool.withdrawn_this_epoch = 0;
         pool.withdrawal_limit = withdrawal_limit;
+        Ok(())
+    }
+
+    /// Создание профиля воркера. Отдельная инструкция, а НЕ `init_if_needed`
+    /// внутри `claim` — при ленивой инициализации воркер мог бы сбросить себе
+    /// trust_score повторным взятием задания, то есть обнулить последствия
+    /// авто-отклонений. Здесь повторный вызов падает, потому что PDA занят.
+    pub fn init_profile(ctx: Context<InitProfile>) -> Result<()> {
+        let profile = &mut ctx.accounts.worker_profile;
+        profile.worker = ctx.accounts.worker.key();
+        profile.trust_score = 0;
+        profile.approved_count = 0;
+        profile.rejected_count = 0;
+        profile.auto_rejected_count = 0;
+        profile.last_updated = Clock::get()?.unix_timestamp;
         Ok(())
     }
 
@@ -235,15 +252,29 @@ pub mod sixsec {
 
         sub.moderator = Some(ctx.accounts.moderator.key());
 
+        // ADR-0011/0012: trust_score меняется ТОЛЬКО здесь. Это единственная
+        // точка, где игровой рейтинг соприкасается с ончейн-состоянием.
+        let profile = &mut ctx.accounts.worker_profile;
+        require!(
+            profile.worker == sub.worker,
+            SixsecError::ProfileWorkerMismatch
+        );
+        let clock = Clock::get()?;
+
         if !approve {
             sub.moderation_status = ModStatus::Rejected;
             if let Some(r) = reason {
                 require!(r.len() <= MAX_REASON_LEN, SixsecError::FieldTooLong);
                 sub.rejection_reason = Some(r);
             }
+            profile.rejected_count = profile.rejected_count.saturating_add(1);
+            profile.trust_score = trust_after_rejection(profile.trust_score);
+            profile.last_updated = clock.unix_timestamp;
             emit!(SubmissionRejected {
                 submission: sub.key(),
                 worker: sub.worker,
+                trust_score: profile.trust_score,
+                moderation_tier: moderation_tier(profile.trust_score) == ModerationTier::Light,
             });
             return Ok(());
         }
@@ -256,12 +287,17 @@ pub mod sixsec {
         sub.moderation_status = ModStatus::Approved;
         sub.awarded_tier_id = Some(tid);
 
+        profile.approved_count = profile.approved_count.saturating_add(1);
+        profile.trust_score = trust_after_approval(profile.trust_score);
+        profile.last_updated = clock.unix_timestamp;
+
         emit!(SubmissionApproved {
             submission: sub.key(),
             worker: sub.worker,
             task: task.key(),
             tier_id: tid,
             token_amount: tier.token_amount,
+            trust_score: profile.trust_score,
         });
         Ok(())
     }
@@ -448,6 +484,21 @@ pub struct CreateTask<'info> {
 }
 
 #[derive(Accounts)]
+pub struct InitProfile<'info> {
+    #[account(mut)]
+    pub worker: Signer<'info>,
+    #[account(
+        init,
+        payer = worker,
+        space = PROFILE_SPACE,
+        seeds = [PROFILE_SEED, worker.key().as_ref()],
+        bump
+    )]
+    pub worker_profile: Account<'info, WorkerProfile>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
 pub struct Claim<'info> {
     #[account(mut)]
     pub worker: Signer<'info>,
@@ -461,6 +512,9 @@ pub struct Claim<'info> {
         bump
     )]
     pub claim: Account<'info, ClaimAccount>,
+    /// Профиль должен существовать до взятия задания (см. init_profile).
+    #[account(seeds = [PROFILE_SEED, worker.key().as_ref()], bump, has_one = worker)]
+    pub worker_profile: Account<'info, WorkerProfile>,
     pub system_program: Program<'info, System>,
 }
 
@@ -497,8 +551,9 @@ pub struct Moderate<'info> {
     )]
     pub submission: Account<'info, SubmissionAccount>,
     /// Авторитет модерации. В проде — мультисиг, не single key.
-    /// Проверка принадлежности выполняется на уровне ключа, переданного в транзакцию.
     pub pool_state: Account<'info, PoolState>,
+    #[account(mut, seeds = [PROFILE_SEED, submission.worker.as_ref()], bump)]
+    pub worker_profile: Account<'info, WorkerProfile>,
 }
 
 #[derive(Accounts)]
@@ -569,12 +624,16 @@ pub struct SubmissionApproved {
     pub task: Pubkey,
     pub tier_id: u8,
     pub token_amount: u64,
+    pub trust_score: u16,
 }
 
 #[event]
 pub struct SubmissionRejected {
     pub submission: Pubkey,
     pub worker: Pubkey,
+    pub trust_score: u16,
+    /// false = воркер остался в полной ручной модерации (ADR-0011).
+    pub moderation_tier: bool,
 }
 
 #[event]

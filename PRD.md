@@ -1,6 +1,6 @@
 # PRD — Маркетплейс микрозаданий для генерации контента (Solana)
 
-- **Версия:** 0.4 (Фаза 1 завершена: Q20 закрыт, название SixSec)
+- **Версия:** 0.5 (добавлен игровой слой прогрессии — см. [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md))
 - **Дата:** 2026-09-14
 - **Источник:** мастер-промпт «Контент-завод на Solana (SKR Task Marketplace)» v0.1 + ответы заказчика от 2026-09-14
 - **Статус:** черновик. Разделы, помеченные ⚠️, не могут быть финализированы до закрытия вопросов из [`docs/OPEN_QUESTIONS.md`](docs/OPEN_QUESTIONS.md).
@@ -93,7 +93,7 @@ pub struct PoolState {
 }
 ```
 
-Инструкции: `create_task` · `claim` · `submit` · `moderate(tier_id)` · `payout` · `refund_expired` · `withdraw_from_pool`.
+Инструкции: `init_pool` · `init_profile` · `create_task` · `claim` · `submit` · `moderate(tier_id)` · `payout` · `refund_expired` · `withdraw_from_pool`.
 
 Пополнение пула **отдельной инструкции не требует** — это обычный SPL-перевод на PDA пула, что соответствует «пополнять вручную» из ответа заказчика.
 
@@ -109,6 +109,29 @@ pub struct PoolState {
 | `EscrowVault` на задание → единый `PrizePool` + `PoolState` | ADR-0006: заказчик пополняет общий пул вручную, программа только выдаёт |
 | добавлены `reserved_amount` / `withdraw_from_pool` | ADR-0006: при общем пуле и тирах размер выплаты неизвестен до модерации, нужен резерв по худшему случаю |
 | программа **не** держит mint authority | ADR-0006/0007: активы наград внешние и уже существуют |
+
+## 4.1 Игровой слой прогрессии
+
+Полный дизайн — [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md). Ключевые решения:
+
+- **[ADR-0012](docs/adr/0012-sim-layer-cannot-pay-real-value.md):** симуляционный слой (тренировочные миссии, опыт, софт-валюта, апгрейды агентства) не имеет **ни одного кодового пути** к пулу призов. Инвариант держится не дисциплиной, а отсутствием пути: `payout` требует `SubmissionAccount` со статусом `Approved`, а симуляционные миссии таких аккаунтов не создают.
+- **[ADR-0011](docs/adr/0011-progression-split-onchain-offchain.md):** on-chain только `WorkerProfile.trust_score` и порог `LIGHT_MODERATION_THRESHOLD = 700` — это граница безопасности, за ней стоит `payout`. Опыт, дерево навыков, гильдии, лидерборды — off-chain, чтобы баланс игры можно было править без деплоя.
+- **PvP-питчи не требуют нового кода** — это `max_claims = 2` из [ADR-0003](docs/adr/0003-claim-model-parallel-submissions.md).
+- **Асимметрия trust score:** +15 за одобрение, −25 за отклонение, −40 за авто-отклон. Один авто-отклон отбивается тремя одобрениями — защита от фарма объёмом.
+
+```rust
+#[account]
+pub struct WorkerProfile {           // PDA ["profile", worker]
+    pub worker: Pubkey,
+    pub trust_score: u16,            // 0..=1000, меняется только в `moderate`
+    pub approved_count: u32,
+    pub rejected_count: u32,
+    pub auto_rejected_count: u32,
+    pub last_updated: i64,
+}
+```
+
+⚠️ **Q23 блокирует деплой, но не код:** в предложении заказчика фигурирует выплата настоящим SKR, что противоречит [ADR-0002](docs/adr/0002-payout-asset-own-game-assets.md). Актив награды и так является параметром (ADR-0010), поэтому игровой слой реализуем при любом ответе.
 
 ## 5. Оффчейн-компоненты
 

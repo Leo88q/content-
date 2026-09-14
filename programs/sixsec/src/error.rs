@@ -34,4 +34,6 @@ pub enum SixsecError {
     AlreadyModerated,
     #[msg("Сабмишен не одобрен — выплата невозможна")]
     NotApproved,
+    #[msg("Профиль воркера не соответствует автору сабмишена")]
+    ProfileWorkerMismatch,
 }
