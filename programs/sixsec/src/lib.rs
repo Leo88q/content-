@@ -286,7 +286,9 @@ pub mod sixsec {
 
         token_interface::transfer_checked(
             CpiContext::new_with_signer(
-                ctx.accounts.token_program.to_account_info(),
+                // Anchor 1.2.0: new_with_signer принимает Pubkey, а не AccountInfo
+                // (breaking change относительно 0.32 — lang/src/context.rs:198).
+                *ctx.accounts.token_program.to_account_info().key,
                 TransferChecked {
                     from: ctx.accounts.prize_pool.to_account_info(),
                     mint: ctx.accounts.reward_mint.to_account_info(),
@@ -362,7 +364,9 @@ pub mod sixsec {
 
         token_interface::transfer_checked(
             CpiContext::new_with_signer(
-                ctx.accounts.token_program.to_account_info(),
+                // Anchor 1.2.0: new_with_signer принимает Pubkey, а не AccountInfo
+                // (breaking change относительно 0.32 — lang/src/context.rs:198).
+                *ctx.accounts.token_program.to_account_info().key,
                 TransferChecked {
                     from: ctx.accounts.prize_pool.to_account_info(),
                     mint: ctx.accounts.reward_mint.to_account_info(),

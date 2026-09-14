@@ -130,6 +130,10 @@ pub struct PoolState {
 //      сообщения в тестах было бы проверкой форматирования, а не поведения.
 //      Здесь тесты сверяют сами варианты через `matches!`.
 
+/// `anchor_lang::prelude` экспортирует `Result<T>` — алиас на ОДИН параметр,
+/// поэтому `Result<T, SixsecError>` не компилируется (E0107). Свой алиас.
+pub type LogicResult<T> = std::result::Result<T, SixsecError>;
+
 /// Худший случай резерва под задание (ADR-0009):
 /// `max_claims × max(tiers[*].token_amount)`.
 ///
@@ -143,7 +147,7 @@ pub fn worst_case_reserve(
     max_claims: u32,
     tiers: &[RewardTier],
     tier_count: u8,
-) -> Result<u64, SixsecError> {
+) -> LogicResult<u64> {
     let count = tier_count as usize;
     if count == 0 || count > tiers.len() {
         return Err(SixsecError::NoTiers);
@@ -163,7 +167,7 @@ pub fn worst_case_reserve(
 }
 
 /// Свободные средства пула: баланс минус сумма резервов открытых заданий.
-pub fn available_balance(pool_balance: u64, total_reserved: u64) -> Result<u64, SixsecError> {
+pub fn available_balance(pool_balance: u64, total_reserved: u64) -> LogicResult<u64> {
     pool_balance
         .checked_sub(total_reserved)
         .ok_or(SixsecError::PoolBalanceShort)
@@ -184,7 +188,7 @@ pub fn can_withdraw(
     withdrawn_this_epoch: u64,
     withdrawal_limit: u64,
     amount: u64,
-) -> Result<(), SixsecError> {
+) -> LogicResult<()> {
     let free = available_balance(pool_balance, total_reserved)?;
     if amount > free {
         return Err(SixsecError::WithdrawWouldBreakReserves);
@@ -203,7 +207,7 @@ pub fn validate_tier(
     tier_count: u8,
     tiers: &[RewardTier],
     tier_id: u8,
-) -> Result<RewardTier, SixsecError> {
+) -> LogicResult<RewardTier> {
     let count = tier_count as usize;
     if count == 0 || count > tiers.len() {
         return Err(SixsecError::NoTiers);

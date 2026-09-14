@@ -86,7 +86,7 @@ jobs:
           set -uo pipefail
           {
             echo "===== anchor build ====="
-            anchor build --verifiable=false 2>&1
+            anchor build 2>&1
           } | tee -a /tmp/ci.log
           # anchor build может вернуть 0, не произведя IDL. Проверяем факт сборки,
           # а не код возврата: отсутствие IDL = программа не собралась.
