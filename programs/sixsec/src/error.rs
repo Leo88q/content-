@@ -28,4 +28,10 @@ pub enum SixsecError {
     NoTiers,
     #[msg("NFT-предмет тира отсутствует в пуле")]
     NftNotInPool,
+    #[msg("Подписант не является авторитетом модерации")]
+    UnauthorizedModerator,
+    #[msg("Сабмишен уже рассмотрен — повторное решение невозможно")]
+    AlreadyModerated,
+    #[msg("Сабмишен не одобрен — выплата невозможна")]
+    NotApproved,
 }

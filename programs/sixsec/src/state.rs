@@ -108,6 +108,10 @@ pub struct SubmissionAccount {
 #[derive(Debug)]
 pub struct PoolState {
     pub admin: Pubkey,
+    /// Авторитет модерации (раздел 3 промпта: `moderate` — только admin/multisig).
+    /// В проде это адрес мультисига Squads: мультисиг сам подписывает транзакцию,
+    /// поэтому сравнение с signer'ом работает и для single-key, и для multisig.
+    pub moderator_authority: Pubkey,
     pub total_reserved: u64,
     pub epoch: u64,
     pub withdrawn_this_epoch: u64,
@@ -117,6 +121,14 @@ pub struct PoolState {
 // ---------------------------------------------------------------------------
 // Чистая логика
 // ---------------------------------------------------------------------------
+//
+// Эти функции намеренно возвращают `Result<_, SixsecError>`, а не
+// `anchor_lang::Result`. Две причины:
+//   1. Логика не зависит от обёртки ошибок Anchor и тестируется без неё.
+//   2. `anchor_lang::error::Error::to_string()` для кастомной ошибки печатает
+//      код (`custom program error: 0x...`), а не имя варианта — сравнивать
+//      сообщения в тестах было бы проверкой форматирования, а не поведения.
+//      Здесь тесты сверяют сами варианты через `matches!`.
 
 /// Худший случай резерва под задание (ADR-0009):
 /// `max_claims × max(tiers[*].token_amount)`.
@@ -131,9 +143,11 @@ pub fn worst_case_reserve(
     max_claims: u32,
     tiers: &[RewardTier],
     tier_count: u8,
-) -> Result<u64> {
+) -> Result<u64, SixsecError> {
     let count = tier_count as usize;
-    require!(count > 0 && count <= tiers.len(), SixsecError::NoTiers);
+    if count == 0 || count > tiers.len() {
+        return Err(SixsecError::NoTiers);
+    }
 
     let max_amount = tiers[..count]
         .iter()
@@ -144,14 +158,15 @@ pub fn worst_case_reserve(
     (max_amount as u128)
         .checked_mul(max_claims as u128)
         .filter(|v| *v <= u64::MAX as u128)
-        .ok_or_else(|| SixsecError::ReserveOverflow.into())
+        .map(|v| v as u64)
+        .ok_or(SixsecError::ReserveOverflow)
 }
 
 /// Свободные средства пула: баланс минус сумма резервов открытых заданий.
-pub fn available_balance(pool_balance: u64, total_reserved: u64) -> Result<u64> {
+pub fn available_balance(pool_balance: u64, total_reserved: u64) -> Result<u64, SixsecError> {
     pool_balance
         .checked_sub(total_reserved)
-        .ok_or_else(|| SixsecError::PoolBalanceShort.into())
+        .ok_or(SixsecError::PoolBalanceShort)
 }
 
 /// Хватает ли свободных средств под новый резерв.
@@ -169,23 +184,37 @@ pub fn can_withdraw(
     withdrawn_this_epoch: u64,
     withdrawal_limit: u64,
     amount: u64,
-) -> Result<()> {
+) -> Result<(), SixsecError> {
     let free = available_balance(pool_balance, total_reserved)?;
-    require!(amount <= free, SixsecError::WithdrawWouldBreakReserves);
+    if amount > free {
+        return Err(SixsecError::WithdrawWouldBreakReserves);
+    }
     let after = withdrawn_this_epoch
         .checked_add(amount)
         .ok_or(SixsecError::ReserveOverflow)?;
-    require!(after <= withdrawal_limit, SixsecError::WithdrawWouldBreakReserves);
+    if after > withdrawal_limit {
+        return Err(SixsecError::WithdrawWouldBreakReserves);
+    }
     Ok(())
 }
 
 /// Проверка, что tier_id объявлен заданием (ADR-0004).
-pub fn validate_tier(tier_count: u8, tiers: &[RewardTier], tier_id: u8) -> Result<RewardTier> {
+pub fn validate_tier(
+    tier_count: u8,
+    tiers: &[RewardTier],
+    tier_id: u8,
+) -> Result<RewardTier, SixsecError> {
     let count = tier_count as usize;
-    require!(count > 0 && count <= tiers.len(), SixsecError::NoTiers);
-    require!((tier_id as usize) < count, SixsecError::TierOutOfRange);
+    if count == 0 || count > tiers.len() {
+        return Err(SixsecError::NoTiers);
+    }
+    if (tier_id as usize) >= count {
+        return Err(SixsecError::TierOutOfRange);
+    }
     let tier = tiers[tier_id as usize];
-    require!(tier.tier_id == tier_id, SixsecError::TierOutOfRange);
+    if tier.tier_id != tier_id {
+        return Err(SixsecError::TierOutOfRange);
+    }
     Ok(tier)
 }
 
@@ -237,10 +266,8 @@ mod tests {
         // u64::MAX * 2 переполняет u64. Без checked_mul это молча дало бы
         // u64::MAX - 1 и необеспеченный пул.
         let t = tiers4(u64::MAX, 0, 0, 0);
-        let err = worst_case_reserve(2, &t, 1).unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            SixsecError::ReserveOverflow.to_string(),
+        assert!(
+            matches!(worst_case_reserve(2, &t, 1), Err(SixsecError::ReserveOverflow)),
             "переполнение обязано быть ошибкой, а не молчаливым wrap"
         );
     }
@@ -254,8 +281,7 @@ mod tests {
     #[test]
     fn reserve_requires_at_least_one_tier() {
         let t = tiers4(100, 0, 0, 0);
-        let err = worst_case_reserve(1, &t, 0).unwrap_err();
-        assert_eq!(err.to_string(), SixsecError::NoTiers.to_string());
+        assert!(matches!(worst_case_reserve(1, &t, 0), Err(SixsecError::NoTiers)));
     }
 
     #[test]
@@ -267,8 +293,10 @@ mod tests {
     fn available_balance_never_goes_negative() {
         // Резервы превысили баланс (например, пул вывели) — это ошибка,
         // а не 0 и не wrap.
-        let err = available_balance(100, 250).unwrap_err();
-        assert_eq!(err.to_string(), SixsecError::PoolBalanceShort.to_string());
+        assert!(matches!(
+            available_balance(100, 250),
+            Err(SixsecError::PoolBalanceShort)
+        ));
     }
 
     #[test]
@@ -284,20 +312,18 @@ mod tests {
 
     #[test]
     fn withdraw_blocked_when_it_touches_reserves() {
-        let err = can_withdraw(1000, 900, 0, u64::MAX, 200).unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            SixsecError::WithdrawWouldBreakReserves.to_string()
-        );
+        assert!(matches!(
+            can_withdraw(1000, 900, 0, u64::MAX, 200),
+            Err(SixsecError::WithdrawWouldBreakReserves)
+        ));
     }
 
     #[test]
     fn withdraw_blocked_over_epoch_limit() {
-        let err = can_withdraw(1_000_000, 0, 900, 1_000, 200).unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            SixsecError::WithdrawWouldBreakReserves.to_string()
-        );
+        assert!(matches!(
+            can_withdraw(1_000_000, 0, 900, 1_000, 200),
+            Err(SixsecError::WithdrawWouldBreakReserves)
+        ));
     }
 
     #[test]
@@ -307,8 +333,10 @@ mod tests {
 
     #[test]
     fn withdraw_overflow_in_epoch_counter_is_rejected() {
-        let err = can_withdraw(u64::MAX, 0, u64::MAX, u64::MAX, 1).unwrap_err();
-        assert_eq!(err.to_string(), SixsecError::ReserveOverflow.to_string());
+        assert!(matches!(
+            can_withdraw(u64::MAX, 0, u64::MAX, u64::MAX, 1),
+            Err(SixsecError::ReserveOverflow)
+        ));
     }
 
     #[test]
@@ -321,8 +349,10 @@ mod tests {
     fn validate_tier_rejects_index_beyond_tier_count() {
         // Тир 3 объявлен в массиве, но tier_count = 2, значит он не активен.
         let t = tiers4(100, 200, 300, 400);
-        let err = validate_tier(2, &t, 3).unwrap_err();
-        assert_eq!(err.to_string(), SixsecError::TierOutOfRange.to_string());
+        assert!(matches!(
+            validate_tier(2, &t, 3),
+            Err(SixsecError::TierOutOfRange)
+        ));
     }
 
     #[test]
@@ -330,7 +360,12 @@ mod tests {
         // Индекс валиден, но tier_id внутри не совпадает — битые данные.
         let mut t = tiers4(100, 200, 300, 400);
         t[1].tier_id = 9;
-        let err = validate_tier(3, &t, 1).unwrap_err();
-        assert_eq!(err.to_string(), SixsecError::TierOutOfRange.to_string());
+        assert!(matches!(validate_tier(3, &t, 1), Err(SixsecError::TierOutOfRange)));
+    }
+
+    #[test]
+    fn validate_tier_rejects_zero_tier_count() {
+        let t = tiers4(100, 200, 300, 400);
+        assert!(matches!(validate_tier(0, &t, 0), Err(SixsecError::NoTiers)));
     }
 }

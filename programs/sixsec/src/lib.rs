@@ -40,7 +40,7 @@ const TASK_SPACE: usize = 8 + 8 + 32 + (4 + MAX_URI_LEN) + 1
 const CLAIM_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 1;
 const SUBMISSION_SPACE: usize = 8 + 32 + 32 + 32 + 32 + (4 + MAX_URI_LEN) + 32
     + 8 + 1 + (1 + 1) + (1 + 32) + (1 + 4 + MAX_REASON_LEN);
-const POOL_STATE_SPACE: usize = 8 + 32 + 8 + 8 + 8 + 8;
+const POOL_STATE_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 8 + 8;
 
 #[program]
 pub mod sixsec {
@@ -48,9 +48,14 @@ pub mod sixsec {
 
     /// Инициализация учёта резервов пула. `admin` обязан быть мультисигом —
     /// single-key админа в проде мастер-промпт запрещает.
-    pub fn init_pool(ctx: Context<InitPool>, withdrawal_limit: u64) -> Result<()> {
+    pub fn init_pool(
+        ctx: Context<InitPool>,
+        withdrawal_limit: u64,
+        moderator_authority: Pubkey,
+    ) -> Result<()> {
         let pool = &mut ctx.accounts.pool_state;
         pool.admin = ctx.accounts.admin.key();
+        pool.moderator_authority = moderator_authority;
         pool.total_reserved = 0;
         pool.epoch = 0;
         pool.withdrawn_this_epoch = 0;
@@ -205,10 +210,17 @@ pub mod sixsec {
         tier_id: Option<u8>,
         reason: Option<String>,
     ) -> Result<()> {
+        // Раздел 3 промпта: `moderate` доступна только admin/multisig-авторитету.
+        // Без этой проверки одобрить сабмишен и назначить себе тир мог бы кто угодно.
+        require!(
+            ctx.accounts.moderator.key() == ctx.accounts.pool_state.moderator_authority,
+            SixsecError::UnauthorizedModerator
+        );
+
         let sub = &mut ctx.accounts.submission;
         require!(
             sub.moderation_status == ModStatus::Pending,
-            SixsecError::TierOutOfRange
+            SixsecError::AlreadyModerated
         );
 
         sub.moderator = Some(ctx.accounts.moderator.key());

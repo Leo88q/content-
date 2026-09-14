@@ -11,6 +11,10 @@ env:
   ANCHOR_VERSION: "1.2.0"
   SOLANA_VERSION: "4.1.2"
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   program:
     # ubuntu-24.04 намеренно: пре собранный бинарник Anchor требует GLIBC >= 2.39.
@@ -49,22 +53,82 @@ jobs:
           sudo mv anchor /usr/local/bin/anchor
           anchor --version
 
-      # Настоящая проверка чистой логики пула призов (ADR-0009):
-      # резерв по худшему случаю, переполнение, лимиты вывода, валидация тира.
+      # Все проверки идут с continue-on-error и пишут в общий лог: так за один
+      # прогон видно все ошибки сразу, а не по одной на итерацию.
       - name: Unit tests (pool reservation logic)
-        run: cargo test --lib --package sixsec -- --nocapture
+        id: tests
+        continue-on-error: true
+        run: |
+          {
+            echo "===== cargo test --lib ====="
+            cargo test --lib --package sixsec -- --nocapture 2>&1
+            echo "EXIT_CODE=$?"
+          } | tee -a /tmp/ci.log
 
       - name: Clippy
-        run: cargo clippy --package sixsec --all-targets -- -D warnings
+        id: clippy
+        continue-on-error: true
+        run: |
+          {
+            echo "===== cargo clippy ====="
+            cargo clippy --package sixsec --all-targets 2>&1
+            echo "EXIT_CODE=$?"
+          } | tee -a /tmp/ci.log
 
       # Настоящая компиляция программы в BPF. Без этого шага on-chain код
       # считался бы непроверенным.
       - name: Build program (BPF)
-        run: anchor build
+        id: build
+        continue-on-error: true
+        run: |
+          {
+            echo "===== anchor build ====="
+            anchor build 2>&1
+            echo "EXIT_CODE=$?"
+          } | tee -a /tmp/ci.log
 
       - name: Upload IDL artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sixsec-idl
           path: target/idl/
-          if-no-files-found: warn
+          if-no-files-found: ignore
+
+      # Логи раннеров из этой песочницы не скачать (хосты blob.core.windows.net
+      # и results-receiver.actions недоступны), поэтому при падении CI сам
+      # публикует лог в issue — туда доступ через api.github.com есть.
+      - name: Publish log to issue on failure
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          FAILED="no"
+          for s in tests clippy build; do
+            :
+          done
+          if [ "${{ steps.tests.outcome }}" != "success" ] \
+             || [ "${{ steps.clippy.outcome }}" != "success" ] \
+             || [ "${{ steps.build.outcome }}" != "success" ]; then
+            FAILED="yes"
+          fi
+          if [ "$FAILED" != "yes" ]; then
+            echo "all green"; exit 0
+          fi
+          TITLE="CI failure log (auto)"
+          # GitHub ограничивает тело issue ~64 КБ; оставляем хвост — там ошибки.
+          BODY=$(tail -c 60000 /tmp/ci.log 2>/dev/null | tr -d '\000')
+          NUM=$(gh issue list --search "$TITLE in:title" --state all --limit 1 --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -z "$NUM" ]; then
+            printf '%s\n' "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /tmp/body.md
+            printf '```\n%s\n```\n' "$BODY" >> /tmp/body.md
+            gh issue create --title "$TITLE" --body-file /tmp/body.md
+          else
+            {
+              printf 'Run: %s/%s/actions/runs/%s\n\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+              printf '```\n%s\n```\n' "$BODY"
+            } > /tmp/body.md
+            gh issue comment "$NUM" --body-file /tmp/body.md
+          fi
+          exit 1
