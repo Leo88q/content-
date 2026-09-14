@@ -277,9 +277,12 @@ pub mod sixsec {
             return Err(SixsecError::PoolBalanceShort.into());
         }
 
+        // Привязка к let обязательна: `key()` возвращает временное значение,
+        // и без биндинга оно умирает до использования seeds (E0716).
+        let mint_key = ctx.accounts.reward_mint.key();
         let seeds = &[
             PRIZE_POOL_SEED,
-            ctx.accounts.reward_mint.key().as_ref(),
+            mint_key.as_ref(),
             &[ctx.bumps.prize_pool],
         ];
         let signer = [&seeds[..]];
@@ -355,9 +358,12 @@ pub mod sixsec {
             amount,
         )?;
 
+        // Привязка к let обязательна: `key()` возвращает временное значение,
+        // и без биндинга оно умирает до использования seeds (E0716).
+        let mint_key = ctx.accounts.reward_mint.key();
         let seeds = &[
             PRIZE_POOL_SEED,
-            ctx.accounts.reward_mint.key().as_ref(),
+            mint_key.as_ref(),
             &[ctx.bumps.prize_pool],
         ];
         let signer = [&seeds[..]];
