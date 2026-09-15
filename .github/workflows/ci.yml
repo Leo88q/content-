@@ -223,8 +223,17 @@ jobs:
           # GitHub ограничивает тело issue ~64 КБ. Только хвоста недостаточно:
           # диагностика тулчейна идёт в начале лога и терялась при обрезке
           # (проверено на run 34911925781). Берём голову и хвост.
-          BODY=$'{ head -c 12000 /tmp/ci.log 2>/dev/null; echo; echo "... [середина обрезана] ..."; echo; tail -c 44000 /tmp/ci.log 2>/dev/null; }'
+          # $(...) — подстановка команды. Здесь стояло $'...' (ANSI-C quoting),
+          # из-за чего в issue публиковался ТЕКСТ команды, а не лог. Механизм не
+          # работал ни разу, а именно на него была ставка как на замену
+          # недоступным логам раннера.
+          if [ -s /tmp/ci.log ]; then
+            BODY=$( { head -c 12000 /tmp/ci.log; echo; echo "... [середина обрезана] ..."; echo; tail -c 44000 /tmp/ci.log; } )
+          else
+            BODY="/tmp/ci.log пуст или отсутствует — шаги не дошли до записи"
+          fi
           BODY=$(printf '%s' "$BODY" | tr -d '\000')
+          echo "размер публикуемого лога: $(printf '%s' "$BODY" | wc -c) байт"
           NUM=$(gh issue list --search "$TITLE in:title" --state all --limit 1 --json number --jq '.[0].number' 2>/dev/null || true)
           if [ -z "$NUM" ]; then
             printf '%s\n' "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /tmp/body.md
