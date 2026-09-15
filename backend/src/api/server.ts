@@ -23,6 +23,7 @@ import { AuditLog } from "../moderation/audit.ts";
 import { authorizeDecision, type Decision } from "../moderation/authorization.ts";
 import { buildMessage, type SiwsParams } from "../auth/siws.ts";
 import type { QueueItem } from "../domain.ts";
+import { buildModeratePayload } from "../chain/instructions.ts";
 
 /**
  * Кто подписант.
@@ -305,17 +306,9 @@ export function createApp(deps: AppDeps & { siwsParams?: SiwsParams }) {
           auditAt: entry.at,
           signed: false,
           // Инструкция к подписи кошельком. Backend её не подписывает.
-          instruction: {
-            program: "SixSec1111111111111111111111111111111111111",
-            name: "moderate",
-            args: {
-              approve: decision.kind === "approve",
-              tierId: decision.kind === "approve" ? decision.tierId : 0,
-              reason: decision.kind === "reject" ? decision.reason : "",
-            },
-            accounts: { submission: item.submission.claim },
-            signerRequired: pool.moderatorAuthority,
-          },
+          // Список аккаунтов и кодирование Option берутся из спеки, которая
+          // сверяется с IDL в CI, а не пишутся здесь руками.
+          instruction: buildModeratePayload(decision, item, pool.moderatorAuthority),
           mockData: deps.mockData,
         });
         return;

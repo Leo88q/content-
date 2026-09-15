@@ -129,6 +129,17 @@ jobs:
             cargo test --package sixsec --tests -- --nocapture --test-threads=1 2>&1
           } | tee -a /tmp/ci.log
 
+      # Backend отдаёт кошельку описание инструкции, и оно обязано совпадать с
+      # программой. Расхождение не видно ни компилятору, ни юнит-тестам: оно
+      # проявляется только при попытке собрать транзакцию. Такой баг уже был —
+      # Option-аргументы и один аккаунт из пяти.
+      - name: Verify instruction spec against IDL
+        id: spec
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          python3 scripts/check_idl_spec.py target/idl/sixsec.json
+
       - name: Clippy
         id: clippy
         continue-on-error: true
@@ -201,6 +212,7 @@ jobs:
           if [ "${{ steps.tests.outcome }}" != "success" ] \
              || [ "${{ steps.itests.outcome }}" != "success" ] \
              || [ "${{ steps.clippy.outcome }}" != "success" ] \
+             || [ "${{ steps.spec.outcome }}" != "success" ] \
              || [ "${{ steps.build.outcome }}" != "success" ]; then
             FAILED="yes"
           fi

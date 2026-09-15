@@ -1,0 +1,16 @@
+{
+  "_comment": "Спецификация инструкции moderate. Единственный источник истины для backend и клиентского кода. Сверяется с target/idl/sixsec.json в CI (scripts/check_idl_spec.py) — расхождение ловится автоматически, а не на проде.",
+  "instruction": "moderate",
+  "args": [
+    { "name": "approve", "type": "bool" },
+    { "name": "tierId", "type": { "option": "u8" } },
+    { "name": "reason", "type": { "option": "string" } }
+  ],
+  "accounts": [
+    { "name": "moderator", "isMut": true, "isSigner": true },
+    { "name": "task", "isMut": false, "isSigner": false },
+    { "name": "submission", "isMut": true, "isSigner": false },
+    { "name": "poolState", "isMut": false, "isSigner": false },
+    { "name": "workerProfile", "isMut": true, "isSigner": false }
+  ]
+}

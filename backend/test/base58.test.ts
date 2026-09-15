@@ -58,3 +58,31 @@ test("round-trip на реальном фикстурном адресе", () =>
   assert.equal(dec.length, 32, "адрес обязан быть 32 байта");
   assert.equal(base58Encode(dec), addr);
 });
+
+test("ВСЕ фикстурные адреса декодируются в 32 байта", async () => {
+  // Именно на этом ранее поймали выдуманные адреса: Mod111… давал 33 байта.
+  // Проверка идёт по реально экспортируемым значениям, а не по списку строк.
+  const mock = await import("../src/chain/mock.ts");
+  const addresses: Record<string, string> = {
+    MODERATOR: mock.MODERATOR,
+    ADMIN: mock.ADMIN,
+    GAME_MINT: mock.GAME_MINT,
+    SKR_MINT: mock.SKR_MINT,
+    "task 1": mock.taskKey(1),
+    "task 2": mock.taskKey(2),
+  };
+  for (const [label, addr] of Object.entries(addresses)) {
+    assert.equal(base58Decode(addr).length, 32, `${label} (${addr}) обязан быть 32 байта`);
+    assert.equal(base58Encode(base58Decode(addr)), addr, `${label}: round-trip`);
+  }
+  // И воркеры из очереди.
+  const items = await new mock.MockChainSource().getPendingQueue();
+  for (const it of items) {
+    for (const [label, addr] of [["worker", it.submission.worker], ["task", it.submission.task], ["creator", it.task.creator]] as const) {
+      assert.equal(base58Decode(addr).length, 32, `${label} ${addr} обязан быть 32 байта`);
+    }
+    for (const tier of it.task.tiers) {
+      assert.equal(base58Decode(tier.tokenMint).length, 32, "mint награды обязан быть 32 байта");
+    }
+  }
+});

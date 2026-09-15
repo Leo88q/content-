@@ -17,6 +17,19 @@ export const ADMIN = "zTg2dUAE8oo1sTgdDZMfq7a2xZj4GfBunonkgJWpyYZ";
 export const GAME_MINT = "FtSfcwcoBCFdYYPbiU3WUTRwg1519yHxSaUCd7Eg6Vih";
 export const SKR_MINT = "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3";
 
+/** Адреса заданий. Валидные pubkey, а не «Task1»: иначе список аккаунтов
+ *  инструкции moderate содержал бы строку, которую кошелёк не примет. */
+const TASK_KEYS: Record<number, string> = {
+  1: "CQE6v9NkbotYaNAQ6VyhJkffns7SQjNJWSiQKLKfTWmR",
+  2: "FFXDTvgzut1EaEAPG2ke6e98wgVUBxeVvMFy3V8SNMCh",
+};
+
+export function taskKey(id: number): string {
+  const k = TASK_KEYS[id];
+  if (k === undefined) throw new Error(`нет фикстуры для задания ${id}`);
+  return k;
+}
+
 function task(id: number, tierCount: number): Task {
   return {
     taskId: BigInt(id),
@@ -50,7 +63,7 @@ function worker(addr: Pubkey, trust: number): WorkerProfile {
 function submission(claim: string, taskId: number, w: Pubkey): Submission {
   return {
     claim,
-    task: `Task${taskId}`,
+    task: taskKey(taskId),
     worker: w,
     mediaHash: "a".repeat(64),
     mediaUri: `https://arweave.net/clip-${claim}`,
