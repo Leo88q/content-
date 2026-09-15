@@ -123,44 +123,71 @@ jobs:
           # доходит до компиляции и ошибку выдаёт уже на зависимостях.
           # Переустановка между попытками — рекомендованный способ лечения
           # (cargo build-sbf --force-tools-install / очистка ~/.cache/solana).
+          # Что показал run 34924770996 (первый прогон с рабочим set +e):
+          #   попытка 1  anchor build            -> E0463, sixsec.so НЕТ
+          #   попытка 2  cargo build-sbf         -> sixsec.so ЕСТЬ
+          #   попытка 3  anchor build (повторно) -> снова E0463
+          # В verbose-логе попытки 2 видно, что делает build-sbf:
+          #   + ./platform-tools/rust/bin/rustc --print sysroot
+          #   + rustup toolchain link 1.89.0-sbpf-solana-v1.52 platform-tools/rust
+          # То есть sysroot в порядке и cargo build-sbf умеет его подключить, а
+          # anchor build — нет. Значит бит не тулчейн, а обёртка. Поэтому .so
+          # собираем напрямую, а IDL получаем отдельно: `anchor idl build`
+          # генерирует его через хостовый `cargo test` (см. cli/src/lib.rs
+          # v1.2.0, IdlCommand::Build: «Arguments to pass to the underlying
+          # `cargo test` command»), а хостовая компиляция в этом же прогоне
+          # проходит — 41 тест зелёный.
           BUILD_OK=0
-          for attempt in 1 2 3; do
-            {
-              echo "===== попытка $attempt ====="
-              echo "RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN:-<unset>}"
-              echo "rustc: $(command -v rustc)"; echo "cargo-build-sbf: $(command -v cargo-build-sbf)"
-              # Попытка 2 идёт напрямую через build-sbf с --verbose: anchor build
-              # не пробрасывает флаг, а именно там видно, какой sysroot и rustc
-              # подставляются для sbpfv3-solana-solana. Заодно эта команда сама
-              # докачивает platform-tools.
-              if [ "$attempt" = "2" ]; then
-                cargo build-sbf --verbose --force-tools-install --manifest-path programs/sixsec/Cargo.toml 2>&1
-              else
-                anchor build 2>&1
-              fi
-              echo "----- итог попытки $attempt -----"
-              if [ -f target/deploy/sixsec.so ]; then echo "sixsec.so ЕСТЬ"; else echo "sixsec.so НЕТ"; fi
-              if [ -f target/idl/sixsec.json ]; then echo "sixsec.json ЕСТЬ"; else echo "sixsec.json НЕТ"; fi
-              echo "--- sysroot после попытки $attempt ---"
-              find "${HOME}/.cache" -maxdepth 7 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -3 || true
-              find "${HOME}/.cache" -path "*sbpfv3*" -name "libstd*" 2>/dev/null | head -3 || echo "libstd для sbpfv3 отсутствует"
-              du -sh "${HOME}/.cache/solana" 2>/dev/null || echo "~/.cache/solana не создан"
-            } | tee -a /tmp/ci.log
-            if [ -f target/deploy/sixsec.so ] && [ -f target/idl/sixsec.json ]; then
-              BUILD_OK=1
-              echo "сборка удалась с попытки $attempt" | tee -a /tmp/ci.log
-              break
-            fi
-            echo "попытка $attempt не дала артефактов" | tee -a /tmp/ci.log
-            if [ "$attempt" -lt 3 ]; then
-              # --force-tools-install отдельно от сборки не срабатывает: флаг
-              # работает в паре с реальной сборкой. Поэтому просто сносим
-              # каталог — следующая anchor build докачает sysroot заново.
-              echo "удаляю ${HOME}/.cache/solana перед попыткой $((attempt + 1))" | tee -a /tmp/ci.log
-              rm -rf "${HOME}/.cache/solana"
-            fi
-          done
+
+          # ВАЖНО: report() только ПЕЧАТАЕТ. Присваивать BUILD_OK внутри неё
+          # нельзя — блок выполняется как { … } | tee, а конвейер запускает
+          # группу в подоболочке, и присваивание в родителя не попадает.
+          # Проверено: снаружи BUILD_OK остаётся 0, шаг падал бы всегда.
+          # Поэтому решение принимается в родительской оболочке через have_both.
+          report() {
+            echo "----- артефакты -----"
+            if [ -f target/deploy/sixsec.so ]; then echo "sixsec.so ЕСТЬ"; else echo "sixsec.so НЕТ"; fi
+            if [ -f target/idl/sixsec.json ]; then echo "sixsec.json ЕСТЬ"; else echo "sixsec.json НЕТ"; fi
+            find "${HOME}/.cache" -maxdepth 7 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -3 || true
+          }
+          have_both() {
+            [ -f target/deploy/sixsec.so ] && [ -f target/idl/sixsec.json ]
+          }
+
+          {
+            echo "===== попытка 1: anchor build ====="
+            echo "RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN:-<unset>}"
+            echo "rustc: $(command -v rustc)"
+            anchor build 2>&1
+            report
+          } | tee -a /tmp/ci.log
+          have_both && BUILD_OK=1
+
           if [ "$BUILD_OK" != "1" ]; then
+            {
+              echo "===== попытка 2: cargo build-sbf + anchor idl build ====="
+              cargo build-sbf --manifest-path programs/sixsec/Cargo.toml 2>&1
+              mkdir -p target/idl
+              anchor idl build --program-name sixsec --out target/idl/sixsec.json 2>&1
+              report
+            } | tee -a /tmp/ci.log
+            have_both && BUILD_OK=1
+          fi
+
+          if [ "$BUILD_OK" != "1" ]; then
+            {
+              echo "===== попытка 3: переустановка platform-tools и повтор ====="
+              rm -rf "${HOME}/.cache/solana"
+              cargo build-sbf --force-tools-install --manifest-path programs/sixsec/Cargo.toml 2>&1
+              anchor idl build --program-name sixsec --out target/idl/sixsec.json 2>&1
+              report
+            } | tee -a /tmp/ci.log
+            have_both && BUILD_OK=1
+          fi
+
+          if [ "$BUILD_OK" = "1" ]; then
+            echo "сборка удалась" | tee -a /tmp/ci.log
+          else
             echo "сборка провалилась во всех попытках" | tee -a /tmp/ci.log
             # Без exit 1 шаг отчитался бы как success, и Gate показал бы
             # ложно-зелёную сборку на фоне упавших тестов.
