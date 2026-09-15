@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SixSec — очередь модерации</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --line: #2a3038; --text: #e6edf3;
+    --muted: #8b949e; --accent: #2f81f7; --ok: #2ea043; --bad: #da3633;
+    --warn-bg: #3b2b00; --warn-line: #bb8009; --warn-text: #f2cc60;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 16px 20px; border-bottom: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; justify-content: space-between; }
+  h1 { font-size: 17px; margin: 0; letter-spacing: .2px; }
+  .banner { margin: 0; padding: 10px 20px; background: var(--warn-bg);
+    border-bottom: 1px solid var(--warn-line); color: var(--warn-text); font-size: 13px; }
+  .who { padding: 10px 20px; border-bottom: 1px solid var(--line); display: flex;
+    gap: 10px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+  input, select, textarea, button { font: inherit; color: inherit; }
+  input, select, textarea { background: #0b0f14; border: 1px solid var(--line);
+    border-radius: 6px; padding: 7px 9px; }
+  input:focus, textarea:focus { outline: 1px solid var(--accent); }
+  main { padding: 16px 20px; display: grid; gap: 14px;
+    grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 1040px) { main { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+  .counts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .chip { background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 12px; font-size: 12px; color: var(--muted); }
+  .chip b { color: var(--text); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .card + .card { margin-top: 12px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .tier { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; letter-spacing: .3px; }
+  .tier.Full { background: #4a2d00; color: #ffb454; border: 1px solid #7a4a00; }
+  .tier.Light { background: #0f3d2e; color: #57d9a3; border: 1px solid #1c6b4f; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); }
+  .kv { color: var(--muted); font-size: 12px; }
+  .kv b { color: var(--text); font-weight: 600; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px;
+    padding-top: 12px; border-top: 1px solid var(--line); }
+  button { border: 1px solid var(--line); background: #1c232c; border-radius: 6px;
+    padding: 7px 14px; cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  button.ok { background: #14351d; border-color: #1f6f34; color: #7ee2a8; }
+  button.bad { background: #3a1414; border-color: #7d2222; color: #ff9d9a; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .reason { width: 100%; min-height: 60px; resize: vertical; margin-top: 10px; }
+  .msg { font-size: 12px; margin-top: 10px; padding: 8px 10px; border-radius: 6px; display: none; }
+  .msg.err { display: block; background: #3a1414; border: 1px solid #7d2222; color: #ffb3b0; }
+  .msg.info { display: block; background: #0d2b45; border: 1px solid #1f5f8b; color: #a5d6ff; }
+  .audit li { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+  .audit ul { list-style: none; margin: 0; padding: 0; }
+  .audit .d-approve { color: #7ee2a8; } .audit .d-reject { color: #ff9d9a; }
+  .empty { color: var(--muted); padding: 24px 0; text-align: center; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin: 0 0 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SixSec · очередь модерации</h1>
+  <span class="kv">порог облегчённой модерации: <b>700</b></span>
+</header>
+
+<p class="banner" id="banner" hidden>
+  ⚠️ Источник данных — <b>фикстуры</b>. Программа не задеплоена, реальных выплат здесь нет.
+  Backend <b>не подписывает</b> транзакции: решение возвращается как инструкция к подписи кошельком.
+</p>
+
+<div class="who">
+  <label for="mod">Модератор (dev-режим, без SIWS):</label>
+  <input id="mod" size="46" spellcheck="false" />
+  <span class="kv">ожидаемый authority: <span class="mono" id="authority">—</span></span>
+  <button id="reload">Обновить</button>
+</div>
+
+<main>
+  <section>
+    <div class="counts" id="counts"></div>
+    <div id="queue"><p class="empty">Загрузка…</p></div>
+  </section>
+
+  <aside class="card">
+    <h2>Аудит-лог сессии</h2>
+    <div class="audit"><ul id="audit"></ul></div>
+  </aside>
+</main>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const short = (s) => (s ? s.slice(0, 6) + "…" + s.slice(-4) : "—");
+const audit = [];
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    ...opts,
+    headers: { "content-type": "application/json", "x-moderator": $("#mod").value.trim(), ...(opts.headers || {}) },
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw Object.assign(new Error(body?.error?.code || res.statusText), { status: res.status, body });
+  return body;
+}
+
+async function load() {
+  try {
+    const d = await api("/api/queue");
+    $("#banner").hidden = !d.mockData;
+    $("#authority").textContent = d.moderatorAuthority;
+    if (!$("#mod").value.trim()) $("#mod").value = d.moderatorAuthority;
+    $("#counts").innerHTML =
+      `<span class="chip">в очереди <b>${d.counts.total}</b></span>` +
+      `<span class="chip">полная проверка <b>${d.counts.full}</b></span>` +
+      `<span class="chip">облегчённая <b>${d.counts.light}</b></span>`;
+    renderQueue(d.items || []);
+  } catch (e) {
+    $("#queue").innerHTML = `<p class="empty">Ошибка: ${esc(e.message)}</p>`;
+  }
+}
+
+function renderQueue(items) {
+  const root = $("#queue");
+  if (!items.length) { root.innerHTML = '<p class="empty">Очередь пуста.</p>'; return; }
+  // Полная проверка выше облегчённой: именно так снимается узкое место модерации.
+  const sorted = [...items].sort((a, b) =>
+    a.moderationTier === b.moderationTier ? 0 : (a.moderationTier === "Full" ? -1 : 1));
+  root.innerHTML = sorted.map(card).join("");
+  for (const btn of root.querySelectorAll("button[data-act]")) {
+    btn.addEventListener("click", () => decide(btn));
+  }
+}
+
+function card(it) {
+  const s = it.submission, t = it.task, w = it.worker;
+  const tiers = (t.tiers || []).slice(0, t.tierCount).map(x =>
+    `<option value="${x.tierId}">тир ${x.tierId} · ${esc(x.tokenAmount)} raw</option>`).join("");
+  return `<div class="card" data-claim="${esc(s.claim)}">
+    <div class="row">
+      <div>
+        <span class="tier ${esc(it.moderationTier)}">${esc(it.moderationTier)}</span>
+        <b> задание #${esc(t.taskId)}</b>
+      </div>
+      <span class="kv">воркер <span class="mono">${esc(short(s.worker))}</span></span>
+    </div>
+    <p class="kv" style="margin:10px 0 0">
+      trust <b>${w.trustScore}</b> · одобрено <b>${w.approvedCount}</b> ·
+      отклонено <b>${w.rejectedCount}</b> · автобрак <b>${w.autoRejectedCount}</b>
+    </p>
+    <p class="kv" style="margin:4px 0 0">
+      клип <a class="mono" href="${esc(s.mediaUri)}" target="_blank" rel="noreferrer">${esc(short(s.mediaUri))}</a>
+      · hash <span class="mono">${esc(s.mediaHash.slice(0, 12))}…</span>
+      · согласие <span class="mono">${esc(s.consentHash.slice(0, 8))}…</span>
+    </p>
+    <div class="actions">
+      <select data-tier>${tiers}</select>
+      <button class="ok" data-act="approve">Одобрить</button>
+      <button class="bad" data-act="reject">Отклонить</button>
+    </div>
+    <textarea class="reason" data-reason placeholder="Причина отказа обязательна — она уходит воркеру и в аудит-лог"></textarea>
+    <div class="msg" data-msg></div>
+  </div>`;
+}
+
+async function decide(btn) {
+  const card = btn.closest(".card");
+  const msg = card.querySelector("[data-msg]");
+  const act = btn.dataset.act;
+  const decision = act === "approve"
+    ? { kind: "approve", tierId: Number(card.querySelector("[data-tier]").value) }
+    : { kind: "reject", reason: card.querySelector("[data-reason]").value };
+  msg.className = "msg"; btn.disabled = true;
+  try {
+    const r = await api("/api/decisions", {
+      method: "POST",
+      body: JSON.stringify({ claim: card.dataset.claim, decision }),
+    });
+    msg.className = "msg info";
+    msg.innerHTML = `Принято, но <b>не подписано</b>. Инструкцию <span class="mono">${esc(r.instruction.name)}</span> ` +
+      `должен подписать <span class="mono">${esc(short(r.instruction.signerRequired))}</span>.`;
+    pushAudit(r.auditAt, decision, card.dataset.claim);
+    setTimeout(() => { card.remove(); load(); }, 1400);
+  } catch (e) {
+    msg.className = "msg err";
+    const d = e.body?.error || {};
+    msg.textContent = `${d.code || e.message}` +
+      (d.code === "NotModeratorAuthority" ? ` — ожидается ${d.expected}` : "");
+    btn.disabled = false;
+  }
+}
+
+function pushAudit(at, decision, claim) {
+  audit.unshift({ at, decision, claim });
+  $("#audit").innerHTML = audit.map(e => {
+    const cls = e.decision.kind === "approve" ? "d-approve" : "d-reject";
+    const what = e.decision.kind === "approve"
+      ? `одобрен тир ${e.decision.tierId}` : `отказ: ${esc(e.decision.reason.trim() || "—")}`;
+    return `<li><span class="${cls}">${esc(what)}</span>
+      <div class="mono">${esc(new Date(e.at).toLocaleTimeString())} · ${esc(short(e.claim))} · без подписи</div></li>`;
+  }).join("");
+}
+
+$("#reload").addEventListener("click", load);
+load();
+</script>
+</body>
+</html>

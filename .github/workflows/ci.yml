@@ -218,3 +218,35 @@ jobs:
             gh issue comment "$NUM" --body-file /tmp/body.md
           fi
           exit 1
+
+  # Отдельная job, а не шаг внутри program: падение backend-тестов не должно
+  # маскироваться gate'ом Rust-сборки, и наоборот. Зависимости не пересекаются.
+  backend:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        # set -uo pipefail везде: `| tee` возвращает статус tee и раньше это
+        # давало ложно-зелёный CI.
+        run: |
+          set -uo pipefail
+          npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+
+      - name: Typecheck (strict)
+        run: |
+          set -uo pipefail
+          npm run typecheck
+
+      - name: Unit tests
+        run: |
+          set -uo pipefail
+          npm test
