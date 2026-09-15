@@ -49,7 +49,9 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('programs/**/Cargo.toml') }}
+          # Cargo.lock в ключах обязателен: иначе кэш переживает смену версий
+          # зависимостей и сборка использует артефакты от другого разрешения.
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'programs/**/Cargo.toml') }}
 
       - name: Install Solana CLI ${{ env.SOLANA_VERSION }}
         run: |
