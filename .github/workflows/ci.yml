@@ -82,10 +82,14 @@ jobs:
             rustc --version || true
             cargo --version || true
             rustup show 2>/dev/null | head -20 || true
-            echo "--- platform-tools sysroot ---"
-            PT_DIR="${HOME}/.cache/solana/v1.52"
-            ls -d "$PT_DIR" 2>/dev/null || echo "нет $PT_DIR"
-            find "${HOME}/.cache/solana" -maxdepth 4 -name "sbpfv3-solana-solana" 2>/dev/null | head -5 || true
+            echo "--- platform-tools: где фактически лежит ---"
+            # Угаданный путь ~/.cache/solana/v1.52 в прошлом прогоне не существовал,
+            # поэтому проверка ничего не дала. Ищем широко.
+            find "${HOME}/.cache" -maxdepth 6 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -5 || true
+            find "${HOME}/.cache" -maxdepth 4 -type d -name "v1.*" 2>/dev/null | head -5 || true
+            echo "--- есть ли std для sbpf-таргета ---"
+            find "${HOME}/.cache" -path "*sbpfv3-solana-solana*" -name "libstd*" 2>/dev/null | head -5 || echo "libstd для sbpfv3 НЕ НАЙДЕН"
+
             echo "--- Cargo.lock ---"
             if [ -f Cargo.lock ]; then echo "закоммичен: $(git ls-files --error-unmatch Cargo.lock 2>/dev/null && echo да || echo 'есть на диске, но не в git')"; else echo "ОТСУТСТВУЕТ — версии зависимостей плавают"; fi
             echo "--- пин из Anchor.toml ---"
@@ -104,10 +108,37 @@ jobs:
           # может переиспользовать .so, собранный предыдущим тулчейном. Без этого
           # смена версии Solana в Anchor.toml не попадает в артефакт.
           rm -rf target/deploy target/sbf-build target/release
-          {
-            echo "===== anchor build ====="
-            anchor build 2>&1
-          } | tee -a /tmp/ci.log
+          # Повторные попытки: ошибка E0463 «can't find crate for std,
+          # sbpfv3-solana-solana target may not be installed» в run 34922270030
+          # возникла при неизменном Rust-коде и за полчаса до этого не возникала.
+          # Диагностика показала, что каталога platform-tools нет вообще — то есть
+          # sysroot недокачался. cargo build-sbf при этом не падает сразу, а
+          # доходит до компиляции и ошибку выдаёт уже на зависимостях.
+          # Переустановка между попытками — рекомендованный способ лечения
+          # (cargo build-sbf --force-tools-install / очистка ~/.cache/solana).
+          BUILD_OK=0
+          for attempt in 1 2 3; do
+            {
+              echo "===== anchor build (попытка $attempt) ====="
+              anchor build 2>&1
+            } | tee -a /tmp/ci.log
+            if [ -f target/deploy/sixsec.so ] && [ -f target/idl/sixsec.json ]; then
+              BUILD_OK=1
+              echo "сборка удалась с попытки $attempt"
+              break
+            fi
+            echo "попытка $attempt не дала артефактов"
+            if [ "$attempt" -lt 3 ]; then
+              echo "переустанавливаю platform-tools"
+              rm -rf "${HOME}/.cache/solana"
+              cargo build-sbf --force-tools-install --version 2>&1 | tee -a /tmp/ci.log || true
+            fi
+          done
+          if [ "$BUILD_OK" != "1" ]; then
+            echo "===== диагностика после неудачной сборки ====="
+            find "${HOME}/.cache" -maxdepth 6 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -5 || true
+            find "${HOME}/.cache" -path "*sbpfv3*" -name "libstd*" 2>/dev/null | head -5 || echo "libstd для sbpfv3 так и не появился"
+          fi
           # anchor build может вернуть 0, не произведя артефактов. Проверяем факт
           # сборки, а не код возврата: нет .so = программа не собралась.
           test -f target/idl/sixsec.json
