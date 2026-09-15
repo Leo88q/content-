@@ -101,7 +101,7 @@ test("чужой кошелёк — 403, и данные очереди не р�
   const r = await call(
     "POST", "/api/decisions",
     { claim: "clm1", decision: { kind: "approve", tierId: 0 } },
-    { "x-moderator": "Intruder11111111111111111111111111111111111" },
+    { "x-moderator": "41KGWZBVfe75zsvdHQwTZ3w3PBK13atKihchB86NdVXv" },
   );
   assert.equal(r.status, 403);
   assert.equal(r.json().error.code, "NotModeratorAuthority");

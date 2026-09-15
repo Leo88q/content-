@@ -22,7 +22,7 @@ test("модератор из PoolState проходит проверку", asyn
 });
 
 test("чужой кошелёк не может принять решение", () => {
-  const r = assertCanModerate("Some111111111111111111111111111111111111111", MODERATOR);
+  const r = assertCanModerate("3iag8HgokPynPxHWvY3pPHrDjJt68SgufTmqceA9YEAb", MODERATOR);
   assert.equal(r.ok, false);
   if (!r.ok) assert.equal(r.error.code, "NotModeratorAuthority");
 });
@@ -124,7 +124,7 @@ test("проверка права идёт раньше валидности р�
     ...first,
     submission: { ...first.submission, moderationStatus: "Approved" as const },
   };
-  const r = authorizeDecision("Intruder1111111111111111111111111111111111", MODERATOR, approve, decided);
+  const r = authorizeDecision("41KGWZBVfe75zsvdHQwTZ3w3PBK13atKihchB86NdVXv", MODERATOR, approve, decided);
   assert.equal(r.ok, false);
   if (!r.ok) {
     assert.equal(

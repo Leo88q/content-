@@ -54,9 +54,9 @@ test("метка времени проставляется, если не зад
 test("выборка по модератору", async () => {
   const { log } = await tempLog();
   const a = await log.record({ moderator: MODERATOR, ...queueItemContext(item), decision: { kind: "approve", tierId: 0 }, txSignature: "", reviewDurationMs: 10 });
-  const b = await log.record({ moderator: "Other1111111111111111111111111111111111111", ...queueItemContext(item), decision: { kind: "approve", tierId: 0 }, txSignature: "", reviewDurationMs: 10 });
+  const b = await log.record({ moderator: "HoCC6s9YLrLbUJDhnTxg5XmgoD4CmtcX3FpFJJY9RQ7q", ...queueItemContext(item), decision: { kind: "approve", tierId: 0 }, txSignature: "", reviewDurationMs: 10 });
   assert.equal(decisionsBy([a, b], MODERATOR).length, 1);
-  assert.equal(decisionsBy([a, b], "Nobody1111111111111111111111111111111111111").length, 0);
+  assert.equal(decisionsBy([a, b], "2dcnqyxM68Kv3h5JdDPvamR9BCi4kKYhmysNbmc7yA7U").length, 0);
 });
 
 test("в аудит пишется режим модерации — иначе порог 700 не оценить", () => {

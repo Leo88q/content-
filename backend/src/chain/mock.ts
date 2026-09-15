@@ -12,9 +12,9 @@ import {
 } from "../domain.ts";
 
 /** Заглушки адресов. Не являются реальными ключами. */
-export const MODERATOR = "Mod11111111111111111111111111111111111111111";
-export const ADMIN = "Adm1111111111111111111111111111111111111111111";
-export const GAME_MINT = "GmTk111111111111111111111111111111111111111111";
+export const MODERATOR = "8SrNQieUhEvgPBi1m4Jq6mzLgCo3V2cNGFutRhiUs3U2";
+export const ADMIN = "zTg2dUAE8oo1sTgdDZMfq7a2xZj4GfBunonkgJWpyYZ";
+export const GAME_MINT = "FtSfcwcoBCFdYYPbiU3WUTRwg1519yHxSaUCd7Eg6Vih";
 export const SKR_MINT = "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3";
 
 function task(id: number, tierCount: number): Task {
@@ -69,8 +69,8 @@ function submission(claim: string, taskId: number, w: Pubkey): Submission {
  * что порог вообще на что-то влияет.
  */
 export function fixtureQueue(): QueueItem[] {
-  const newcomer = "Wrk1111111111111111111111111111111111111111111";
-  const veteran = "Wrk2222222222222222222222222222222222222222222";
+  const newcomer = "5Er4qaBLMhyn7VGDtQKLZn3Boqdfy5N2k9jPJPdkkssD";
+  const veteran = "BZQwizjBxw9BDTsMM5J3wmKrkyZysVBvkKKecYtrnNBd";
   const rows: Array<[string, number, Pubkey, number]> = [
     ["clm1", 1, newcomer, 0],
     ["clm2", 1, veteran, MAX_TRUST],
@@ -90,11 +90,18 @@ export function fixtureQueue(): QueueItem[] {
 
 export class MockChainSource implements ChainSource {
   private readonly queue = fixtureQueue();
+  // Переопределение нужно для демо-входа: адрес модератора должен совпадать с
+  // ключом, который реально способен подписать. В фикстурах такого ключа нет.
+  private readonly moderator: Pubkey;
+
+  constructor(moderatorAuthority?: Pubkey) {
+    this.moderator = moderatorAuthority ?? MODERATOR;
+  }
 
   async getPoolState(): Promise<PoolState> {
     return {
       admin: ADMIN,
-      moderatorAuthority: MODERATOR,
+      moderatorAuthority: this.moderator,
       skrMint: SKR_MINT,
       skrPayoutLimit: 50_000_000_000n,
     };

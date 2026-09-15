@@ -36,9 +36,10 @@ export interface AuditEntry {
 }
 
 export class AuditLog {
-  // Явное поле, а не parameter property: `node --experimental-strip-types`
-  // умеет только стирать типы и не генерирует код присваивания, поэтому
-  // `constructor(private readonly ...)` падает с ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX.
+  // Явное поле, а не сокращённый модификатор в конструкторе:
+  // `node --experimental-strip-types` умеет только стирать типы и не генерирует
+  // присваивание, поэтому такой синтаксис падает с
+  // ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX. Проверка — test/no-parameter-properties.
   private readonly path: string;
 
   constructor(path: string) {

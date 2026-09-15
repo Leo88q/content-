@@ -66,14 +66,17 @@
 </header>
 
 <p class="banner" id="banner" hidden>
-  ⚠️ Источник данных — <b>фикстуры</b>. Программа не задеплоена, реальных выплат здесь нет.
-  Backend <b>не подписывает</b> транзакции: решение возвращается как инструкция к подписи кошельком.
+  ⚠️ <b>Демо-режим.</b> Источник данных — фикстуры, программа не задеплоена, реальных выплат нет.
+  Вход выполняется настоящей ed25519-подписью (WebCrypto), но демо-ключом, который сервер
+  создаёт при запуске: настоящего кошелька здесь нет. Backend <b>не подписывает</b> транзакции —
+  решение возвращается как инструкция к подписи.
 </p>
 
 <div class="who">
-  <label for="mod">Модератор (dev-режим, без SIWS):</label>
-  <input id="mod" size="46" spellcheck="false" />
-  <span class="kv">ожидаемый authority: <span class="mono" id="authority">—</span></span>
+  <button id="login">Войти (SIWS-подпись)</button>
+  <button id="logout" disabled>Выйти</button>
+  <span class="kv" id="who">не авторизован</span>
+  <span class="kv">authority: <span class="mono" id="authority">—</span></span>
   <button id="reload">Обновить</button>
 </div>
 
@@ -91,16 +94,26 @@
 
 <script>
 const $ = (s, r = document) => r.querySelector(s);
+let token = null;   // только в памяти: сессионный токен не должен переживать перезагрузку
+const A58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+function b58(bytes) {
+  let n = 0n;
+  for (const b of bytes) n = n * 256n + BigInt(b);
+  let out = "";
+  while (n > 0n) { out = A58[Number(n % 58n)] + out; n /= 58n; }
+  for (const b of bytes) { if (b !== 0) break; out = "1" + out; }
+  return out;
+}
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const short = (s) => (s ? s.slice(0, 6) + "…" + s.slice(-4) : "—");
 const audit = [];
 
 async function api(path, opts = {}) {
-  const res = await fetch(path, {
-    ...opts,
-    headers: { "content-type": "application/json", "x-moderator": $("#mod").value.trim(), ...(opts.headers || {}) },
-  });
+  const headers = { "content-type": "application/json", ...(opts.headers || {}) };
+  if (token) headers["authorization"] = "Bearer " + token;
+  const res = await fetch(path, { ...opts, headers });
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(body?.error?.code || res.statusText), { status: res.status, body });
   return body;
@@ -203,6 +216,52 @@ function pushAudit(at, decision, claim) {
   }).join("");
 }
 
+// --- SIWS-вход -------------------------------------------------------------
+// Порядок: сервер выдаёт nonce и ГОТОВЫЙ текст, браузер подписывает его своим
+// ключом, сервер восстанавливает адрес из подписи. Назваться чужим адресом
+// нельзя — подпись не сойдётся.
+async function login() {
+  const btn = $("#login"); btn.disabled = true;
+  $("#who").textContent = "вход…";
+  try {
+    const dk = await (await fetch("/api/dev/demo-key")).json();
+    if (!dk.pkcs8Base64) throw new Error("демо-ключ недоступен (не mock-режим?)");
+    const pkcs8 = Uint8Array.from(atob(dk.pkcs8Base64), (c) => c.charCodeAt(0));
+    // Формат raw для приватных Ed25519 в WebCrypto не поддерживается — только pkcs8.
+    const key = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
+
+    const challenge = await api("/api/auth/nonce", {
+      method: "POST", body: JSON.stringify({ pubkey: dk.pubkey }),
+    });
+    const sig = await crypto.subtle.sign(
+      { name: "Ed25519" }, key, new TextEncoder().encode(challenge.message),
+    );
+    const session = await api("/api/auth/verify", {
+      method: "POST",
+      body: JSON.stringify({ pubkey: dk.pubkey, signature: b58(new Uint8Array(sig)), nonce: challenge.nonce }),
+    });
+
+    token = session.token;
+    $("#who").innerHTML = 'вошёл как <span class="mono">' + esc(short(session.pubkey)) + '</span>';
+    $("#login").disabled = true; $("#logout").disabled = false;
+    await load();
+  } catch (e) {
+    $("#who").textContent = "ошибка входа: " + e.message;
+    btn.disabled = false;
+  }
+}
+
+async function logout() {
+  try { await api("/api/auth/logout", { method: "POST" }); } catch {}
+  token = null;
+  $("#who").textContent = "не авторизован";
+  $("#login").disabled = false; $("#logout").disabled = true;
+  $("#audit").innerHTML = "";
+  audit.length = 0;
+}
+
+$("#login").addEventListener("click", login);
+$("#logout").addEventListener("click", logout);
 $("#reload").addEventListener("click", load);
 load();
 </script>
