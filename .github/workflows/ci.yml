@@ -9,6 +9,7 @@ on:
 env:
   # Пины из ADR-0005. Менять только новым ADR.
   ANCHOR_VERSION: "1.2.0"
+  RUST_VERSION: "1.89.0"
   # 3.1.10 вместо рекомендованных для Anchor 1.2.0 4.1.2 — вынужденно, см. ADR-0013.
   # litesvm 0.10 (единственная линия, совместимая по типам с solana-* ^3, которые
   # пинит anchor-lang 1.2.0) тянет solana-bpf-loader-program = "3.1.0" и не может
@@ -16,7 +17,8 @@ env:
   SOLANA_VERSION: "3.1.10"
 
 permissions:
-  contents: read
+  # write нужен одному шагу: он коммитит Cargo.lock, если его нет в репозитории.
+  contents: write
   issues: write
   # Нужен для actions/upload-artifact. Без него загрузка артефакта может
   # получить 403 — в run 34919251649 так и произошло.
@@ -30,9 +32,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
+      # Пин, а не @stable. Со stable среда сборки менялась без единого коммита:
+      # выход нового Rust ломал сборку под sbpfv3-solana-solana (run 34922270030 —
+      # «can't find crate for std», при том что за полчаса до этого всё собиралось).
+      # 1.89 — MSRV для линии Anchor 1.x / Solana CLI 3.1.x.
+      - name: Install Rust ${{ env.RUST_VERSION }}
+        uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: ${{ env.RUST_VERSION }}
           components: clippy, rustfmt
 
       - name: Cache cargo registry and target
@@ -68,6 +75,19 @@ jobs:
             solana --version || true
             anchor --version || true
             cargo-build-sbf --version || true
+            # Без этих строк причину «can't find crate for std» не установить:
+            # std для sbpf-таргета живёт в sysroot platform-tools, и нужно видеть,
+            # какой rustc фактически используется и что лежит в sysroot.
+            echo "--- rust ---"
+            rustc --version || true
+            cargo --version || true
+            rustup show 2>/dev/null | head -20 || true
+            echo "--- platform-tools sysroot ---"
+            PT_DIR="${HOME}/.cache/solana/v1.52"
+            ls -d "$PT_DIR" 2>/dev/null || echo "нет $PT_DIR"
+            find "${HOME}/.cache/solana" -maxdepth 4 -name "sbpfv3-solana-solana" 2>/dev/null | head -5 || true
+            echo "--- Cargo.lock ---"
+            if [ -f Cargo.lock ]; then echo "закоммичен: $(git ls-files --error-unmatch Cargo.lock 2>/dev/null && echo да || echo 'есть на диске, но не в git')"; else echo "ОТСУТСТВУЕТ — версии зависимостей плавают"; fi
             echo "--- пин из Anchor.toml ---"
             grep -E "anchor_version|solana_version" Anchor.toml
           } 2>&1 | tee -a /tmp/ci.log
@@ -109,6 +129,33 @@ jobs:
       # прогон видно все ошибки сразу, а не по одной на итерацию.
       # pipefail обязателен: без него код возврата пайплайна берётся у tee, и
       # падение cargo выглядело бы как успех (run 34906081661).
+      # Без Cargo.lock каждый прогон разрешает самые свежие версии зависимостей,
+      # то есть сборка невоспроизводима — в run 34922270030 это проявилось как
+      # serde_core v1.0.229 / borsh v1.8.1 / syn v3.0.5 и падение сборки.
+      # Для программы, которую ждёт верифицируемая сборка и аудит (Фазы 7-8),
+      # lock-файл обязателен. Сгенерировать его в песочнице нельзя (нет cargo и
+      # доступа к crates.io), поэтому первый прогон коммитит его сам.
+      - name: Commit Cargo.lock if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          if git ls-files --error-unmatch Cargo.lock >/dev/null 2>&1; then
+            echo "Cargo.lock уже в репозитории"
+            exit 0
+          fi
+          if [ ! -f Cargo.lock ]; then
+            echo "Cargo.lock не создан сборкой — коммитить нечего"
+            exit 0
+          fi
+          git config user.name "sixsec-ci"
+          git config user.email "ci@sixsec.invalid"
+          git add Cargo.lock
+          # [skip ci] обязателен: иначе коммит запускает новый прогон по кругу.
+          git commit -m "chore: зафиксировать Cargo.lock для воспроизводимой сборки [skip ci]"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
+          echo "Cargo.lock закоммичен"
+
       - name: Unit tests (pool reservation logic)
         id: tests
         continue-on-error: true
