@@ -679,3 +679,80 @@ bash -e -c 'set -uo pipefail; { echo сборка; false; echo итог; } | cat
 **Статус:** E0463 на `sbpfv3-solana-solana` всё ещё не устранён — до прогона с
 рабочим `set +e` дело не дошло: учётные данные GitHub в песочнице истекли
 (`401 Bad credentials`, `git` — `could not read Username`) примерно на 30 минут.
+
+### CI снова зелёный: root cause E0463 (run 34926879128)
+
+`program: success`, `backend: success`. Все 16 шагов job `program` зелёные,
+включая `Verify instruction spec against IDL` и `Gate`.
+
+**Причина была не в тулчейне, а в обёртке.** Run 34924770996 (первый прогон с
+рабочим `set +e`) дал три попытки и показал:
+
+| попытка | команда | результат |
+|---|---|---|
+| 1 | `anchor build` | E0463, `sixsec.so` НЕТ |
+| 2 | `cargo build-sbf` | **`sixsec.so` ЕСТЬ** |
+| 3 | `anchor build` повторно | снова E0463 |
+
+В verbose-логе попытки 2 видно, что `cargo build-sbf` делает сам:
+
+```
++ ./platform-tools/rust/bin/rustc --print sysroot
++ rustup toolchain link 1.89.0-sbpf-solana-v1.52 platform-tools/rust
+```
+
+То есть sysroot platform-tools цел, и `cargo build-sbf` умеет его подключить
+как rustup-toolchain. `anchor build` — не умеет. Все прежние гипотезы
+(недокачанный sysroot, кэш, свежий релиз serde, пин Rust) были неверны.
+
+**Решение.** `.so` собирается напрямую через `cargo build-sbf`, а IDL —
+отдельно через `anchor idl build`. В anchor-cli 1.2.0 подкоманды `idl` —
+`Init/Upgrade/Build/Fetch/FetchHistorical/Convert/Type`, `Parse` больше нет, а
+`IdlCommand::Build` работает через **хостовый** `cargo test` («Arguments to
+pass to the underlying `cargo test` command») — а хостовая компиляция в этом
+же прогоне проходила всегда. Порядок: `anchor build` → при неудаче
+`cargo build-sbf` + `anchor idl build` → при неудаче то же с
+`--force-tools-install`. Если anchor починят, штатный путь снова заработает
+первым.
+
+**Результаты прогона:** `sixsec.so` 379 840 Б, `sixsec.json` 41 357 Б
+(байт в байт как в последнем зелёном 34919796293), `41 passed` ×2,
+`3 ignored`, инструкций 10, accounts 6, errors 20, events 7.
+
+**Отдельно исправлен дефект в моём же коде:** `report()` присваивала
+`BUILD_OK` внутри `{ … } | tee`, а конвейер запускает группу в подоболочке —
+значение в родителя не попадало, и шаг падал бы всегда. Проверено локально:
+снаружи `BUILD_OK` оставался 0. Логика шага прогнана на заглушках
+`anchor`/`cargo` (извлечён реальный run-скрипт из `ci.yml`), 4 сценария:
+штатная сборка → `rc=0` за 1 попытку; fallback → `rc=0` за 2; всё падает →
+`rc=1` за 3; есть `.so` но нет IDL → `rc=1`.
+
+### Аудит кода на привнесённое извне (по запросу)
+
+Проверено, что ничего постороннего в репозиторий не попало.
+
+- **60 файлов под git, ноль бинарных** (`file --mime`), самый крупный —
+  `Cargo.lock` (112 КБ).
+- **Ноль рантайм-зависимостей** в `backend/package.json`; devDeps только
+  `@types/node` и `typescript`. В `node_modules` 3 каталога: `@types`,
+  `typescript`, `undici-types`. Install-хуков (`preinstall`/`postinstall`/
+  `prepare`) нет ни в одном `package.json`.
+- **`backend/package-lock.json`**: 4 записи, все с `registry.npmjs.org`,
+  `hasInstallScript` — ни у кого.
+- **`Cargo.lock`**: 398 пакетов, **все** `source = "registry+https://github.com/rust-lang/crates.io-index"`. Git-источников 0, path-источников 0. В `Cargo.toml` git-зависимостей нет.
+- **Ни одного сетевого вызова, `child_process`, `eval`, `new Function`** в
+  `backend/src` и `scripts/`. Единственный Python-скрипт
+  `scripts/check_idl_spec.py` импортирует только `json`, `sys`, `pathlib`.
+- **UI без внешних ресурсов**: один inline-`<script>`, ноль CDN и `<link>`,
+  все `fetch()` на относительные пути. «Base64-блоки», на которые ругнулся
+  grep, — штатные `checksum`/`integrity`-хеши в lock-файлах.
+- **XSS-вектора нет**: `innerHTML` везде обёрнут в `esc()`; путь с
+  серверным ответом (`d.code`, `d.expected`) идёт через `textContent`, а не
+  `innerHTML` — моя первоначальная тревога по этому поводу была ложной.
+- **Авторы коммитов**: `Leo88q` (22), `arena-agent` (17), `sixsec-ci` (1 —
+  автокоммит `Cargo.lock`), arena-бот (1). Посторонних нет.
+
+Единственное замечание по цепочке поставок, которое стоит закрыть позже:
+`dtolnay/rust-toolchain@master` в CI не запинен по SHA (остальные пять
+actions — официальные `actions/*@v4`). Это не вредоносный код, а обычная
+рекомендация GitHub по supply-chain.
