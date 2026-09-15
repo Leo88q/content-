@@ -18,6 +18,9 @@ env:
 permissions:
   contents: read
   issues: write
+  # Нужен для actions/upload-artifact. Без него загрузка артефакта может
+  # получить 403 — в run 34919251649 так и произошло.
+  actions: write
 
 jobs:
   program:
@@ -139,6 +142,11 @@ jobs:
       - name: Upload IDL artifact
         if: always()
         uses: actions/upload-artifact@v4
+        # continue-on-error обязателен: загрузка артефакта НЕ является проверкой
+        # кода. В run 34919251649 она упала с «403 Forbidden» от промежуточного
+        # хранилища при том, что сборка и все 41 тест прошли — и покраснела
+        # весь run. Вердикт определяет gate по build/tests/itests/clippy.
+        continue-on-error: true
         with:
           name: sixsec-idl
           path: target/idl/
