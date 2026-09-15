@@ -41,12 +41,17 @@ use {
 // ---------------------------------------------------------------------------
 
 const POOL_STATE_SEED: &[u8] = b"pool_state";
+
+/// Заглушка: реальный mint SKR обязан быть проверен ончейн до любой выплаты.
+/// Здесь годится любой валидный pubkey — инструкция init_pool его не валидирует.
+const SKR_MINT_STUB: &str = "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3";
 const WITHDRAWAL_LIMIT: u64 = 1_000_000;
 
 struct Ctx {
     svm: LiteSVM,
     admin: Keypair,
     moderator: Pubkey,
+    skr_mint: Pubkey,
     pool_state: Pubkey,
 }
 
@@ -66,9 +71,14 @@ fn setup() -> Ctx {
 
     let pool_state = Pubkey::find_program_address(&[POOL_STATE_SEED], &program_id).0;
 
+    let skr_mint: Pubkey = SKR_MINT_STUB
+        .parse()
+        .expect("валидный base58 pubkey");
+
     Ctx {
         svm,
         admin,
+        skr_mint,
         // Намеренно отдельный ключ: модератор и админ — разные роли,
         // и это различие должно переживать инициализацию.
         moderator: Keypair::new().pubkey(),
@@ -82,6 +92,7 @@ fn init_pool_ix(ctx: &Ctx) -> Instruction {
         &sixsec::instruction::InitPool {
             withdrawal_limit: WITHDRAWAL_LIMIT,
             moderator_authority: ctx.moderator,
+            skr_mint: ctx.skr_mint,
         }
         .data(),
         sixsec::accounts::InitPool {
@@ -121,7 +132,9 @@ fn init_pool_creates_account_with_zero_reserves() {
     let pool = read_pool(&ctx.svm, &ctx.pool_state);
     assert_eq!(pool.admin, ctx.admin.pubkey());
     assert_eq!(pool.withdrawal_limit, WITHDRAWAL_LIMIT);
-    assert_eq!(pool.total_reserved, 0, "резервов ещё нет");
+    assert_eq!(pool.skr_mint, ctx.skr_mint, "SKR-минт зафиксирован при инициализации");
+    // Резервы переехали в MintReserve (ADR-0015): теперь они per-mint,
+    // поэтому в PoolState их больше нет.
     assert_eq!(pool.withdrawn_this_epoch, 0);
     assert_eq!(pool.epoch, 0);
 }

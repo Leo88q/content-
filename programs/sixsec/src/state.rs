@@ -100,7 +100,22 @@ pub struct SubmissionAccount {
     pub rejection_reason: Option<String>,
 }
 
-/// Учёт резервов пула призов (ADR-0006, ADR-0009).
+/// Резервы под открытые задания **по каждому минту отдельно** (ADR-0015).
+///
+/// Единый `total_reserved` в `PoolState` был корректен, пока награда платилась
+/// одним токеном. Как только в пуле появились два актива (игровой токен + SKR),
+/// суммирование их резервов в одно число стало бессмысленной арифметикой:
+/// задание, платящее токеном A, видело бы пул «занятым» резервами под токен B.
+///
+/// PDA `["reserve", mint]`.
+#[account]
+#[derive(Debug)]
+pub struct MintReserve {
+    pub mint: Pubkey,
+    pub reserved: u64,
+}
+
+/// Учёт пула призов (ADR-0006, ADR-0009).
 ///
 /// Сами токены лежат в PDA-токен-аккаунтах; здесь только бухгалтерия,
 /// которую нельзя вывести из баланса токена.
@@ -112,7 +127,9 @@ pub struct PoolState {
     /// В проде это адрес мультисига Squads: мультисиг сам подписывает транзакцию,
     /// поэтому сравнение с signer'ом работает и для single-key, и для multisig.
     pub moderator_authority: Pubkey,
-    pub total_reserved: u64,
+    /// Адрес минта SKR для рангового бонуса (ADR-0015). Нулевой pubkey означает,
+    /// что гибридный бонус выключен.
+    pub skr_mint: Pubkey,
     pub epoch: u64,
     pub withdrawn_this_epoch: u64,
     pub withdrawal_limit: u64,
@@ -167,15 +184,15 @@ pub fn worst_case_reserve(
 }
 
 /// Свободные средства пула: баланс минус сумма резервов открытых заданий.
-pub fn available_balance(pool_balance: u64, total_reserved: u64) -> LogicResult<u64> {
+pub fn available_balance(pool_balance: u64, reserved: u64) -> LogicResult<u64> {
     pool_balance
-        .checked_sub(total_reserved)
+        .checked_sub(reserved)
         .ok_or(SixsecError::PoolBalanceShort)
 }
 
 /// Хватает ли свободных средств под новый резерв.
-pub fn can_reserve(pool_balance: u64, total_reserved: u64, reserve: u64) -> bool {
-    available_balance(pool_balance, total_reserved)
+pub fn can_reserve(pool_balance: u64, reserved: u64, reserve: u64) -> bool {
+    available_balance(pool_balance, reserved)
         .map(|free| free >= reserve)
         .unwrap_or(false)
 }
@@ -184,12 +201,12 @@ pub fn can_reserve(pool_balance: u64, total_reserved: u64, reserve: u64) -> bool
 /// и не превышает лимит за эпоху (раздел 3 промпта).
 pub fn can_withdraw(
     pool_balance: u64,
-    total_reserved: u64,
+    reserved: u64,
     withdrawn_this_epoch: u64,
     withdrawal_limit: u64,
     amount: u64,
 ) -> LogicResult<()> {
-    let free = available_balance(pool_balance, total_reserved)?;
+    let free = available_balance(pool_balance, reserved)?;
     if amount > free {
         return Err(SixsecError::WithdrawWouldBreakReserves);
     }
@@ -244,6 +261,25 @@ pub const TRUST_GAIN_APPROVED: u16 = 15;
 pub const TRUST_LOSS_REJECTED: u16 = 25;
 pub const TRUST_LOSS_AUTO_REJECTED: u16 = 40;
 
+// ---------------------------------------------------------------------------
+// Ранговый бонус в SKR (ADR-0015, гибридная модель награды)
+// ---------------------------------------------------------------------------
+
+/// Decimals SKR. Взято из вторичного источника и **НЕ проверено ончейн**:
+/// публичный RPC из рабочей песочницы недоступен. Проверка обязательна до
+/// первой реальной выплаты — ошибка здесь меняет выплату в 10^n раз.
+pub const SKR_DECIMALS: u8 = 6;
+
+const SKR_UNIT: u64 = 1_000_000; // 1 SKR при decimals = 6
+
+/// Бонус достаётся только верхним рангам, а не каждому одобрению.
+pub const SKR_BONUS_TIER1_THRESHOLD: u16 = 850;
+pub const SKR_BONUS_TIER2_THRESHOLD: u16 = 950;
+
+/// 100 SKR (~$2 при курсе ~$0.02) и 250 SKR (~$5).
+pub const SKR_BONUS_TIER1: u64 = 100 * SKR_UNIT;
+pub const SKR_BONUS_TIER2: u64 = 250 * SKR_UNIT;
+
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ModerationTier {
     /// Каждая заявка проверяется вручную.
@@ -279,6 +315,21 @@ pub fn trust_after_rejection(trust: u16) -> u16 {
 
 pub fn trust_after_auto_rejection(trust: u16) -> u16 {
     trust.saturating_sub(TRUST_LOSS_AUTO_REJECTED)
+}
+
+/// Ранговый бонус в SKR по trust score (ADR-0015).
+///
+/// Намеренно считается от рейтинга, а не от тира задания: бонус — награда за
+/// ранг, а не за конкретный бриф. Поэтому он не входит в `RewardTier` и не
+/// зависит от того, что заказчик положил в задание.
+pub fn rank_bonus_skr(trust: u16) -> u64 {
+    if trust >= SKR_BONUS_TIER2_THRESHOLD {
+        SKR_BONUS_TIER2
+    } else if trust >= SKR_BONUS_TIER1_THRESHOLD {
+        SKR_BONUS_TIER1
+    } else {
+        0
+    }
 }
 
 pub fn moderation_tier(trust: u16) -> ModerationTier {
@@ -542,5 +593,63 @@ mod trust_tests {
             t = trust_after_auto_rejection(t);
         }
         assert_eq!(moderation_tier(t), ModerationTier::Full);
+    }
+}
+
+#[cfg(test)]
+mod skr_bonus_tests {
+    use super::*;
+
+    #[test]
+    fn no_bonus_below_threshold() {
+        assert_eq!(rank_bonus_skr(0), 0);
+        assert_eq!(rank_bonus_skr(SKR_BONUS_TIER1_THRESHOLD - 1), 0);
+    }
+
+    #[test]
+    fn tier1_starts_exactly_at_threshold() {
+        assert_eq!(rank_bonus_skr(SKR_BONUS_TIER1_THRESHOLD), SKR_BONUS_TIER1);
+    }
+
+    #[test]
+    fn tier2_starts_exactly_at_threshold() {
+        assert_eq!(
+            rank_bonus_skr(SKR_BONUS_TIER2_THRESHOLD - 1),
+            SKR_BONUS_TIER1,
+            "прямо под вторым порогом ещё первый уровень"
+        );
+        assert_eq!(rank_bonus_skr(SKR_BONUS_TIER2_THRESHOLD), SKR_BONUS_TIER2);
+    }
+
+    #[test]
+    fn bonus_is_capped_at_top_rank() {
+        assert_eq!(rank_bonus_skr(MAX_TRUST), SKR_BONUS_TIER2);
+    }
+
+    #[test]
+    fn bonus_does_not_grow_monotonically_with_trust() {
+        // Бонус ступенчатый, а не пропорциональный: между 850 и 949 он одинаков.
+        assert_eq!(
+            rank_bonus_skr(850),
+            rank_bonus_skr(949),
+            "внутри ступени бонус не меняется"
+        );
+        assert!(rank_bonus_skr(950) > rank_bonus_skr(949));
+    }
+
+    #[test]
+    fn amounts_match_declared_decimals() {
+        // Защита от рассогласования констант и SKR_DECIMALS.
+        assert_eq!(SKR_BONUS_TIER1, 100 * 10u64.pow(SKR_DECIMALS as u32));
+        assert_eq!(SKR_BONUS_TIER2, 250 * 10u64.pow(SKR_DECIMALS as u32));
+    }
+
+    #[test]
+    fn skr_bonus_only_reaches_top_quarter_of_ranks() {
+        // Бонус доступен с 850 из 1000: не больше 15% диапазона рейтинга.
+        // Это защита от превращения SKR-бонуса в массовую выплату.
+        let eligible = (SKR_BONUS_TIER1_THRESHOLD..=MAX_TRUST).count();
+        let total = (0..=MAX_TRUST).count();
+        assert!(eligible * 100 / total <= 15);
     }
 }

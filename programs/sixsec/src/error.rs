@@ -36,4 +36,8 @@ pub enum SixsecError {
     NotApproved,
     #[msg("Профиль воркера не соответствует автору сабмишена")]
     ProfileWorkerMismatch,
+    #[msg("Переданный mint не совпадает с SKR-минтом, заданным при инициализации пула")]
+    SkrMintMismatch,
+    #[msg("Ранг воркера ниже порога SKR-бонуса")]
+    NoRankBonus,
 }

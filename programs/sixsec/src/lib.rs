@@ -33,6 +33,7 @@ pub const TASK_SEED: &[u8] = b"task";
 pub const CLAIM_SEED: &[u8] = b"claim";
 pub const SUBMISSION_SEED: &[u8] = b"submission";
 pub const PROFILE_SEED: &[u8] = b"profile";
+pub const RESERVE_SEED: &[u8] = b"reserve";
 
 /// Пространство аккаунтов: 8 (дискриминатор) + размер структуры + запас на String.
 const TASK_SPACE: usize = 8 + 8 + 32 + (4 + MAX_URI_LEN) + 1
@@ -41,8 +42,11 @@ const TASK_SPACE: usize = 8 + 8 + 32 + (4 + MAX_URI_LEN) + 1
 const CLAIM_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 1;
 const SUBMISSION_SPACE: usize = 8 + 32 + 32 + 32 + 32 + (4 + MAX_URI_LEN) + 32
     + 8 + 1 + (1 + 1) + (1 + 32) + (1 + 4 + MAX_REASON_LEN);
-const POOL_STATE_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 8 + 8;
+// 8 (дискриминатор) + admin(32) + moderator_authority(32) + skr_mint(32) + 3×u64(24) = 128.
+// Недосчёт здесь = ошибка выделения аккаунта в рантайме, а не в компиляции.
+const POOL_STATE_SPACE: usize = 8 + 32 + 32 + 32 + 8 + 8 + 8;
 const PROFILE_SPACE: usize = 8 + 32 + 2 + 4 + 4 + 4 + 8;
+const RESERVE_SPACE: usize = 8 + 32 + 8;
 
 #[program]
 pub mod sixsec {
@@ -54,11 +58,12 @@ pub mod sixsec {
         ctx: Context<InitPool>,
         withdrawal_limit: u64,
         moderator_authority: Pubkey,
+        skr_mint: Pubkey,
     ) -> Result<()> {
         let pool = &mut ctx.accounts.pool_state;
         pool.admin = ctx.accounts.admin.key();
         pool.moderator_authority = moderator_authority;
-        pool.total_reserved = 0;
+        pool.skr_mint = skr_mint;
         pool.epoch = 0;
         pool.withdrawn_this_epoch = 0;
         pool.withdrawal_limit = withdrawal_limit;
@@ -116,20 +121,22 @@ pub mod sixsec {
         let reserve = worst_case_reserve(max_claims, &tier_arr, tier_count)?;
 
         // ADR-0009: резерв по худшему случаю против свободных средств пула.
+        // ADR-0015: резерв учитывается ОТДЕЛЬНО по каждому минту, иначе при
+        // гибридной награде резервы под игровой токен и под SKR суммировались
+        // бы в одно число — бессмысленная арифметика.
         let pool_balance = ctx.accounts.prize_pool.amount;
-        let pool_state = &ctx.accounts.pool_state;
+        let mint_reserve = &mut ctx.accounts.mint_reserve;
         require!(
-            can_reserve(pool_balance, pool_state.total_reserved, reserve),
+            can_reserve(pool_balance, mint_reserve.reserved, reserve),
             SixsecError::InsufficientPoolReserve
         );
 
-        // КРИТИЧНО: резерв обязан накапливаться в пуле, а не только на задании.
-        // Без этой строки total_reserved навсегда остаётся нулём, can_reserve
-        // всегда проходит, и каждое следующее задание резервирует весь пул
-        // заново — ровно тот сценарий, против которого написан ADR-0009.
-        let pool_state = &mut ctx.accounts.pool_state;
-        pool_state.total_reserved = pool_state
-            .total_reserved
+        // КРИТИЧНО: резерв обязан накапливаться, а не только записываться на
+        // задании. Без накопления can_reserve всегда проходит, и каждое
+        // следующее задание резервирует весь пул заново — ровно тот сценарий,
+        // против которого написан ADR-0009.
+        mint_reserve.reserved = mint_reserve
+            .reserved
             .checked_add(reserve)
             .ok_or(SixsecError::ReserveOverflow)?;
 
@@ -350,12 +357,10 @@ pub mod sixsec {
             ctx.accounts.reward_mint.decimals,
         )?;
 
-        let pool_state = &mut ctx.accounts.pool_state;
-        // Резерв задания уменьшается на фактически выплаченное.
+        let mint_reserve = &mut ctx.accounts.mint_reserve;
+        // Резерв уменьшается на фактически выплаченное.
         if task.reserved_amount >= tier.token_amount {
-            pool_state.total_reserved = pool_state
-                .total_reserved
-                .saturating_sub(tier.token_amount);
+            mint_reserve.reserved = mint_reserve.reserved.saturating_sub(tier.token_amount);
         }
 
         emit!(PayoutCompleted {
@@ -381,12 +386,70 @@ pub mod sixsec {
         let released = task.reserved_amount;
         task.reserved_amount = 0;
 
-        let pool_state = &mut ctx.accounts.pool_state;
-        pool_state.total_reserved = pool_state.total_reserved.saturating_sub(released);
+        let mint_reserve = &mut ctx.accounts.mint_reserve;
+        mint_reserve.reserved = mint_reserve.reserved.saturating_sub(released);
 
         emit!(ReserveReleased {
             task: task.key(),
             released,
+        });
+        Ok(())
+    }
+
+    /// Ранговый бонус в SKR (ADR-0015, гибридная модель).
+    ///
+    /// Отдельная инструкция, а не часть `payout`: бонус считается от ранга
+    /// воркера, а не от тира задания, и его отсутствие не должно блокировать
+    /// основную выплату.
+    pub fn payout_rank_bonus(ctx: Context<PayoutRankBonus>) -> Result<()> {
+        require!(
+            ctx.accounts.submission.moderation_status == ModStatus::Approved,
+            SixsecError::NotApproved
+        );
+        require!(
+            ctx.accounts.worker_profile.worker == ctx.accounts.submission.worker,
+            SixsecError::ProfileWorkerMismatch
+        );
+        require!(
+            ctx.accounts.skr_mint.key() == ctx.accounts.pool_state.skr_mint,
+            SixsecError::SkrMintMismatch
+        );
+
+        let bonus = rank_bonus_skr(ctx.accounts.worker_profile.trust_score);
+        require!(bonus > 0, SixsecError::NoRankBonus);
+        require!(
+            ctx.accounts.skr_pool.amount >= bonus,
+            SixsecError::PoolBalanceShort
+        );
+
+        let mint_key = ctx.accounts.skr_mint.key();
+        let seeds = &[
+            PRIZE_POOL_SEED,
+            mint_key.as_ref(),
+            &[ctx.bumps.skr_pool],
+        ];
+        let signer = [&seeds[..]];
+
+        token_interface::transfer_checked(
+            CpiContext::new_with_signer(
+                *ctx.accounts.token_program.to_account_info().key,
+                TransferChecked {
+                    from: ctx.accounts.skr_pool.to_account_info(),
+                    mint: ctx.accounts.skr_mint.to_account_info(),
+                    to: ctx.accounts.worker_skr_ata.to_account_info(),
+                    authority: ctx.accounts.skr_pool.to_account_info(),
+                },
+                &signer,
+            ),
+            bonus,
+            ctx.accounts.skr_mint.decimals,
+        )?;
+
+        emit!(RankBonusPaid {
+            worker: ctx.accounts.submission.worker,
+            mint: mint_key,
+            amount: bonus,
+            trust_score: ctx.accounts.worker_profile.trust_score,
         });
         Ok(())
     }
@@ -398,7 +461,7 @@ pub mod sixsec {
 
         can_withdraw(
             ctx.accounts.prize_pool.amount,
-            pool_state.total_reserved,
+            ctx.accounts.mint_reserve.reserved,
             pool_state.withdrawn_this_epoch,
             pool_state.withdrawal_limit,
             amount,
@@ -475,6 +538,17 @@ pub struct CreateTask<'info> {
     pub pool_state: Account<'info, PoolState>,
     /// ADR-0010: mint награды — аргумент, проверяется ончейн.
     pub reward_mint: InterfaceAccount<'info, Mint>,
+    /// ADR-0015: резервы под этот минт. `init_if_needed` здесь безопасен:
+    /// адрес выводится из mint, а не из пользовательского ключа, и аккаунт
+    /// не хранит никаких полномочий.
+    #[account(
+        init_if_needed,
+        payer = creator,
+        space = RESERVE_SPACE,
+        seeds = [RESERVE_SEED, reward_mint.key().as_ref()],
+        bump
+    )]
+    pub mint_reserve: Account<'info, MintReserve>,
     #[account(
         seeds = [PRIZE_POOL_SEED, reward_mint.key().as_ref()],
         bump
@@ -566,8 +640,8 @@ pub struct Payout<'info> {
         constraint = submission.moderation_status == ModStatus::Approved
     )]
     pub submission: Account<'info, SubmissionAccount>,
-    #[account(mut, seeds = [POOL_STATE_SEED], bump)]
-    pub pool_state: Account<'info, PoolState>,
+    #[account(mut, seeds = [RESERVE_SEED, reward_mint.key().as_ref()], bump)]
+    pub mint_reserve: Account<'info, MintReserve>,
     pub reward_mint: InterfaceAccount<'info, Mint>,
     #[account(
         mut,
@@ -581,13 +655,32 @@ pub struct Payout<'info> {
 }
 
 #[derive(Accounts)]
+pub struct PayoutRankBonus<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
+    #[account(seeds = [POOL_STATE_SEED], bump)]
+    pub pool_state: Account<'info, PoolState>,
+    #[account(constraint = submission.moderation_status == ModStatus::Approved)]
+    pub submission: Account<'info, SubmissionAccount>,
+    #[account(seeds = [PROFILE_SEED, submission.worker.as_ref()], bump)]
+    pub worker_profile: Account<'info, WorkerProfile>,
+    pub skr_mint: InterfaceAccount<'info, Mint>,
+    #[account(mut, seeds = [PRIZE_POOL_SEED, skr_mint.key().as_ref()], bump)]
+    pub skr_pool: InterfaceAccount<'info, TokenAccount>,
+    #[account(mut, constraint = worker_skr_ata.owner == submission.worker)]
+    pub worker_skr_ata: InterfaceAccount<'info, TokenAccount>,
+    pub token_program: Interface<'info, TokenInterface>,
+}
+
+#[derive(Accounts)]
 pub struct RefundExpired<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     #[account(mut)]
     pub task: Account<'info, TaskAccount>,
-    #[account(mut, seeds = [POOL_STATE_SEED], bump)]
-    pub pool_state: Account<'info, PoolState>,
+    #[account(mut, seeds = [RESERVE_SEED, reward_mint.key().as_ref()], bump)]
+    pub mint_reserve: Account<'info, MintReserve>,
+    pub reward_mint: InterfaceAccount<'info, Mint>,
 }
 
 #[derive(Accounts)]
@@ -597,6 +690,8 @@ pub struct WithdrawFromPool<'info> {
     #[account(mut, seeds = [POOL_STATE_SEED], bump)]
     pub pool_state: Account<'info, PoolState>,
     pub reward_mint: InterfaceAccount<'info, Mint>,
+    #[account(seeds = [RESERVE_SEED, reward_mint.key().as_ref()], bump)]
+    pub mint_reserve: Account<'info, MintReserve>,
     #[account(mut, seeds = [PRIZE_POOL_SEED, reward_mint.key().as_ref()], bump)]
     pub prize_pool: InterfaceAccount<'info, TokenAccount>,
     #[account(mut, constraint = destination.owner == admin.key())]
@@ -650,6 +745,14 @@ pub struct PoolShortfall {
     pub mint: Pubkey,
     pub required: u64,
     pub available: u64,
+}
+
+#[event]
+pub struct RankBonusPaid {
+    pub worker: Pubkey,
+    pub mint: Pubkey,
+    pub amount: u64,
+    pub trust_score: u16,
 }
 
 #[event]
