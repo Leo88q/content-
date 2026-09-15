@@ -248,6 +248,14 @@ export function createApp(deps: AppDeps & { siwsParams?: SiwsParams }) {
         sendJson(res, 200, {
           mockData: deps.mockData,
           moderatorAuthority: pool.moderatorAuthority,
+          // Состояние пула и так читается выше для moderatorAuthority. Отдаём
+          // его целиком: панели модерации нужны admin, skrMint и лимит эпохи,
+          // а отдельный эндпоинт для четырёх полей не оправдан.
+          pool: {
+            admin: pool.admin,
+            skrMint: pool.skrMint,
+            skrPayoutLimit: pool.skrPayoutLimit,
+          },
           counts: {
             total: items.length,
             full: items.filter((i) => i.moderationTier === "Full").length,
