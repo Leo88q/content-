@@ -121,25 +121,45 @@ jobs:
           BUILD_OK=0
           for attempt in 1 2 3; do
             {
-              echo "===== anchor build (попытка $attempt) ====="
-              anchor build 2>&1
+              echo "===== попытка $attempt ====="
+              echo "RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN:-<unset>}"
+              echo "rustc: $(command -v rustc)"; echo "cargo-build-sbf: $(command -v cargo-build-sbf)"
+              # Попытка 2 идёт напрямую через build-sbf с --verbose: anchor build
+              # не пробрасывает флаг, а именно там видно, какой sysroot и rustc
+              # подставляются для sbpfv3-solana-solana. Заодно эта команда сама
+              # докачивает platform-tools.
+              if [ "$attempt" = "2" ]; then
+                cargo build-sbf --verbose --manifest-path programs/sixsec/Cargo.toml 2>&1
+              else
+                anchor build 2>&1
+              fi
+              echo "----- итог попытки $attempt -----"
+              if [ -f target/deploy/sixsec.so ]; then echo "sixsec.so ЕСТЬ"; else echo "sixsec.so НЕТ"; fi
+              if [ -f target/idl/sixsec.json ]; then echo "sixsec.json ЕСТЬ"; else echo "sixsec.json НЕТ"; fi
+              echo "--- sysroot после попытки $attempt ---"
+              find "${HOME}/.cache" -maxdepth 7 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -3 || true
+              find "${HOME}/.cache" -path "*sbpfv3*" -name "libstd*" 2>/dev/null | head -3 || echo "libstd для sbpfv3 отсутствует"
+              du -sh "${HOME}/.cache/solana" 2>/dev/null || echo "~/.cache/solana не создан"
             } | tee -a /tmp/ci.log
             if [ -f target/deploy/sixsec.so ] && [ -f target/idl/sixsec.json ]; then
               BUILD_OK=1
-              echo "сборка удалась с попытки $attempt"
+              echo "сборка удалась с попытки $attempt" | tee -a /tmp/ci.log
               break
             fi
-            echo "попытка $attempt не дала артефактов"
+            echo "попытка $attempt не дала артефактов" | tee -a /tmp/ci.log
             if [ "$attempt" -lt 3 ]; then
-              echo "переустанавливаю platform-tools"
+              # --force-tools-install отдельно от сборки не срабатывает: флаг
+              # работает в паре с реальной сборкой. Поэтому просто сносим
+              # каталог — следующая anchor build докачает sysroot заново.
+              echo "удаляю ${HOME}/.cache/solana перед попыткой $((attempt + 1))" | tee -a /tmp/ci.log
               rm -rf "${HOME}/.cache/solana"
-              cargo build-sbf --force-tools-install --version 2>&1 | tee -a /tmp/ci.log || true
             fi
           done
           if [ "$BUILD_OK" != "1" ]; then
-            echo "===== диагностика после неудачной сборки ====="
-            find "${HOME}/.cache" -maxdepth 6 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -5 || true
-            find "${HOME}/.cache" -path "*sbpfv3*" -name "libstd*" 2>/dev/null | head -5 || echo "libstd для sbpfv3 так и не появился"
+            echo "сборка провалилась во всех попытках" | tee -a /tmp/ci.log
+            # Без exit 1 шаг отчитался бы как success, и Gate показал бы
+            # ложно-зелёную сборку на фоне упавших тестов.
+            exit 1
           fi
           # anchor build может вернуть 0, не произведя артефактов. Проверяем факт
           # сборки, а не код возврата: нет .so = программа не собралась.
@@ -308,7 +328,30 @@ jobs:
           # работал ни разу, а именно на него была ставка как на замену
           # недоступным логам раннера.
           if [ -s /tmp/ci.log ]; then
-            BODY=$( { head -c 12000 /tmp/ci.log; echo; echo "... [середина обрезана] ..."; echo; tail -c 44000 /tmp/ci.log; } )
+            # ANSI-последовательности раздувают лог в разы и съедают бюджет
+            # issue в ~64 КБ: в run 34923774605 из-за этого вырезалась середина,
+            # где были попытки 2-3 и посмертная диагностика sysroot.
+            sed 's/\x1b\[[0-9;]*m//g; s/\r//g' /tmp/ci.log > /tmp/ci.plain
+            echo "лог: $(wc -c < /tmp/ci.log) байт с ANSI -> $(wc -c < /tmp/ci.plain) без ANSI"
+            {
+              # Ключевые строки всегда попадают в отчёт, даже если тело обрезано.
+              echo "===== КЛЮЧЕВЫЕ СТРОКИ ====="
+              grep -nE "попытка|артефактов|сборка (удалась|провалилась)|E0463|^error|error\[|sysroot|libstd|platform-tools|sixsec\.so|sixsec\.json|test result|FAILED|panicked|rustc:|RUSTUP_TOOLCHAIN" /tmp/ci.plain | head -150 || true
+              echo
+              if [ "$(wc -c < /tmp/ci.plain)" -le 52000 ]; then
+                echo "===== ЛОГ ЦЕЛИКОМ ====="
+                cat /tmp/ci.plain
+              else
+                echo "===== НАЧАЛО ЛОГА ====="
+                head -c 8000 /tmp/ci.plain
+                echo
+                echo "... [середина обрезана] ..."
+                echo
+                echo "===== КОНЕЦ ЛОГА ====="
+                tail -c 40000 /tmp/ci.plain
+              fi
+            } > /tmp/ci.body
+            BODY=$(cat /tmp/ci.body)
           else
             BODY="/tmp/ci.log пуст или отсутствует — шаги не дошли до записи"
           fi
