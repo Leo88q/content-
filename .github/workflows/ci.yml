@@ -200,8 +200,11 @@ jobs:
             echo "all green"; exit 0
           fi
           TITLE="CI failure log (auto)"
-          # GitHub ограничивает тело issue ~64 КБ; оставляем хвост — там ошибки.
-          BODY=$(tail -c 60000 /tmp/ci.log 2>/dev/null | tr -d '\000')
+          # GitHub ограничивает тело issue ~64 КБ. Только хвоста недостаточно:
+          # диагностика тулчейна идёт в начале лога и терялась при обрезке
+          # (проверено на run 34911925781). Берём голову и хвост.
+          BODY=$'{ head -c 12000 /tmp/ci.log 2>/dev/null; echo; echo "... [середина обрезана] ..."; echo; tail -c 44000 /tmp/ci.log 2>/dev/null; }'
+          BODY=$(printf '%s' "$BODY" | tr -d '\000')
           NUM=$(gh issue list --search "$TITLE in:title" --state all --limit 1 --json number --jq '.[0].number' 2>/dev/null || true)
           if [ -z "$NUM" ]; then
             printf '%s\n' "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /tmp/body.md
