@@ -242,11 +242,58 @@ jobs:
           npm ci --no-audit --no-fund || npm install --no-audit --no-fund
 
       - name: Typecheck (strict)
+        id: be_typecheck
         run: |
           set -uo pipefail
           npm run typecheck
 
       - name: Unit tests
+        # Защита от ложно-зелёного CI: `node --test` с пустым глобом выходит с 0
+        # и «0 tests». Шаг обязан упасть, если тесты не запустились или есть
+        # падения. pipefail нужен, чтобы `| tee` не подменял статус npm.
+        id: be_tests
+        continue-on-error: true
         run: |
           set -uo pipefail
-          npm test
+          npm test 2>&1 | tee test-output.txt
+          echo "--- проверка, что тесты действительно отработали ---"
+          grep -qE '^# pass [1-9][0-9]*' test-output.txt \
+            || { echo "::error::тесты не запустились (нет ни одного pass)"; exit 1; }
+          grep -qE '^# fail 0$' test-output.txt \
+            || { echo "::error::есть упавшие тесты"; exit 1; }
+          grep -E '^# (tests|pass|fail|skipped)' test-output.txt
+
+      - name: Publish backend summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          {
+            echo "## Backend — job \`${{ job.status }}\`"
+            echo
+            echo "| Шаг | Итог |"
+            echo "|---|---|"
+            echo "| Typecheck (strict) | ${{ steps.be_typecheck.outcome }} |"
+            echo "| Unit tests | ${{ steps.be_tests.outcome }} |"
+            echo
+            echo '```'
+            # defaults.run.working-directory = backend действует на все run-шаги
+            # этой job'ы, поэтому путь относительный, а не backend/...
+            if [ -f test-output.txt ]; then
+              { head -c 4000 test-output.txt; echo; echo "[…]"; tail -c 6000 test-output.txt; }
+            else
+              echo "test-output.txt не найден — тесты не дошли до записи"
+            fi
+            echo '```'
+          } > /tmp/backend-summary.md
+          NUM=$(gh issue list --state all --limit 1 --json number --jq '.[0].number')
+          if [ -n "$NUM" ] && [ "$NUM" != "null" ]; then
+            gh issue comment "$NUM" --body-file /tmp/backend-summary.md
+          fi
+
+      - name: Backend gate
+        if: always()
+        run: |
+          set -uo pipefail
+          [ "${{ steps.be_tests.outcome }}" = "success" ] || exit 1
