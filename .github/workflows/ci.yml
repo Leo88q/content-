@@ -57,6 +57,18 @@ jobs:
           sudo mv anchor /usr/local/bin/anchor
           anchor --version
 
+      - name: Toolchain diagnostics
+        run: |
+          set -uo pipefail
+          {
+            echo "===== toolchain ====="
+            solana --version || true
+            anchor --version || true
+            cargo-build-sbf --version || true
+            echo "--- пин из Anchor.toml ---"
+            grep -E "anchor_version|solana_version" Anchor.toml
+          } 2>&1 | tee -a /tmp/ci.log
+
       # Порядок обязателен: интеграционные тесты подключают программу через
       # include_bytes!(".../deploy/sixsec.so"), поэтому .so должен существовать
       # ДО компиляции тестов. anchor build идёт первым.
@@ -65,6 +77,10 @@ jobs:
         continue-on-error: true
         run: |
           set -uo pipefail
+          # Принудительная пересборка: кэш target/ переживает прогоны, и anchor build
+          # может переиспользовать .so, собранный предыдущим тулчейном. Без этого
+          # смена версии Solana в Anchor.toml не попадает в артефакт.
+          rm -rf target/deploy target/sbf-build target/release
           {
             echo "===== anchor build ====="
             anchor build 2>&1
@@ -74,6 +90,17 @@ jobs:
           test -f target/idl/sixsec.json
           test -f target/deploy/sixsec.so
           ls -l target/idl/ target/deploy/
+          {
+            echo "--- ELF: e_flags содержит версию sBPF ---"
+            python3 - <<'PYEOF'
+          import struct
+          d = open("target/deploy/sixsec.so","rb").read(64)
+          assert d[:4] == b"\x7fELF", "не ELF"
+          ei_class = d[4]
+          e_flags = struct.unpack_from("<I", d, 48)[0]
+          print(f"ELF class={ei_class} (2=64-bit) e_flags={e_flags} -> sbpf v{e_flags}")
+          PYEOF
+          } 2>&1 | tee -a /tmp/ci.log
 
       # Все проверки идут с continue-on-error и пишут в общий лог: так за один
       # прогон видно все ошибки сразу, а не по одной на итерацию.
