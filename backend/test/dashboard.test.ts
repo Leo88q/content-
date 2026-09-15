@@ -63,15 +63,33 @@ test("в панели нет внешних скриптов, стилей и ш
 
 test("каждый url() — либо inline data-URI, либо внутренний фрагмент", async () => {
   const html = await readFile(HTML_PATH, "utf8");
-  const urls = [...html.matchAll(/url\(\s*["']?([^"')]+)/g)].map((m) => m[1] ?? "");
-  assert.ok(urls.length >= 1, "зерно фона должно быть data-URI");
+  const urls = [...html.matchAll(/url\(\s*["']?([^"')]{0,80})/g)].map((m) => m[1] ?? "");
+  assert.ok(urls.length >= 3, "ожидаются зерно фона и два шрифта");
   // Внутри data-URI лежит filter='url(%23n)' — это ссылка на фильтр того же
-  // SVG, %23 это "#". Обе формы внутренние, внешних загрузок не делают.
+  // SVG, %23 это "#". Все три формы внутренние, внешних загрузок не делают.
   for (const u of urls) {
-    const internal = /^data:image\/svg\+xml/.test(u) || u.startsWith("#") || u.startsWith("%23");
+    const internal = /^data:(image\/svg\+xml|font\/woff2)/.test(u)
+      || u.startsWith("#") || u.startsWith("%23");
     assert.ok(internal, `внешний url(): ${u.slice(0, 60)}`);
   }
-  assert.ok(urls.some((u) => u.startsWith("data:image/svg+xml")), "нужен хотя бы один data-URI");
+  assert.ok(urls.some((u) => u.startsWith("data:image/svg+xml")), "нужен data-URI для зерна");
+});
+
+test("шрифты встроены в файл, а не запрашиваются извне", async () => {
+  const html = await readFile(HTML_PATH, "utf8");
+  const faces = [...html.matchAll(/@font-face\s*{([^}]*)}/g)].map((m) => m[1] ?? "");
+  assert.equal(faces.length, 2, "ожидались Unbounded и Onest");
+  for (const f of faces) {
+    assert.match(f, /url\("data:font\/woff2;base64,/, "шрифт обязан быть data-URI");
+    assert.doesNotMatch(f, /https?:/, "никаких внешних адресов");
+  }
+  // Кириллица обязательна: интерфейс на русском. Проверяем, что гарнитуры
+  // объявлены и подключены к правилам, а не просто лежат мёртвым грузом.
+  assert.match(html, /font-family:\s*"Sixsec Display"/);
+  assert.match(html, /font-family:\s*"Sixsec Text"/);
+  assert.match(html, /var\(--display\)/);
+  assert.match(html, /var\(--body\)/);
+  assert.match(html, /SIL Open Font License/, "лицензия OFL должна быть указана");
 });
 
 test("статические src/href ведут внутрь страницы или на шаблонное выражение", async () => {
