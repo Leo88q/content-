@@ -40,4 +40,6 @@ pub enum SixsecError {
     SkrMintMismatch,
     #[msg("Ранг воркера ниже порога SKR-бонуса")]
     NoRankBonus,
+    #[msg("Исчерпан лимит объёма SKR-бонусов за текущую эпоху")]
+    SkrPayoutLimitExceeded,
 }

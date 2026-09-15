@@ -133,6 +133,20 @@ pub struct PoolState {
     pub epoch: u64,
     pub withdrawn_this_epoch: u64,
     pub withdrawal_limit: u64,
+    /// Лимит объёма SKR-бонусов за эпоху (ADR-0016, Q26).
+    ///
+    /// `withdrawal_limit` ограничивает вывод админом, но не выплаты воркерам.
+    /// Без этого лимита компрометация модератора или баг в `moderate` позволяли
+    /// бы выдавать бонусы бесконечно, пока в пуле есть SKR.
+    pub skr_payout_limit: u64,
+    /// Собственная эпоха счётчика SKR.
+    ///
+    /// НЕ может переиспользовать `epoch` вывода: оба счётчика читают одни часы,
+    /// и если `withdraw_from_pool` отработает в новой эпохе первым, он сдвинет
+    /// общий `epoch`, и `skr_paid_this_epoch` уже никогда не сбросится — лимит
+    /// на бонусы стал бы пожизненным. У каждого накопительного счётчика своя эпоха.
+    pub skr_epoch: u64,
+    pub skr_paid_this_epoch: u64,
 }
 
 // ---------------------------------------------------------------------------
@@ -199,6 +213,21 @@ pub fn can_reserve(pool_balance: u64, reserved: u64, reserve: u64) -> bool {
 
 /// Проверка, что вывод из пула не ломает резервы открытых заданий (ADR-0009)
 /// и не превышает лимит за эпоху (раздел 3 промпта).
+/// Сброс накопленного счётчика при смене эпохи (ADR-0016).
+///
+/// Возвращает `(актуальная эпоха, актуальное накопление)`.
+///
+/// Если `current_epoch` **меньше** сохранённой (откат часов, форк, подмена),
+/// счётчик НЕ сбрасывается: сброс по чужим часам — это обход лимита. Считаем
+/// смену эпохи только при движении вперёд.
+pub fn epoch_accumulator(stored_epoch: u64, current_epoch: u64, accumulated: u64) -> (u64, u64) {
+    if current_epoch > stored_epoch {
+        (current_epoch, 0)
+    } else {
+        (stored_epoch, accumulated)
+    }
+}
+
 pub fn can_withdraw(
     pool_balance: u64,
     reserved: u64,
@@ -651,5 +680,38 @@ mod skr_bonus_tests {
         let eligible = (SKR_BONUS_TIER1_THRESHOLD..=MAX_TRUST).count();
         let total = (0..=MAX_TRUST).count();
         assert!(eligible * 100 / total <= 15);
+    }
+}
+
+#[cfg(test)]
+mod epoch_tests {
+    use super::*;
+
+    #[test]
+    fn first_epoch_is_not_rolled_over() {
+        // Инициализация ставит epoch = 0; epoch 0 в часах не должна обнулять счётчик.
+        assert_eq!(epoch_accumulator(0, 0, 500), (0, 500));
+    }
+
+    #[test]
+    fn rolls_over_when_epoch_advances() {
+        assert_eq!(epoch_accumulator(5, 6, 999), (6, 0));
+        assert_eq!(epoch_accumulator(5, 7, 999), (7, 0), "пропуск эпохи тоже сбрасывает");
+    }
+
+    #[test]
+    fn same_epoch_keeps_accumulated() {
+        assert_eq!(epoch_accumulator(6, 6, 42), (6, 42));
+    }
+
+    #[test]
+    fn clock_rollback_does_not_reset_limit() {
+        // Ключевой кейс: откат часов не должен открывать лимит заново.
+        assert_eq!(epoch_accumulator(10, 3, 777), (10, 777));
+    }
+
+    #[test]
+    fn u64_max_epoch_does_not_panic() {
+        assert_eq!(epoch_accumulator(u64::MAX, 0, 5), (u64::MAX, 5));
     }
 }

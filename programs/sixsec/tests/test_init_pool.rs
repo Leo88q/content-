@@ -45,6 +45,10 @@ const POOL_STATE_SEED: &[u8] = b"pool_state";
 /// Заглушка: реальный mint SKR обязан быть проверен ончейн до любой выплаты.
 /// Здесь годится любой валидный pubkey — инструкция init_pool его не валидирует.
 const SKR_MINT_STUB: &str = "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3";
+
+/// 50 000 SKR за эпоху при decimals = 6. Значение для тестов; в проде это
+/// бюджетное решение (Q26), а не константа программы.
+const SKR_PAYOUT_LIMIT: u64 = 50_000_000_000;
 const WITHDRAWAL_LIMIT: u64 = 1_000_000;
 
 struct Ctx {
@@ -93,6 +97,7 @@ fn init_pool_ix(ctx: &Ctx) -> Instruction {
             withdrawal_limit: WITHDRAWAL_LIMIT,
             moderator_authority: ctx.moderator,
             skr_mint: ctx.skr_mint,
+            skr_payout_limit: SKR_PAYOUT_LIMIT,
         }
         .data(),
         sixsec::accounts::InitPool {
@@ -133,6 +138,11 @@ fn init_pool_creates_account_with_zero_reserves() {
     assert_eq!(pool.admin, ctx.admin.pubkey());
     assert_eq!(pool.withdrawal_limit, WITHDRAWAL_LIMIT);
     assert_eq!(pool.skr_mint, ctx.skr_mint, "SKR-минт зафиксирован при инициализации");
+    assert_eq!(pool.skr_payout_limit, SKR_PAYOUT_LIMIT);
+    assert_eq!(pool.skr_paid_this_epoch, 0, "лимит бонусов не потрачен");
+    assert_eq!(pool.skr_epoch, 0);
+    assert_eq!(pool.epoch, 0);
+    assert_eq!(pool.withdrawn_this_epoch, 0);
     // Резервы переехали в MintReserve (ADR-0015): теперь они per-mint,
     // поэтому в PoolState их больше нет.
     assert_eq!(pool.withdrawn_this_epoch, 0);

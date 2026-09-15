@@ -42,9 +42,12 @@ const TASK_SPACE: usize = 8 + 8 + 32 + (4 + MAX_URI_LEN) + 1
 const CLAIM_SPACE: usize = 8 + 32 + 32 + 8 + 8 + 1;
 const SUBMISSION_SPACE: usize = 8 + 32 + 32 + 32 + 32 + (4 + MAX_URI_LEN) + 32
     + 8 + 1 + (1 + 1) + (1 + 32) + (1 + 4 + MAX_REASON_LEN);
-// 8 (дискриминатор) + admin(32) + moderator_authority(32) + skr_mint(32) + 3×u64(24) = 128.
-// Недосчёт здесь = ошибка выделения аккаунта в рантайме, а не в компиляции.
-const POOL_STATE_SPACE: usize = 8 + 32 + 32 + 32 + 8 + 8 + 8;
+// 8 (дискриминатор) + 3×Pubkey(96) + 6×u64(48) = 152.
+// Поля: admin, moderator_authority, skr_mint, epoch, withdrawn_this_epoch,
+// withdrawal_limit, skr_payout_limit, skr_epoch, skr_paid_this_epoch.
+// Недосчёт здесь = ошибка выделения аккаунта в рантайме, а не в компиляции,
+// поэтому при любом изменении PoolState эту константу нужно пересчитывать.
+const POOL_STATE_SPACE: usize = 8 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 8;
 const PROFILE_SPACE: usize = 8 + 32 + 2 + 4 + 4 + 4 + 8;
 const RESERVE_SPACE: usize = 8 + 32 + 8;
 
@@ -59,13 +62,17 @@ pub mod sixsec {
         withdrawal_limit: u64,
         moderator_authority: Pubkey,
         skr_mint: Pubkey,
+        skr_payout_limit: u64,
     ) -> Result<()> {
         let pool = &mut ctx.accounts.pool_state;
         pool.admin = ctx.accounts.admin.key();
         pool.moderator_authority = moderator_authority;
         pool.skr_mint = skr_mint;
+        pool.skr_payout_limit = skr_payout_limit;
         pool.epoch = 0;
         pool.withdrawn_this_epoch = 0;
+        pool.skr_epoch = 0;
+        pool.skr_paid_this_epoch = 0;
         pool.withdrawal_limit = withdrawal_limit;
         Ok(())
     }
@@ -422,6 +429,25 @@ pub mod sixsec {
             SixsecError::PoolBalanceShort
         );
 
+        // ADR-0016 / Q26: потолок объёма SKR-выплат за эпоху.
+        let pool_state = &mut ctx.accounts.pool_state;
+        let (skr_epoch, paid) = epoch_accumulator(
+            pool_state.skr_epoch,
+            Clock::get()?.epoch,
+            pool_state.skr_paid_this_epoch,
+        );
+        pool_state.skr_epoch = skr_epoch;
+        pool_state.skr_paid_this_epoch = paid;
+
+        let after = pool_state
+            .skr_paid_this_epoch
+            .checked_add(bonus)
+            .ok_or(SixsecError::ReserveOverflow)?;
+        require!(
+            after <= pool_state.skr_payout_limit,
+            SixsecError::SkrPayoutLimitExceeded
+        );
+
         let mint_key = ctx.accounts.skr_mint.key();
         let seeds = &[
             PRIZE_POOL_SEED,
@@ -445,6 +471,8 @@ pub mod sixsec {
             ctx.accounts.skr_mint.decimals,
         )?;
 
+        pool_state.skr_paid_this_epoch = after;
+
         emit!(RankBonusPaid {
             worker: ctx.accounts.submission.worker,
             mint: mint_key,
@@ -458,6 +486,18 @@ pub mod sixsec {
     /// (ADR-0009, раздел 3 промпта).
     pub fn withdraw_from_pool(ctx: Context<WithdrawFromPool>, amount: u64) -> Result<()> {
         let pool_state = &mut ctx.accounts.pool_state;
+
+        // ADR-0016: лимит заявлен как «за эпоху», значит счётчик обязан
+        // сбрасываться. До этого исправления withdrawn_this_epoch только рос,
+        // а pool.epoch не читался нигде — лимит фактически был пожизненным:
+        // исчерпав его, админ больше не мог вывести из пула ничего.
+        let (epoch, withdrawn) = epoch_accumulator(
+            pool_state.epoch,
+            Clock::get()?.epoch,
+            pool_state.withdrawn_this_epoch,
+        );
+        pool_state.epoch = epoch;
+        pool_state.withdrawn_this_epoch = withdrawn;
 
         can_withdraw(
             ctx.accounts.prize_pool.amount,
@@ -658,7 +698,7 @@ pub struct Payout<'info> {
 pub struct PayoutRankBonus<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    #[account(seeds = [POOL_STATE_SEED], bump)]
+    #[account(mut, seeds = [POOL_STATE_SEED], bump)]
     pub pool_state: Account<'info, PoolState>,
     #[account(constraint = submission.moderation_status == ModStatus::Approved)]
     pub submission: Account<'info, SubmissionAccount>,
