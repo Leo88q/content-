@@ -237,7 +237,29 @@ jobs:
             } > /tmp/body.md
             gh issue comment "$NUM" --body-file /tmp/body.md
           fi
-          exit 1
+          # Шаг НЕ завершается ошибкой: его задача — опубликовать лог.
+          # Раньше здесь стоял exit 1, из-за чего в отчёте упавшим выглядел
+          # «Publish log to issue on failure», а не настоящая причина падения.
+
+      # Вердикт — отдельным шагом, чтобы в списке шагов было видно, что именно
+      # провалилось: сборка, тесты, интеграция, clippy или сверка с IDL.
+      - name: Gate
+        if: always()
+        run: |
+          set -uo pipefail
+          FAIL=0
+          for pair in "build:${{ steps.build.outcome }}" \
+                      "tests:${{ steps.tests.outcome }}" \
+                      "itests:${{ steps.itests.outcome }}" \
+                      "spec:${{ steps.spec.outcome }}" \
+                      "clippy:${{ steps.clippy.outcome }}"; do
+            name="${pair%%:*}"; outcome="${pair#*:}"
+            if [ "$outcome" != "success" ]; then
+              echo "::error::$name: $outcome"
+              FAIL=1
+            fi
+          done
+          exit $FAIL
 
   # Отдельная job, а не шаг внутри program: падение backend-тестов не должно
   # маскироваться gate'ом Rust-сборки, и наоборот. Зависимости не пересекаются.

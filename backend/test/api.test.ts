@@ -118,14 +118,14 @@ test("модератор одобряет, но решение возвраща�
   assert.equal(b.signed, false, "backend не имеет права подписывать");
   assert.equal(b.instruction.name, "moderate");
   assert.equal(b.instruction.args.approve, true);
-  assert.equal(b.instruction.args.tierId, 1);
+  assert.equal(b.instruction.args.tier_id, 1);
   assert.equal(b.instruction.args.reason, null, "при одобрении причина отсутствует");
   assert.equal(b.instruction.signerRequired, MODERATOR);
   // Полный список аккаунтов: кошелёк не сможет собрать транзакцию без него.
   assert.equal(b.instruction.accounts.length, 5);
   assert.deepEqual(
     b.instruction.accounts.map((a: { name: string }) => a.name),
-    ["moderator", "task", "submission", "poolState", "workerProfile"],
+    ["moderator", "task", "submission", "pool_state", "worker_profile"],
   );
 });
 

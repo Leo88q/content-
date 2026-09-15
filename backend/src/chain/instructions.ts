@@ -61,11 +61,12 @@ export function buildModeratePayload(
   item: QueueItem,
   moderatorAuthority: Pubkey,
 ): InstructionPayload {
+  // Ключи — snake_case, как имена аккаунтов в IDL.
   const known: Record<string, Pubkey> = {
     moderator: moderatorAuthority,
     task: item.submission.task,
     submission: item.submission.claim,
-    // workerProfile — PDA ["profile", worker]; вычисляется детерминированно,
+    // worker_profile — PDA ["profile", worker]; вычисляется детерминированно,
     // но без знания bump'а backend его не подставляет.
   };
 
@@ -81,7 +82,7 @@ export function buildModeratePayload(
     name: MODERATE_SPEC.instruction,
     args: {
       approve: decision.kind === "approve",
-      tierId: decision.kind === "approve" ? decision.tierId : null,
+      tier_id: decision.kind === "approve" ? decision.tierId : null,
       reason: decision.kind === "reject" ? decision.reason : null,
     },
     accounts,

@@ -13,7 +13,7 @@ test("спека описывает пять аккаунтов в порядк�
   // закреплён, чтобы случайная перестановка в спеке упала сразу, а не в CI.
   assert.deepEqual(
     MODERATE_SPEC.accounts.map((a) => a.name),
-    ["moderator", "task", "submission", "poolState", "workerProfile"],
+    ["moderator", "task", "submission", "pool_state", "worker_profile"],
   );
 });
 
@@ -26,9 +26,9 @@ test("флаги mut/signer соответствуют контексту Modera
   // #[account(mut, constraint=...)] submission
   assert.deepEqual([by.submission!.isMut, by.submission!.isSigner], [true, false]);
   // pool_state — без mut (moderate его не меняет).
-  assert.deepEqual([by.poolState!.isMut, by.poolState!.isSigner], [false, false]);
+  assert.deepEqual([by.pool_state!.isMut, by.pool_state!.isSigner], [false, false]);
   // #[account(mut, seeds=[PROFILE_SEED, worker])] worker_profile
-  assert.deepEqual([by.workerProfile!.isMut, by.workerProfile!.isSigner], [true, false]);
+  assert.deepEqual([by.worker_profile!.isMut, by.worker_profile!.isSigner], [true, false]);
   assert.equal(
     MODERATE_SPEC.accounts.filter((a) => a.isSigner).length, 1,
     "подписант ровно один",
@@ -38,7 +38,7 @@ test("флаги mut/signer соответствуют контексту Modera
 test("аргументы — Option там, где в программе Option", () => {
   // tier_id: Option<u8>, reason: Option<String>. Это и было источником бага:
   // backend слал 0 и "", то есть «выдать тир 0» вместо «тир не выдавать».
-  assert.deepEqual(MODERATE_SPEC.args.map((a) => a.name), ["approve", "tierId", "reason"]);
+  assert.deepEqual(MODERATE_SPEC.args.map((a) => a.name), ["approve", "tier_id", "reason"]);
   assert.deepEqual(MODERATE_SPEC.args[1]!.type, { option: "u8" });
   assert.deepEqual(MODERATE_SPEC.args[2]!.type, { option: "string" });
   assert.equal(MODERATE_SPEC.args[0]!.type, "bool");
@@ -48,7 +48,7 @@ test("при одобрении тир задан, причина — null", () 
   const d: Decision = { kind: "approve", tierId: 2 };
   const p = buildModeratePayload(d, item, MODERATOR);
   assert.equal(p.args.approve, true);
-  assert.equal(p.args.tierId, 2);
+  assert.equal(p.args.tier_id, 2);
   assert.equal(p.args.reason, null, "при одобрении причины быть не должно");
 });
 
@@ -56,15 +56,15 @@ test("при отказе тир — null, а не 0", () => {
   const d: Decision = { kind: "reject", reason: "дольше шести секунд" };
   const p = buildModeratePayload(d, item, MODERATOR);
   assert.equal(p.args.approve, false);
-  assert.equal(p.args.tierId, null, "0 означало бы «выдать тир 0»");
+  assert.equal(p.args.tier_id, null, "0 означало бы «выдать тир 0»");
   assert.equal(p.args.reason, "дольше шести секунд");
 });
 
 test("одобрение нулевым тиром отличимо от отказа", () => {
   const approve0 = buildModeratePayload({ kind: "approve", tierId: 0 }, item, MODERATOR);
   const reject = buildModeratePayload({ kind: "reject", reason: "брак" }, item, MODERATOR);
-  assert.equal(approve0.args.tierId, 0);
-  assert.equal(reject.args.tierId, null);
+  assert.equal(approve0.args.tier_id, 0);
+  assert.equal(reject.args.tier_id, null);
   assert.notDeepEqual(approve0.args, reject.args);
 });
 
@@ -82,9 +82,9 @@ test("известные адреса подставлены, остальные
   assert.equal(by.task!.pubkey, item.submission.task);
   assert.equal(by.submission!.pubkey, item.submission.claim);
   // poolState и workerProfile — PDA, backend без чейна их не вычисляет.
-  assert.equal(by.poolState!.pubkey, null);
-  assert.equal(by.workerProfile!.pubkey, null);
-  assert.deepEqual(p.unresolved, ["poolState", "workerProfile"]);
+  assert.equal(by.pool_state!.pubkey, null);
+  assert.equal(by.worker_profile!.pubkey, null);
+  assert.deepEqual(p.unresolved, ["pool_state", "worker_profile"]);
   assert.equal(p.signerRequired, MODERATOR);
 });
 

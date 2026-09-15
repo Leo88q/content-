@@ -1,16 +1,49 @@
 {
-  "_comment": "Спецификация инструкции moderate. Единственный источник истины для backend и клиентского кода. Сверяется с target/idl/sixsec.json в CI (scripts/check_idl_spec.py) — расхождение ловится автоматически, а не на проде.",
+  "_comment": "Спецификация инструкции moderate. Единственный источник истины для backend и клиента. Имена — snake_case, как в IDL Anchor 1.x (проверено CI-прогоном 34921383163: camelCase не совпал). Сверяется с target/idl/sixsec.json в CI (scripts/check_idl_spec.py).",
   "instruction": "moderate",
   "args": [
-    { "name": "approve", "type": "bool" },
-    { "name": "tierId", "type": { "option": "u8" } },
-    { "name": "reason", "type": { "option": "string" } }
+    {
+      "name": "approve",
+      "type": "bool"
+    },
+    {
+      "name": "tier_id",
+      "type": {
+        "option": "u8"
+      }
+    },
+    {
+      "name": "reason",
+      "type": {
+        "option": "string"
+      }
+    }
   ],
   "accounts": [
-    { "name": "moderator", "isMut": true, "isSigner": true },
-    { "name": "task", "isMut": false, "isSigner": false },
-    { "name": "submission", "isMut": true, "isSigner": false },
-    { "name": "poolState", "isMut": false, "isSigner": false },
-    { "name": "workerProfile", "isMut": true, "isSigner": false }
+    {
+      "name": "moderator",
+      "isMut": true,
+      "isSigner": true
+    },
+    {
+      "name": "task",
+      "isMut": false,
+      "isSigner": false
+    },
+    {
+      "name": "submission",
+      "isMut": true,
+      "isSigner": false
+    },
+    {
+      "name": "pool_state",
+      "isMut": false,
+      "isSigner": false
+    },
+    {
+      "name": "worker_profile",
+      "isMut": true,
+      "isSigner": false
+    }
   ]
 }
