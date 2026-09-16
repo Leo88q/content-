@@ -1,0 +1,506 @@
+name: CI
+
+on:
+  push:
+    branches: [arena/01a0a1f6-content, main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  # Пины из ADR-0005. Менять только новым ADR.
+  ANCHOR_VERSION: "1.2.0"
+  RUST_VERSION: "1.89.0"
+  # 3.1.10 вместо рекомендованных для Anchor 1.2.0 4.1.2 — вынужденно, см. ADR-0013.
+  # litesvm 0.10 (единственная линия, совместимая по типам с solana-* ^3, которые
+  # пинит anchor-lang 1.2.0) тянет solana-bpf-loader-program = "3.1.0" и не может
+  # загрузить ELF, собранный платформенными инструментами 4.x: InvalidAccountData.
+  SOLANA_VERSION: "3.1.10"
+
+permissions:
+  # write нужен одному шагу: он коммитит Cargo.lock, если его нет в репозитории.
+  contents: write
+  issues: write
+  # Нужен для actions/upload-artifact. Без него загрузка артефакта может
+  # получить 403 — в run 34919251649 так и произошло.
+  actions: write
+
+jobs:
+  program:
+    # ubuntu-24.04 намеренно: пре собранный бинарник Anchor требует GLIBC >= 2.39.
+    # На ubuntu-22.04 (glibc 2.35) он не запустится.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # Пин, а не @stable. Со stable среда сборки менялась без единого коммита:
+      # выход нового Rust ломал сборку под sbpfv3-solana-solana (run 34922270030 —
+      # «can't find crate for std», при том что за полчаса до этого всё собиралось).
+      # 1.89 — MSRV для линии Anchor 1.x / Solana CLI 3.1.x.
+      - name: Install Rust ${{ env.RUST_VERSION }}
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry and target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          # Cargo.lock в ключах обязателен: иначе кэш переживает смену версий
+          # зависимостей и сборка использует артефакты от другого разрешения.
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'programs/**/Cargo.toml') }}
+
+      - name: Install Solana CLI ${{ env.SOLANA_VERSION }}
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/anza-xyz/agave/releases/download/v${SOLANA_VERSION}/solana-release-x86_64-unknown-linux-gnu.tar.bz2" -o solana.tar.bz2
+          tar jxf solana.tar.bz2
+          echo "$PWD/solana-release/bin" >> "$GITHUB_PATH"
+          ./solana-release/bin/solana --version
+
+      - name: Install Anchor CLI ${{ env.ANCHOR_VERSION }}
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/coral-xyz/anchor/releases/download/v${ANCHOR_VERSION}/anchor-${ANCHOR_VERSION}-x86_64-unknown-linux-gnu" -o anchor
+          chmod +x anchor
+          sudo mv anchor /usr/local/bin/anchor
+          anchor --version
+
+      - name: Toolchain diagnostics
+        run: |
+          set -uo pipefail
+          {
+            echo "===== toolchain ====="
+            solana --version || true
+            anchor --version || true
+            cargo-build-sbf --version || true
+            # Без этих строк причину «can't find crate for std» не установить:
+            # std для sbpf-таргета живёт в sysroot platform-tools, и нужно видеть,
+            # какой rustc фактически используется и что лежит в sysroot.
+            echo "--- rust ---"
+            rustc --version || true
+            cargo --version || true
+            rustup show 2>/dev/null | head -20 || true
+            echo "--- platform-tools: где фактически лежит ---"
+            # Угаданный путь ~/.cache/solana/v1.52 в прошлом прогоне не существовал,
+            # поэтому проверка ничего не дала. Ищем широко.
+            find "${HOME}/.cache" -maxdepth 6 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -5 || true
+            find "${HOME}/.cache" -maxdepth 4 -type d -name "v1.*" 2>/dev/null | head -5 || true
+            echo "--- есть ли std для sbpf-таргета ---"
+            find "${HOME}/.cache" -path "*sbpfv3-solana-solana*" -name "libstd*" 2>/dev/null | head -5 || echo "libstd для sbpfv3 НЕ НАЙДЕН"
+
+            echo "--- Cargo.lock ---"
+            if [ -f Cargo.lock ]; then echo "закоммичен: $(git ls-files --error-unmatch Cargo.lock 2>/dev/null && echo да || echo 'есть на диске, но не в git')"; else echo "ОТСУТСТВУЕТ — версии зависимостей плавают"; fi
+            echo "--- пин из Anchor.toml ---"
+            grep -E "anchor_version|solana_version" Anchor.toml
+          } 2>&1 | tee -a /tmp/ci.log
+
+      # Порядок обязателен: интеграционные тесты подключают программу через
+      # include_bytes!(".../deploy/sixsec.so"), поэтому .so должен существовать
+      # ДО компиляции тестов. anchor build идёт первым.
+      - name: Build program (BPF)
+        id: build
+        continue-on-error: true
+        run: |
+          # ВАЖНО: GitHub Actions запускает шаги как `bash -e`, и `set -uo
+          # pipefail` флаг -e НЕ снимает. Пока здесь не было set +e, шаг
+          # умирал на первой неудачной сборке и цикл повторных попыток не
+          # выполнялся ни разу (run 34924345358: в логе только «попытка 1»).
+          set -uo pipefail
+          set +e
+          # Принудительная пересборка: кэш target/ переживает прогоны, и anchor build
+          # может переиспользовать .so, собранный предыдущим тулчейном. Без этого
+          # смена версии Solana в Anchor.toml не попадает в артефакт.
+          rm -rf target/deploy target/sbf-build target/release
+          # Повторные попытки: ошибка E0463 «can't find crate for std,
+          # sbpfv3-solana-solana target may not be installed» в run 34922270030
+          # возникла при неизменном Rust-коде и за полчаса до этого не возникала.
+          # Диагностика показала, что каталога platform-tools нет вообще — то есть
+          # sysroot недокачался. cargo build-sbf при этом не падает сразу, а
+          # доходит до компиляции и ошибку выдаёт уже на зависимостях.
+          # Переустановка между попытками — рекомендованный способ лечения
+          # (cargo build-sbf --force-tools-install / очистка ~/.cache/solana).
+          # Что показал run 34924770996 (первый прогон с рабочим set +e):
+          #   попытка 1  anchor build            -> E0463, sixsec.so НЕТ
+          #   попытка 2  cargo build-sbf         -> sixsec.so ЕСТЬ
+          #   попытка 3  anchor build (повторно) -> снова E0463
+          # В verbose-логе попытки 2 видно, что делает build-sbf:
+          #   + ./platform-tools/rust/bin/rustc --print sysroot
+          #   + rustup toolchain link 1.89.0-sbpf-solana-v1.52 platform-tools/rust
+          # То есть sysroot в порядке и cargo build-sbf умеет его подключить, а
+          # anchor build — нет. Значит бит не тулчейн, а обёртка. Поэтому .so
+          # собираем напрямую, а IDL получаем отдельно: `anchor idl build`
+          # генерирует его через хостовый `cargo test` (см. cli/src/lib.rs
+          # v1.2.0, IdlCommand::Build: «Arguments to pass to the underlying
+          # `cargo test` command»), а хостовая компиляция в этом же прогоне
+          # проходит — 41 тест зелёный.
+          BUILD_OK=0
+
+          # ВАЖНО: report() только ПЕЧАТАЕТ. Присваивать BUILD_OK внутри неё
+          # нельзя — блок выполняется как { … } | tee, а конвейер запускает
+          # группу в подоболочке, и присваивание в родителя не попадает.
+          # Проверено: снаружи BUILD_OK остаётся 0, шаг падал бы всегда.
+          # Поэтому решение принимается в родительской оболочке через have_both.
+          report() {
+            echo "----- артефакты -----"
+            if [ -f target/deploy/sixsec.so ]; then echo "sixsec.so ЕСТЬ"; else echo "sixsec.so НЕТ"; fi
+            if [ -f target/idl/sixsec.json ]; then echo "sixsec.json ЕСТЬ"; else echo "sixsec.json НЕТ"; fi
+            find "${HOME}/.cache" -maxdepth 7 -type d -name "sbpfv3-solana-solana" 2>/dev/null | head -3 || true
+          }
+          have_both() {
+            [ -f target/deploy/sixsec.so ] && [ -f target/idl/sixsec.json ]
+          }
+
+          {
+            echo "===== попытка 1: anchor build ====="
+            echo "RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN:-<unset>}"
+            echo "rustc: $(command -v rustc)"
+            anchor build 2>&1
+            report
+          } | tee -a /tmp/ci.log
+          have_both && BUILD_OK=1
+
+          if [ "$BUILD_OK" != "1" ]; then
+            {
+              echo "===== попытка 2: cargo build-sbf + anchor idl build ====="
+              cargo build-sbf --manifest-path programs/sixsec/Cargo.toml 2>&1
+              mkdir -p target/idl
+              anchor idl build --program-name sixsec --out target/idl/sixsec.json 2>&1
+              report
+            } | tee -a /tmp/ci.log
+            have_both && BUILD_OK=1
+          fi
+
+          if [ "$BUILD_OK" != "1" ]; then
+            {
+              echo "===== попытка 3: переустановка platform-tools и повтор ====="
+              rm -rf "${HOME}/.cache/solana"
+              cargo build-sbf --force-tools-install --manifest-path programs/sixsec/Cargo.toml 2>&1
+              anchor idl build --program-name sixsec --out target/idl/sixsec.json 2>&1
+              report
+            } | tee -a /tmp/ci.log
+            have_both && BUILD_OK=1
+          fi
+
+          if [ "$BUILD_OK" = "1" ]; then
+            echo "сборка удалась" | tee -a /tmp/ci.log
+          else
+            echo "сборка провалилась во всех попытках" | tee -a /tmp/ci.log
+            # Без exit 1 шаг отчитался бы как success, и Gate показал бы
+            # ложно-зелёную сборку на фоне упавших тестов.
+            exit 1
+          fi
+          # anchor build может вернуть 0, не произведя артефактов. Проверяем факт
+          # сборки, а не код возврата: нет .so = программа не собралась.
+          test -f target/idl/sixsec.json
+          test -f target/deploy/sixsec.so
+          ls -l target/idl/ target/deploy/
+          {
+            echo "--- ELF: e_flags содержит версию sBPF ---"
+            python3 - <<'PYEOF'
+          import struct
+          d = open("target/deploy/sixsec.so","rb").read(64)
+          assert d[:4] == b"\x7fELF", "не ELF"
+          ei_class = d[4]
+          e_flags = struct.unpack_from("<I", d, 48)[0]
+          print(f"ELF class={ei_class} (2=64-bit) e_flags={e_flags} -> sbpf v{e_flags}")
+          PYEOF
+          } 2>&1 | tee -a /tmp/ci.log
+
+      # Все проверки идут с continue-on-error и пишут в общий лог: так за один
+      # прогон видно все ошибки сразу, а не по одной на итерацию.
+      # pipefail обязателен: без него код возврата пайплайна берётся у tee, и
+      # падение cargo выглядело бы как успех (run 34906081661).
+      # Без Cargo.lock каждый прогон разрешает самые свежие версии зависимостей,
+      # то есть сборка невоспроизводима — в run 34922270030 это проявилось как
+      # serde_core v1.0.229 / borsh v1.8.1 / syn v3.0.5 и падение сборки.
+      # Для программы, которую ждёт верифицируемая сборка и аудит (Фазы 7-8),
+      # lock-файл обязателен. Сгенерировать его в песочнице нельзя (нет cargo и
+      # доступа к crates.io), поэтому первый прогон коммитит его сам.
+      - name: Commit Cargo.lock if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          if git ls-files --error-unmatch Cargo.lock >/dev/null 2>&1; then
+            echo "Cargo.lock уже в репозитории"
+            exit 0
+          fi
+          if [ ! -f Cargo.lock ]; then
+            echo "Cargo.lock не создан сборкой — коммитить нечего"
+            exit 0
+          fi
+          git config user.name "sixsec-ci"
+          git config user.email "ci@sixsec.invalid"
+          git add Cargo.lock
+          # [skip ci] обязателен: иначе коммит запускает новый прогон по кругу.
+          git commit -m "chore: зафиксировать Cargo.lock для воспроизводимой сборки [skip ci]"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
+          echo "Cargo.lock закоммичен"
+
+      - name: Unit tests (pool reservation logic)
+        id: tests
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          {
+            echo "===== cargo test --lib ====="
+            cargo test --lib --package sixsec -- --nocapture 2>&1
+          } | tee -a /tmp/ci.log
+
+      - name: Integration tests (LiteSVM)
+        id: itests
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          {
+            echo "===== cargo test --test '*' (LiteSVM) ====="
+            cargo test --package sixsec --tests -- --nocapture --test-threads=1 2>&1
+          } | tee -a /tmp/ci.log
+
+      # Backend отдаёт кошельку описание инструкции, и оно обязано совпадать с
+      # программой. Расхождение не видно ни компилятору, ни юнит-тестам: оно
+      # проявляется только при попытке собрать транзакцию. Такой баг уже был —
+      # Option-аргументы и один аккаунт из пяти.
+      - name: Verify instruction spec against IDL
+        id: spec
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          python3 scripts/check_idl_spec.py target/idl/sixsec.json
+
+      - name: Clippy
+        id: clippy
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          {
+            echo "===== cargo clippy ====="
+            cargo clippy --package sixsec --all-targets 2>&1
+          } | tee -a /tmp/ci.log
+
+      - name: Upload IDL artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        # continue-on-error обязателен: загрузка артефакта НЕ является проверкой
+        # кода. В run 34919251649 она упала с «403 Forbidden» от промежуточного
+        # хранилища при том, что сборка и все 41 тест прошли — и покраснела
+        # весь run. Вердикт определяет gate по build/tests/itests/clippy.
+        continue-on-error: true
+        with:
+          name: sixsec-idl
+          path: target/idl/
+          if-no-files-found: ignore
+
+      # Зелёный статус сам по себе не доказывает, что тесты действительно
+      # запустились (в run 34906081661 шаги "прошли" за 0-1 секунду, не сделав
+      # ничего). Поэтому публикуем фактический результат всегда, а не только при падении.
+      - name: Publish verification summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          {
+            echo "### Фактические результаты прогона"
+            echo
+            echo "**cargo test:**"
+            echo '```'
+            grep -E "^running [0-9]+ test|^test result:" /tmp/ci.log || echo "НЕТ СТРОК О РЕЗУЛЬТАТЕ ТЕСТОВ"
+            echo '```'
+            echo
+            echo "**Инструкции в собранном IDL:**"
+            echo '```'
+            if [ -f target/idl/sixsec.json ]; then
+              jq -r '"name: \(.name)", "instructions: \(.instructions | length)", (.instructions[].name)' target/idl/sixsec.json
+              echo "accounts: $(jq -r '.accounts | length' target/idl/sixsec.json)"
+              echo "errors:   $(jq -r '.errors | length' target/idl/sixsec.json)"
+              echo "events:   $(jq -r '.events | length' target/idl/sixsec.json)"
+            else
+              echo "IDL ОТСУТСТВУЕТ — программа не собралась"
+            fi
+            echo '```'
+            echo
+            echo "**Артефакты сборки:**"
+            echo '```'
+            ls -l target/deploy/*.so target/idl/*.json 2>/dev/null || echo "нет артефактов"
+            echo '```'
+          } > /tmp/summary.md
+          gh issue comment 1 --body-file /tmp/summary.md
+
+      # Логи раннеров из этой песочницы не скачать (хосты blob.core.windows.net
+      # и results-receiver.actions недоступны), поэтому при падении CI сам
+      # публикует лог в issue — туда доступ через api.github.com есть.
+      - name: Publish log to issue on failure
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          FAILED="no"
+          if [ "${{ steps.tests.outcome }}" != "success" ] \
+             || [ "${{ steps.itests.outcome }}" != "success" ] \
+             || [ "${{ steps.clippy.outcome }}" != "success" ] \
+             || [ "${{ steps.spec.outcome }}" != "success" ] \
+             || [ "${{ steps.build.outcome }}" != "success" ]; then
+            FAILED="yes"
+          fi
+          if [ "$FAILED" != "yes" ]; then
+            echo "all green"; exit 0
+          fi
+          TITLE="CI failure log (auto)"
+          # GitHub ограничивает тело issue ~64 КБ. Только хвоста недостаточно:
+          # диагностика тулчейна идёт в начале лога и терялась при обрезке
+          # (проверено на run 34911925781). Берём голову и хвост.
+          # $(...) — подстановка команды. Здесь стояло $'...' (ANSI-C quoting),
+          # из-за чего в issue публиковался ТЕКСТ команды, а не лог. Механизм не
+          # работал ни разу, а именно на него была ставка как на замену
+          # недоступным логам раннера.
+          if [ -s /tmp/ci.log ]; then
+            # ANSI-последовательности раздувают лог в разы и съедают бюджет
+            # issue в ~64 КБ: в run 34923774605 из-за этого вырезалась середина,
+            # где были попытки 2-3 и посмертная диагностика sysroot.
+            sed 's/\x1b\[[0-9;]*m//g; s/\r//g' /tmp/ci.log > /tmp/ci.plain
+            echo "лог: $(wc -c < /tmp/ci.log) байт с ANSI -> $(wc -c < /tmp/ci.plain) без ANSI"
+            {
+              # Ключевые строки всегда попадают в отчёт, даже если тело обрезано.
+              echo "===== КЛЮЧЕВЫЕ СТРОКИ ====="
+              grep -nE "попытка|артефактов|сборка (удалась|провалилась)|E0463|^error|error\[|sysroot|libstd|platform-tools|sixsec\.so|sixsec\.json|test result|FAILED|panicked|rustc:|RUSTUP_TOOLCHAIN" /tmp/ci.plain | head -150 || true
+              echo
+              echo "размеры: raw=$(wc -c < /tmp/ci.log) plain=$(wc -c < /tmp/ci.plain)" >> /tmp/ci.plain
+              if [ "$(wc -c < /tmp/ci.plain)" -le 58000 ]; then
+                echo "===== ЛОГ ЦЕЛИКОМ ====="
+                cat /tmp/ci.plain
+              else
+                echo "===== НАЧАЛО ЛОГА ====="
+                head -c 8000 /tmp/ci.plain
+                echo
+                echo "... [середина обрезана] ..."
+                echo
+                echo "===== КОНЕЦ ЛОГА ====="
+                tail -c 48000 /tmp/ci.plain
+              fi
+            } > /tmp/ci.body
+            BODY=$(cat /tmp/ci.body)
+          else
+            BODY="/tmp/ci.log пуст или отсутствует — шаги не дошли до записи"
+          fi
+          BODY=$(printf '%s' "$BODY" | tr -d '\000')
+          echo "размер публикуемого лога: $(printf '%s' "$BODY" | wc -c) байт"
+          NUM=$(gh issue list --search "$TITLE in:title" --state all --limit 1 --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -z "$NUM" ]; then
+            printf '%s\n' "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /tmp/body.md
+            printf '```\n%s\n```\n' "$BODY" >> /tmp/body.md
+            gh issue create --title "$TITLE" --body-file /tmp/body.md
+          else
+            {
+              printf 'Run: %s/%s/actions/runs/%s\n\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+              printf '```\n%s\n```\n' "$BODY"
+            } > /tmp/body.md
+            gh issue comment "$NUM" --body-file /tmp/body.md
+          fi
+          # Шаг НЕ завершается ошибкой: его задача — опубликовать лог.
+          # Раньше здесь стоял exit 1, из-за чего в отчёте упавшим выглядел
+          # «Publish log to issue on failure», а не настоящая причина падения.
+
+      # Вердикт — отдельным шагом, чтобы в списке шагов было видно, что именно
+      # провалилось: сборка, тесты, интеграция, clippy или сверка с IDL.
+      - name: Gate
+        if: always()
+        run: |
+          set -uo pipefail
+          FAIL=0
+          for pair in "build:${{ steps.build.outcome }}" \
+                      "tests:${{ steps.tests.outcome }}" \
+                      "itests:${{ steps.itests.outcome }}" \
+                      "spec:${{ steps.spec.outcome }}" \
+                      "clippy:${{ steps.clippy.outcome }}"; do
+            name="${pair%%:*}"; outcome="${pair#*:}"
+            if [ "$outcome" != "success" ]; then
+              echo "::error::$name: $outcome"
+              FAIL=1
+            fi
+          done
+          exit $FAIL
+
+  # Отдельная job, а не шаг внутри program: падение backend-тестов не должно
+  # маскироваться gate'ом Rust-сборки, и наоборот. Зависимости не пересекаются.
+  backend:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        # set -uo pipefail везде: `| tee` возвращает статус tee и раньше это
+        # давало ложно-зелёный CI.
+        run: |
+          set -uo pipefail
+          npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+
+      - name: Typecheck (strict)
+        id: be_typecheck
+        run: |
+          set -uo pipefail
+          npm run typecheck
+
+      - name: Unit tests
+        # Защита от ложно-зелёного CI: `node --test` с пустым глобом выходит с 0
+        # и «0 tests». Шаг обязан упасть, если тесты не запустились или есть
+        # падения. pipefail нужен, чтобы `| tee` не подменял статус npm.
+        id: be_tests
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          npm test 2>&1 | tee test-output.txt
+          echo "--- проверка, что тесты действительно отработали ---"
+          grep -qE '^# pass [1-9][0-9]*' test-output.txt \
+            || { echo "::error::тесты не запустились (нет ни одного pass)"; exit 1; }
+          grep -qE '^# fail 0$' test-output.txt \
+            || { echo "::error::есть упавшие тесты"; exit 1; }
+          grep -E '^# (tests|pass|fail|skipped)' test-output.txt
+
+      - name: Publish backend summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          {
+            echo "## Backend — job \`${{ job.status }}\`"
+            echo
+            echo "| Шаг | Итог |"
+            echo "|---|---|"
+            echo "| Typecheck (strict) | ${{ steps.be_typecheck.outcome }} |"
+            echo "| Unit tests | ${{ steps.be_tests.outcome }} |"
+            echo
+            echo '```'
+            # defaults.run.working-directory = backend действует на все run-шаги
+            # этой job'ы, поэтому путь относительный, а не backend/...
+            if [ -f test-output.txt ]; then
+              { head -c 4000 test-output.txt; echo; echo "[…]"; tail -c 6000 test-output.txt; }
+            else
+              echo "test-output.txt не найден — тесты не дошли до записи"
+            fi
+            echo '```'
+          } > /tmp/backend-summary.md
+          NUM=$(gh issue list --state all --limit 1 --json number --jq '.[0].number')
+          if [ -n "$NUM" ] && [ "$NUM" != "null" ]; then
+            gh issue comment "$NUM" --body-file /tmp/backend-summary.md
+          fi
+
+      - name: Backend gate
+        if: always()
+        run: |
+          set -uo pipefail
+          [ "${{ steps.be_tests.outcome }}" = "success" ] || exit 1

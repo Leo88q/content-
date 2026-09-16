@@ -1,0 +1,28 @@
+[toolchain]
+anchor_version = "1.2.0"
+# 3.1.10, а не рекомендованные для Anchor 1.2.0 4.1.2 — см. ADR-0013.
+# ВАЖНО: этот пин перекрывает версию CLI из окружения, поэтому менять её в CI
+# бесполезно (проверено: run 34910476210 собрал под 4.1.2 несмотря на env).
+# litesvm 0.10 тянет solana-bpf-loader-program = "3.1.0" и не грузит ELF от 4.x.
+# Перед деплоем в Фазе 8 пересмотреть: деплой должен идти под 4.1.2.
+solana_version = "3.1.10"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+sixsec = "SixSec1111111111111111111111111111111111111"
+
+[programs.devnet]
+sixsec = "SixSec1111111111111111111111111111111111111"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "echo 'integration tests: pending Phase 2 — см. PROGRESS.md'"
