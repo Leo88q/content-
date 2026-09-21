@@ -1,17 +1,17 @@
 {
-  "slug": "zebra-vs-stamp",
+  "slug": "zebra-vs-jeanjak",
   "token1": {
     "symbol": "ZEBRA",
-    "change_24h": 525.206,
+    "change_24h": 181.514,
     "address": "8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d",
-    "volume": 6968864.5598256
+    "volume": 7062059.47886114
   },
   "token2": {
-    "symbol": "Stamp",
-    "change_24h": 245.094,
-    "address": "Bgf45Fjqeobgd5viMX8P8AfhiydRewEFKPd7nmcFNQRb",
-    "volume": 13523528.747245
+    "symbol": "JEANJAK",
+    "change_24h": 72.784,
+    "address": "7kXuEjAZ8xcH5G2XmKaUcMeraxvVVZndf7qryDiSW7o5",
+    "volume": 5482796.64683539
   },
-  "verdict": "По ончейн-метрикам TalkChart: ZEBRA опережает по ценовому импульсу (+525.2% против +245.1%). Кроме того, у Stamp более надёжная ликвидность ($209.9K против $58.1K). Краткосрочный фаворит по совокупности факторов: Stamp.",
-  "updated_at": "2026-09-21 14:29 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: ZEBRA опережает по ценовому импульсу (+181.5% против +72.8%). Кроме того, у JEANJAK более надёжная ликвидность ($276.2K против $38.6K). Краткосрочный фаворит по совокупности факторов: JEANJAK.",
+  "updated_at": "2026-09-21 14:55 UTC"
 }
