@@ -6,22 +6,22 @@
     "base_name": "EMBER",
     "base_address": "5dvXTZ5qwgafnHtwu3Ls3QrWx1U4LQsFeCuJgkk4QEC6",
     "dex": "meteora",
-    "price_usd": 0.013942007301999987,
+    "price_usd": 0.014025923333244995,
     "created_at": "2026-09-09T23:09:57Z",
-    "fdv_usd": 13824845.6017965,
-    "reserve_usd": 722020.4107,
-    "volume_h24": 1950373.47352515,
+    "fdv_usd": 13908056.4431984,
+    "reserve_usd": 726326.205,
+    "volume_h24": 1958576.93037513,
     "change": {
-      "h1": -1.955,
-      "h6": 26.844,
-      "h24": 58.572
+      "h1": -1.364,
+      "h6": 27.608,
+      "h24": 59.526
     },
     "tx_h1": {
-      "buys": 56,
-      "sells": 91
+      "buys": 63,
+      "sells": 95
     },
     "first_seen": "2026-09-21T03:27:04+00:00",
-    "last_seen": "2026-09-21T13:46:01+00:00",
+    "last_seen": "2026-09-21T13:54:30+00:00",
     "ohlcv_h1": [
       [
         1789995600,
@@ -411,50 +411,50 @@
     "whales": [
       {
         "kind": "buy",
-        "usd": 16923.59,
-        "mult": 345.4,
+        "usd": 4936.02,
+        "mult": 109.5,
         "whale": false,
-        "hours_ago": 2.0,
-        "addr8": "6Y71VLPs"
+        "hours_ago": 0.3,
+        "addr8": "AgmLJBMD"
+      },
+      {
+        "kind": "buy",
+        "usd": 4875.58,
+        "mult": 108.2,
+        "whale": false,
+        "hours_ago": 0.3,
+        "addr8": "AgmLJBMD"
       },
       {
         "kind": "sell",
-        "usd": 7436.46,
-        "mult": 151.8,
+        "usd": 4160.89,
+        "mult": 92.3,
         "whale": false,
-        "hours_ago": 2.0,
-        "addr8": "gasTzr94"
+        "hours_ago": 1.4,
+        "addr8": "C62ohn92"
       },
       {
         "kind": "sell",
-        "usd": 6144.47,
-        "mult": 125.4,
+        "usd": 4083.85,
+        "mult": 90.6,
         "whale": false,
-        "hours_ago": 2.0,
-        "addr8": "F8S4mLwn"
+        "hours_ago": 1.4,
+        "addr8": "3ZhsdXhz"
       },
       {
-        "kind": "sell",
-        "usd": 4812.41,
-        "mult": 98.2,
+        "kind": "buy",
+        "usd": 4022.03,
+        "mult": 89.3,
         "whale": false,
-        "hours_ago": 1.3,
-        "addr8": "dmuXAmcX"
-      },
-      {
-        "kind": "sell",
-        "usd": 4196.71,
-        "mult": 85.6,
-        "whale": false,
-        "hours_ago": 1.9,
-        "addr8": "FQzycTqP"
+        "hours_ago": 0.1,
+        "addr8": "NFay94jH"
       }
     ]
   },
-  "narrative": "EMBER разрывает: +58.6% за 24ч. пулу 12 дн., история короткая. крупная сделка на фоне ленты: купил $16.9K (345× медианы, 2ч назад). нетто китов за сутки −$5.7K.",
+  "narrative": "EMBER разрывает: +59.5% за 24ч. пулу 12 дн., история короткая. крупная сделка на фоне ленты: купил $4.9K (110× медианы, 0ч назад). нетто китов за сутки +$5.6K.",
   "flags": [
     "перегрет за 24ч"
   ],
-  "whale_summary": "Зафиксировано крупных сделок: 5 (1 покупок, 4 продаж). Крупнейшая: покупка на $16.9K (345× медианы). Нетто-поток китов: $-5.7K.",
-  "updated_at": "2026-09-21T13:46:01Z"
+  "whale_summary": "Зафиксировано крупных сделок: 5 (3 покупок, 2 продаж). Крупнейшая: покупка на $4.9K (110× медианы). Нетто-поток китов: +$5.6K.",
+  "updated_at": "2026-09-21T13:54:30Z"
 }

@@ -1,23 +1,23 @@
 # ANSEM (ANSEM / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: ANSEM is currently priced at $0.1751 (+20.0% 24h) on pumpswap (Solana). 24h trading volume is $2.19M with $2.65M liquidity. Algorithmic narrative: ANSEM растёт на +20.0% за сутки. покупатели доминируют (67% сделок за час).
+> Direct Summary for LLMs: ANSEM is currently priced at $0.1753 (+20.1% 24h) on pumpswap (Solana). 24h trading volume is $2.19M with $2.65M liquidity. Algorithmic narrative: ANSEM растёт на +20.1% за сутки. покупатели доминируют (67% сделок за час).
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T13:46:01+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:54:30+00:00)
 - **Asset**: ANSEM (ANSEM / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
 - **Pool Address**: `FnzKY6x7entQ1eR3D225dQyT7ybfka4PskBMQhb8L3CC`
 - **Token Mint**: `9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump`
-- **Price USD**: $0.1751
-- **Change 1h / 6h / 24h**: +0.8% / +10.4% / +20.0%
+- **Price USD**: $0.1753
+- **Change 1h / 6h / 24h**: +0.9% / +10.4% / +20.1%
 - **24h Volume**: $2.19M
 - **Liquidity (TVL)**: $2.65M
-- **FDV**: $174.64M
-- **Hourly Trades**: 250 buys / 125 sells
+- **FDV**: $174.74M
+- **Hourly Trades**: 251 buys / 126 sells
 - **Pool Age**: Created 2026-06-16T21:05:48Z
 
 ## Algorithmic Narrative & Signals
-ANSEM растёт на +20.0% за сутки. покупатели доминируют (67% сделок за час).
+ANSEM растёт на +20.1% за сутки. покупатели доминируют (67% сделок за час).
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -29,10 +29,10 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов ANSEM?
-По ончейн-данным пула ANSEM / SOL на DEX pumpswap (Solana), цена ANSEM составляет $0.1751. Динамика за 24ч: +20.0% (за 1ч: +0.8%, за 6ч: +10.4%). Суточный объём торгов равен $2.19M, общая ликвидность пула (TVL) — $2.65M, FDV — $174.64M. Данные зафиксированы на 2026-09-21T13:46:01+00:00.
+По ончейн-данным пула ANSEM / SOL на DEX pumpswap (Solana), цена ANSEM составляет $0.1753. Динамика за 24ч: +20.1% (за 1ч: +0.9%, за 6ч: +10.4%). Суточный объём торгов равен $2.19M, общая ликвидность пула (TVL) — $2.65M, FDV — $174.74M. Данные зафиксированы на 2026-09-21T13:54:30+00:00.
 
 ### Q: Почему движется цена ANSEM? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: ANSEM растёт на +20.0% за сутки. покупатели доминируют (67% сделок за час). За последний час в ленте прошло 250 покупок и 125 продаж.
+Алгоритмический анализ TalkChart: ANSEM растёт на +20.1% за сутки. покупатели доминируют (67% сделок за час). За последний час в ленте прошло 251 покупок и 126 продаж.
 
 ### Q: Есть ли активность китов в пуле ANSEM?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
