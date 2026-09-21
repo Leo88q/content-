@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TalkChart — графики, которые разговаривают | Solana trending</title>
+  <meta name="description" content="Живые чарты Solana с автоматическим нарративом: что произошло, кто двигает цену и какие риски. Алерты, шаринг-карточки, trending-пулы.">
+  <meta property="og:title" content="TalkChart — графики, которые разговаривают">
+  <meta property="og:description" content="Чарт + история за цифрами. Solana trending, алерты, карточки для шеринга.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="style.css">
+  <script src="games.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="logo">📈 <b>Talk</b>Chart <span class="beta">MVP</span></div>
+    <div class="tagline">графики, которые разговаривают</div>
+    <div class="top-right">
+      <span id="status"></span>
+      <button id="lang-btn" class="btn ghost">EN</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner"></div>
+
+  <main class="layout">
+    <aside class="col-left">
+      <div class="col-title">TRENDING · SOLANA</div>
+      <div id="pool-list" class="pool-list"></div>
+      <div class="col-title">ИГРЫ <span class="slot-tag">слот</span></div>
+      <div id="games" class="games"></div>
+    </aside>
+
+    <section class="col-main">
+      <div class="hdr">
+        <div>
+          <h1 id="hdr-name">—</h1>
+          <div id="hdr-dex" class="hdr-dex"></div>
+        </div>
+        <div class="hdr-px">
+          <div id="hdr-price">—</div>
+          <div id="hdr-change" class="hdr-change">—</div>
+        </div>
+        <div class="hdr-actions">
+          <div id="call-ui" class="call-ui"></div>
+          <button id="alert-btn" class="btn">🔔 Алерт</button>
+          <button id="share-btn" class="btn accent">⬇ Карточка для шеринга</button>
+        </div>
+      </div>
+      <div id="hdr-stats" class="stats"></div>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      <div id="narrative" class="narrative"></div>
+      <div class="col-title">🐋 WHALE RADAR <span class="slot-tag">сделки ≥ $25K · live</span></div>
+      <div id="whale-radar" class="whale-radar"><div class="mut">загрузка ленты сделок…</div></div>
+      <div id="cards-wrap">
+        <div class="col-title">🔥 КАРТОЧКИ ФАБРИКИ <span class="slot-tag">автоген · сегодня</span></div>
+        <div id="cards-strip" class="cards-strip"></div>
+      </div>
+      <div id="videos-wrap">
+        <div class="col-title">🎬 15-СЕКУНДНЫЕ ИСТОРИИ <span class="slot-tag">mp4 · клик = play</span></div>
+        <div id="videos-strip" class="videos-strip"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="interstitial" class="interstitial">
+    <div class="ist-box">
+      <div class="ist-title">6-секундная разминка: лови зелёные свечи 🕯</div>
+      <canvas id="ist-canvas"></canvas>
+      <div id="ist-score" class="ist-score"></div>
+      <div class="ist-actions">
+        <a id="ist-cta" class="btn accent" href="#" target="_blank" rel="noopener">Играть →</a>
+        <button id="ist-skip" class="btn ghost">Закрыть</button>
+      </div>
+      <div class="ist-note">Реклама показывается 1 раз на 5 переключений чартов — правило прокладки: utility first.</div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Данные: GeckoTerminal API (live) · snapshot 2026-09-21 (fallback) ·
+    Не является финансовым советом · talkchart — layer аудитории для игр студии
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
