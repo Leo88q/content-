@@ -2,7 +2,7 @@
 
 > Algorithmic Verdict: По ончейн-метрикам TalkChart: ZEBRA опережает по ценовому импульсу (+668.5% против +71.1%). Кроме того, у JEANJAK более надёжная ликвидность ($264.6K против $64.6K). Краткосрочный фаворит по совокупности факторов: JEANJAK.
 
-## Head-to-Head Metrics (Snapshot: 2026-09-21 13:54 UTC)
+## Head-to-Head Metrics (Snapshot: 2026-09-21 14:25 UTC)
 | Metric | ZEBRA | JEANJAK | Edge |
 |---|---|---|---|
 | 24h Price Change | +668.5% | +71.1% | ZEBRA |

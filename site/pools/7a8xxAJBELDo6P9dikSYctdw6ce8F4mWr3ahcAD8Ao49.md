@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: STONK is currently priced at $0.3516 (+20.5% 24h) on raydium-clmm (Solana). 24h trading volume is $6.89M with $7.21M liquidity. Algorithmic narrative: STONK растёт на +20.5% за сутки. стакан глубокий: $7.21M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T13:54:30+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T14:25:18+00:00)
 - **Asset**: STONK (STONK / SPYx)
 - **Network**: Solana
 - **DEX**: raydium-clmm
@@ -29,7 +29,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов STONK?
-По ончейн-данным пула STONK / SPYx на DEX raydium-clmm (Solana), цена STONK составляет $0.3516. Динамика за 24ч: +20.5% (за 1ч: +0.9%, за 6ч: -2.8%). Суточный объём торгов равен $6.89M, общая ликвидность пула (TVL) — $7.21M, FDV — $291.78M. Данные зафиксированы на 2026-09-21T13:54:30+00:00.
+По ончейн-данным пула STONK / SPYx на DEX raydium-clmm (Solana), цена STONK составляет $0.3516. Динамика за 24ч: +20.5% (за 1ч: +0.9%, за 6ч: -2.8%). Суточный объём торгов равен $6.89M, общая ликвидность пула (TVL) — $7.21M, FDV — $291.78M. Данные зафиксированы на 2026-09-21T14:25:18+00:00.
 
 ### Q: Почему движется цена STONK? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: STONK растёт на +20.5% за сутки. стакан глубокий: $7.21M ликвидности. За последний час в ленте прошло 661 покупок и 597 продаж.

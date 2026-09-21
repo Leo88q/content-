@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: STONK is currently priced at $0.3527 (+22.1% 24h) on meteora (Solana). 24h trading volume is $12.75M with $2.46M liquidity. Algorithmic narrative: STONK растёт на +22.1% за сутки.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T13:54:30+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T14:25:18+00:00)
 - **Asset**: STONK (STONK / SOL)
 - **Network**: Solana
 - **DEX**: meteora
@@ -29,7 +29,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов STONK?
-По ончейн-данным пула STONK / SOL на DEX meteora (Solana), цена STONK составляет $0.3527. Динамика за 24ч: +22.1% (за 1ч: +2.3%, за 6ч: -3.7%). Суточный объём торгов равен $12.75M, общая ликвидность пула (TVL) — $2.46M, FDV — $293.01M. Данные зафиксированы на 2026-09-21T13:54:30+00:00.
+По ончейн-данным пула STONK / SOL на DEX meteora (Solana), цена STONK составляет $0.3527. Динамика за 24ч: +22.1% (за 1ч: +2.3%, за 6ч: -3.7%). Суточный объём торгов равен $12.75M, общая ликвидность пула (TVL) — $2.46M, FDV — $293.01M. Данные зафиксированы на 2026-09-21T14:25:18+00:00.
 
 ### Q: Почему движется цена STONK? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: STONK растёт на +22.1% за сутки. За последний час в ленте прошло 400 покупок и 376 продаж.

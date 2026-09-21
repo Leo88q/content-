@@ -1,6 +1,6 @@
 # TalkChart Solana Pools Directory
 
-Total pools monitored: 26. Updated 2026-09-21 13:54 UTC.
+Total pools monitored: 26. Updated 2026-09-21 14:25 UTC.
 
 - [ANTFUN](https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.md) (ANTFUN / USDT): -81.0% 24h | Vol $48.59M | Liq $16.66M
 - [ZEC](https://leo88q.github.io/content-/site/pools/GTHKH8s82ZR8GTSFZ1dUu6wfdxhy59wpMShxzG5zjiPm.md) (ZEC / USDC): +7.4% 24h | Vol $26.43M | Liq $2.92M

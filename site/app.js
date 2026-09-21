@@ -491,7 +491,10 @@ function hideInterstitial() { $("#interstitial").classList.remove("show"); }
 function track(evt, id) {
   const rec = { evt, id, ts: Date.now(), pool: state.selected?.address };
   window.__SLOT_CLICKS__.push(rec);
-  // TODO(prod): navigator.sendBeacon("/api/track", JSON.stringify(rec));
+  try {
+    const k = `tc_${evt}_cnt`;
+    localStorage.setItem(k, (parseInt(localStorage.getItem(k), 10) || 0) + 1);
+  } catch (e) {}
   console.info("[track]", rec);
 }
 
