@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: PUMP is currently priced at $0.0044 (+9.1% 24h) on pumpswap (Solana). 24h trading volume is $4.75M with $22.90M liquidity. Algorithmic narrative: PUMP растёт на +9.1% за сутки. стакан глубокий: $22.90M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:13:52+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T12:49:56+00:00)
 - **Asset**: PUMP (PUMP / USDC)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -29,7 +29,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов PUMP?
-По ончейн-данным пула PUMP / USDC на DEX pumpswap (Solana), цена PUMP составляет $0.0044. Динамика за 24ч: +9.1% (за 1ч: -1.2%, за 6ч: +1.3%). Суточный объём торгов равен $4.75M, общая ликвидность пула (TVL) — $22.90M, FDV — $3.68B. Данные зафиксированы на 2026-09-21T12:13:52+00:00.
+По ончейн-данным пула PUMP / USDC на DEX pumpswap (Solana), цена PUMP составляет $0.0044. Динамика за 24ч: +9.1% (за 1ч: -1.2%, за 6ч: +1.3%). Суточный объём торгов равен $4.75M, общая ликвидность пула (TVL) — $22.90M, FDV — $3.68B. Данные зафиксированы на 2026-09-21T12:49:56+00:00.
 
 ### Q: Почему движется цена PUMP? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: PUMP растёт на +9.1% за сутки. стакан глубокий: $22.90M ликвидности. За последний час в ленте прошло 584 покупок и 434 продаж.

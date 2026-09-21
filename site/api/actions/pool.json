@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/ZEBRA_+1339.png",
+  "title": "TalkChart: ZEBRA (+1339.3%) — Solana On-Chain Radar",
+  "description": "ZEBRA разрывает: +1339.3% за 24ч. ускорение в последнем часе. объём $6.75M больше капы в 10.2× — бумага в огне. ликвидность тонкая ($88.1K) — движения будут резкими. пулу 1 дн. — чистая рулетка.\n\nОбъём: $6.75M · Ликвидность: $88.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп ZEBRA (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-EqFG72Z35r8cAV8mKu3UK2L8NUTR1ZNyMr88E4BnwN8Q"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

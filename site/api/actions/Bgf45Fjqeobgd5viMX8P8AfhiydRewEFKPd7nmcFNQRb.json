@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Stamp_+510.png",
+  "title": "TalkChart: Stamp (+510.2%) — Solana On-Chain Radar",
+  "description": "Stamp разрывает: +510.2% за 24ч. объём $13.31M больше капы в 2.9× — бумага в огне. пулу 1 дн. — чистая рулетка.\n\nОбъём: $13.31M · Ликвидность: $286.3K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Stamp (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-EKtmPPLaCbEEKiwoHHtV7TsRsmPXs5CMGtQtZFSiinsc"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Bgf45Fjqeobgd5viMX8P8AfhiydRewEFKPd7nmcFNQRb"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: CATE is currently priced at $0.1089 (+1.2% 24h) on pumpswap (Solana). 24h trading volume is $4.74M with $3.81M liquidity. Algorithmic narrative: CATE в боковике: +1.2% за сутки. стакан глубокий: $3.81M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:13:52+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T12:49:56+00:00)
 - **Asset**: CATE (CATE / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -29,7 +29,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов CATE?
-По ончейн-данным пула CATE / SOL на DEX pumpswap (Solana), цена CATE составляет $0.1089. Динамика за 24ч: +1.2% (за 1ч: +0.3%, за 6ч: +16.8%). Суточный объём торгов равен $4.74M, общая ликвидность пула (TVL) — $3.81M, FDV — $105.07M. Данные зафиксированы на 2026-09-21T12:13:52+00:00.
+По ончейн-данным пула CATE / SOL на DEX pumpswap (Solana), цена CATE составляет $0.1089. Динамика за 24ч: +1.2% (за 1ч: +0.3%, за 6ч: +16.8%). Суточный объём торгов равен $4.74M, общая ликвидность пула (TVL) — $3.81M, FDV — $105.07M. Данные зафиксированы на 2026-09-21T12:49:56+00:00.
 
 ### Q: Почему движется цена CATE? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: CATE в боковике: +1.2% за сутки. стакан глубокий: $3.81M ликвидности. За последний час в ленте прошло 372 покупок и 287 продаж.

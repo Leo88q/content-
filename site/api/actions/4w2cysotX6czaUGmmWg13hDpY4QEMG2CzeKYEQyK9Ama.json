@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/TROLL_+10.png",
+  "title": "TalkChart: TROLL (+9.9%) — Solana On-Chain Radar",
+  "description": "TROLL растёт на +9.9% за сутки. стакан глубокий: $3.48M ликвидности.\n\nОбъём: $1.31M · Ликвидность: $3.48M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп TROLL (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=4w2cysotX6czaUGmmWg13hDpY4QEMG2CzeKYEQyK9Ama"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

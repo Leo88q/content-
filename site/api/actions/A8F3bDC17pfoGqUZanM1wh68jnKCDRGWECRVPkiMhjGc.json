@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/FUKYEAH_-3.png",
+  "title": "TalkChart: FUKYEAH (-3.3%) — Solana On-Chain Radar",
+  "description": "FUKYEAH в боковике: -3.3% за сутки. продают в рынок (75% сделок за час). ликвидность тонкая ($32.2K) — движения будут резкими.\n\nОбъём: $104.0K · Ликвидность: $32.2K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп FUKYEAH (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-DUcjrSmisJATtaQY3K7LvKmCr357uWkjoSGRFnNEpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=A8F3bDC17pfoGqUZanM1wh68jnKCDRGWECRVPkiMhjGc"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

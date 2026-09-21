@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Stryker_-99.png",
+  "title": "TalkChart: Stryker (-99.2%) — Solana On-Chain Radar",
+  "description": "Stryker в обвале: -99.2% за 24ч. объём $1.72M больше капы в 290.5× — бумага в огне. ликвидность тонкая ($6.1K) — движения будут резкими. пулу 2 дн. — чистая рулетка.\n\nОбъём: $1.72M · Ликвидность: $6.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Stryker (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-G9QZfEPHtZrUF1arcUFvZgYn6zSQLZdvcjCuyhKrpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=EyeeG5fzZEigSQv7jUdxydePnsPL382KyVfXAANXVmeD"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

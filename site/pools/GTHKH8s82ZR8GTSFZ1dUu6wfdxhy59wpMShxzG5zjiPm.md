@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: ZEC is currently priced at $1.6K (+5.6% 24h) on orca (Solana). 24h trading volume is $25.69M with $2.82M liquidity. Algorithmic narrative: ZEC в боковике: +5.6% за сутки.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:13:52+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T12:49:56+00:00)
 - **Asset**: ZEC (ZEC / USDC)
 - **Network**: Solana
 - **DEX**: orca
@@ -29,7 +29,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов ZEC?
-По ончейн-данным пула ZEC / USDC на DEX orca (Solana), цена ZEC составляет $1.6K. Динамика за 24ч: +5.6% (за 1ч: +0.3%, за 6ч: +1.5%). Суточный объём торгов равен $25.69M, общая ликвидность пула (TVL) — $2.82M, FDV — $154.47M. Данные зафиксированы на 2026-09-21T12:13:52+00:00.
+По ончейн-данным пула ZEC / USDC на DEX orca (Solana), цена ZEC составляет $1.6K. Динамика за 24ч: +5.6% (за 1ч: +0.3%, за 6ч: +1.5%). Суточный объём торгов равен $25.69M, общая ликвидность пула (TVL) — $2.82M, FDV — $154.47M. Данные зафиксированы на 2026-09-21T12:49:56+00:00.
 
 ### Q: Почему движется цена ZEC? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: ZEC в боковике: +5.6% за сутки. За последний час в ленте прошло 3036 покупок и 2412 продаж.

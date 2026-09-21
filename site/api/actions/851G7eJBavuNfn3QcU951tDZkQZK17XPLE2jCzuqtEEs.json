@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/DONATED_-18.png",
+  "title": "TalkChart: DONATED (-18.3%) — Solana On-Chain Radar",
+  "description": "DONATED теряет -18.3% за сутки. давление продаж нарастает. продают в рынок (62% сделок за час). объём $1.76M больше капы в 47.8× — бумага в огне. ликвидность тонкая ($16.9K) — движения будут резкими. пулу 1 дн. — чистая рулетка.\n\nОбъём: $1.76M · Ликвидность: $16.9K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп DONATED (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-CBLgLg4rjkqqwXuZjR1WAqWet2vR68Vne32J2bFLpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=851G7eJBavuNfn3QcU951tDZkQZK17XPLE2jCzuqtEEs"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

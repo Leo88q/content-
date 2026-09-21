@@ -360,6 +360,52 @@ function shareCard() {
   a.click();
   track("share_card", p.address);
 }
+
+/* ---------- Solana-нативные интеграции: Jupiter Swap + Solana Blinks ---------- */
+function openJupiterSwap() {
+  const p = state.selected;
+  if (!p) return;
+  const mint = p.base_address;
+  if (window.Jupiter && typeof window.Jupiter.init === "function") {
+    try {
+      window.Jupiter.init({
+        displayMode: "modal",
+        endpoint: "https://api.mainnet-beta.solana.com",
+        formProps: {
+          initialOutputMint: mint || undefined,
+        },
+      });
+      track("open_jupiter_modal", p.address);
+      return;
+    } catch (e) {
+      console.warn("Jupiter Terminal init fallback:", e);
+    }
+  }
+  const url = mint ? `https://jup.ag/swap/SOL-${mint}` : "https://jup.ag";
+  window.open(url, "_blank", "noopener");
+  track("open_jupiter_link", p.address);
+}
+
+function copyBlinkUrl() {
+  const p = state.selected;
+  if (!p) return;
+  const origin = window.location.origin;
+  const path = window.location.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "");
+  const actionApi = `${origin}${path}/api/actions/${p.address}.json`;
+  const blinkUrl = `https://dial.to/?action=solana-action:${encodeURIComponent(actionApi)}`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(blinkUrl).then(() => {
+      alert(`🔗 Solana Blink скопирован!\n\nВставь эту ссылку в пост на X (Twitter), чтобы развернуть интерактивный виджет:\n\n${blinkUrl}`);
+    }).catch(() => {
+      prompt("Скопируй Solana Blink для X:", blinkUrl);
+    });
+  } else {
+    prompt("Скопируй Solana Blink для X:", blinkUrl);
+  }
+  track("copy_blink", p.address);
+}
+
 function wrapText(ctx, text, x, y, maxW, lh) {
   const words = text.split(" ");
   let line = "";
@@ -611,6 +657,8 @@ async function init() {
   $("#lang-btn").textContent = state.lang === "ru" ? "EN" : "RU";
   $("#lang-btn").addEventListener("click", toggleLang);
   $("#share-btn").addEventListener("click", shareCard);
+  $("#swap-btn").addEventListener("click", openJupiterSwap);
+  $("#blink-btn").addEventListener("click", copyBlinkUrl);
   $("#alert-btn").addEventListener("click", addAlert);
   $("#ist-close").addEventListener("click", hideInterstitial);
   $("#ist-skip").addEventListener("click", hideInterstitial);

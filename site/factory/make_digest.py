@@ -46,6 +46,8 @@ def main():
         txt.append(f"{i}. {p.get('base_symbol')} {fmt_pct(c24)} — {headline(p)}")
     md.append(f"---\n*{config.WATERMARK} · {config.SITE_URL}*")
     txt.append("")
+    top_addr = ranked[0].get("address")
+    txt.append(f"⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:{config.SITE_URL}/api/actions/{top_addr}.json")
     txt.append("Графики, которые разговаривают ↓")
     txt.append(config.SITE_URL)
 

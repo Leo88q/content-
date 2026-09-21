@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/PUMP_+9.png",
+  "title": "TalkChart: PUMP (+9.1%) — Solana On-Chain Radar",
+  "description": "PUMP растёт на +9.1% за сутки. стакан глубокий: $22.90M ликвидности.\n\nОбъём: $4.75M · Ликвидность: $22.90M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп PUMP (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

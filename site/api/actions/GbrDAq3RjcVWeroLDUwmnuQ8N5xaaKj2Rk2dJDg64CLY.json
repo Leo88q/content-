@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/EMBER_+56.png",
+  "title": "TalkChart: EMBER (+55.7%) — Solana On-Chain Radar",
+  "description": "EMBER разрывает: +55.7% за 24ч. пулу 12 дн., история короткая. крупная сделка на фоне ленты: купил $16.9K (339× медианы, 0ч назад). нетто китов за сутки +$46.7K.\n\nОбъём: $1.90M · Ликвидность: $725.2K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп EMBER (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-5dvXTZ5qwgafnHtwu3Ls3QrWx1U4LQsFeCuJgkk4QEC6"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=GbrDAq3RjcVWeroLDUwmnuQ8N5xaaKj2Rk2dJDg64CLY"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

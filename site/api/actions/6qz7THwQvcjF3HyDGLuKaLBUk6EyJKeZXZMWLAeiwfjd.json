@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/BP_+22.png",
+  "title": "TalkChart: BP (+22.3%) — Solana On-Chain Radar",
+  "description": "BP растёт на +22.3% за сутки. продают в рынок (69% сделок за час). суточный памп остывает. стакан глубокий: $3.92M ликвидности.\n\nОбъём: $12.41M · Ликвидность: $3.92M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп BP (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-BPxxfRCXkUVhig4HS1Lh7kZqV6SPJhzfEk4x6fVBjPCy"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=6qz7THwQvcjF3HyDGLuKaLBUk6EyJKeZXZMWLAeiwfjd"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

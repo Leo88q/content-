@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/CATE_+1.png",
+  "title": "TalkChart: CATE (+1.2%) — Solana On-Chain Radar",
+  "description": "CATE в боковике: +1.2% за сутки. стакан глубокий: $3.81M ликвидности.\n\nОбъём: $4.74M · Ликвидность: $3.81M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп CATE (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-Ai66LHZG9MCzg1WKdawwqduVAXpNDUuV8M3uyq5ppump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

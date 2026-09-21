@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/TIGRINO_-47.png",
+  "title": "TalkChart: TIGRINO (-46.6%) — Solana On-Chain Radar",
+  "description": "TIGRINO в обвале: -46.6% за 24ч. ликвидность тонкая ($157.7K) — движения будут резкими. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $3.4K (171× медианы, 0ч назад). нетто китов за сутки +$3.1K.\n\nОбъём: $1.88M · Ликвидность: $157.7K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп TIGRINO (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-91ryaCo5yGpYZM3bs6GUPs97VWJQj7RozBmqPULgpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=2fwy38cJcChCVySA9cd5SAFaEPtZQWN2ssFip43hnsHU"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

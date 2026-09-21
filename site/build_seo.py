@@ -444,6 +444,63 @@ def build_sitemap_xml(pools, now_iso):
     return "\n".join(xml_lines)
 
 
+def build_solana_actions(pools, site_dir):
+    """Генерация Solana Actions спецификации и Blinks эндпоинтов (Dialect / X)."""
+    actions_dir = os.path.join(site_dir, "api", "actions")
+    os.makedirs(actions_dir, exist_ok=True)
+
+    # 1. actions.json в корне сайта (спецификация Solana Actions)
+    actions_rule = {
+        "rules": [
+            {"pathPattern": "/api/actions/**", "apiPath": "/api/actions/**"},
+            {"pathPattern": "/pools/*", "apiPath": "/api/actions/*"},
+        ]
+    }
+    with open(os.path.join(site_dir, "actions.json"), "w", encoding="utf-8") as f:
+        json.dump(actions_rule, f, indent=2)
+
+    # 2. Действия для каждого пула
+    for p in pools:
+        addr = p["address"]
+        sym = p.get("base_symbol", "?")
+        baddr = p.get("base_address") or ""
+        c24 = (p.get("change") or {}).get("h24") or 0
+        text, _ = narrative(p)
+        action_payload = {
+            "icon": f"{config.SITE_URL}/cards/latest/{sym}_{c24:+.0f}.png",
+            "title": f"TalkChart: {sym} ({fmt_pct(c24)}) — Solana On-Chain Radar",
+            "description": f"{text}\n\nОбъём: {fmt_usd(p.get('volume_h24'))} · Ликвидность: {fmt_usd(p.get('reserve_usd'))}",
+            "label": "Своп через Jupiter",
+            "links": {
+                "actions": [
+                    {
+                        "label": f"⚡ Своп {sym} (Jupiter)",
+                        "href": f"https://jup.ag/swap/SOL-{baddr}" if baddr else "https://jup.ag",
+                    },
+                    {
+                        "label": "📈 Живой график + киты",
+                        "href": f"{config.SITE_URL}/index.html#pool={addr}",
+                    },
+                    {
+                        "label": "🎮 Игры студии",
+                        "href": f"{config.SITE_URL}/index.html#games",
+                    },
+                ]
+            },
+        }
+        with open(os.path.join(actions_dir, f"{addr}.json"), "w", encoding="utf-8") as f:
+            json.dump(action_payload, f, ensure_ascii=False, indent=2)
+
+    # 3. Общий pool.json (для топового актива)
+    if pools:
+        top = max(pools, key=lambda p: abs((p.get("change") or {}).get("h24") or 0))
+        top_addr = top["address"]
+        with open(os.path.join(actions_dir, f"{top_addr}.json"), encoding="utf-8") as f:
+            top_payload = json.load(f)
+        with open(os.path.join(actions_dir, "pool.json"), "w", encoding="utf-8") as f:
+            json.dump(top_payload, f, ensure_ascii=False, indent=2)
+
+
 def main():
     pools, source = load_pools()
     os.makedirs(config.POOLS_DIR, exist_ok=True)
@@ -587,9 +644,12 @@ def main():
     with open(os.path.join(site_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(sitemap_xml)
 
+    # 5. Solana Actions & Blinks спецификация (Dialect / X unfurl)
+    build_solana_actions(pools, site_dir)
+
     print(
         f"OK GEO: {len(pools)} пулов (HTML + MD + JSON) + ганнеры + каталоги + "
-        f"llms.txt + llms-full.txt + robots.txt + sitemap.xml ({source})"
+        f"llms.txt + llms-full.txt + robots.txt + sitemap.xml + Solana Actions ({source})"
     )
 
 

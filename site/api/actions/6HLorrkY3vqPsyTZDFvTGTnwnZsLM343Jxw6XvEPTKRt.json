@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/PUMPCAT_+72.png",
+  "title": "TalkChart: PUMPCAT (+72.3%) — Solana On-Chain Radar",
+  "description": "PUMPCAT разрывает: +72.3% за 24ч. объём $784.4K больше капы в 8.3× — бумага в огне. ликвидность тонкая ($31.3K) — движения будут резкими. пулу 2 дн. — чистая рулетка.\n\nОбъём: $784.4K · Ликвидность: $31.3K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп PUMPCAT (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-DFQHUegJWE29Xu3BUxPezqi77uyHURRyxJpdtyvLpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=6HLorrkY3vqPsyTZDFvTGTnwnZsLM343Jxw6XvEPTKRt"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

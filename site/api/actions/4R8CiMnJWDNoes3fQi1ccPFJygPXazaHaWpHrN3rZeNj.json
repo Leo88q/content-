@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/JEANPHIL_-32.png",
+  "title": "TalkChart: JEANPHIL (-31.9%) — Solana On-Chain Radar",
+  "description": "JEANPHIL в обвале: -31.9% за 24ч. давление продаж нарастает. объём $15.35M больше капы в 4.2× — бумага в огне. ликвидность тонкая ($223.5K) — движения будут резкими. пулу 2 дн. — чистая рулетка.\n\nОбъём: $15.35M · Ликвидность: $223.5K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп JEANPHIL (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
+      },
+      {
+        "label": "🎮 Игры студии",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
