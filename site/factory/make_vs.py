@@ -54,40 +54,41 @@ def render_vs_card(slug, p1, p2, out_path):
     # Разделитель и акценты
     draw.rectangle([8, 8, W - 9, H - 9], outline="#1c2530", width=2)
     # Левая колонка (Token 1)
-    draw.rectangle([20, 20, W // 2 - 10, H - 70], fill="#0f1912", outline="#26d07c", width=2)
+    draw.rectangle([20, 20, W // 2 - 20, H - 70], fill="#0f1912", outline="#26d07c", width=2)
     # Правая колонка (Token 2)
-    draw.rectangle([W // 2 + 10, 20, W - 20, H - 70], fill="#141924", outline="#3dd9f0", width=2)
+    draw.rectangle([W // 2 + 20, 20, W - 20, H - 70], fill="#141924", outline="#3dd9f0", width=2)
 
     f_sym = load_font(52, bold=True)
     f_pct = load_font(44, bold=True)
     f_sub = load_font(20, bold=False)
-    f_vs = load_font(60, bold=True)
+    f_vs = load_font(54, bold=True)
     f_mark = load_font(18, bold=False)
 
     s1, s2 = p1.get("base_symbol", "?"), p2.get("base_symbol", "?")
     c1 = (p1.get("change") or {}).get("h24") or 0
     c2 = (p2.get("change") or {}).get("h24") or 0
 
-    # Левый токен
+    # Левый токен (x=50)
     draw.text((50, 50), s1, fill="#ffffff", font=f_sym)
     draw.text((50, 120), fmt_pct(c1) + " (24ч)", fill="#26d07c" if c1 >= 0 else "#ff4d6a", font=f_pct)
-    draw.text((50, 190), f"Объём: {fmt_usd(p1.get('volume_h24'))}", fill="#e8edf2", font=f_sub)
-    draw.text((50, 230), f"Ликвидность: {fmt_usd(p1.get('reserve_usd'))}", fill="#e8edf2", font=f_sub)
-    draw.text((50, 270), f"DEX: {p1.get('dex', '?')}", fill="#8b98a5", font=f_sub)
-    draw.text((50, 310), f"FDV: {fmt_usd(p1.get('fdv_usd'))}", fill="#8b98a5", font=f_sub)
+    draw.text((50, 195), f"Объём: {fmt_usd(p1.get('volume_h24'))}", fill="#e8edf2", font=f_sub)
+    draw.text((50, 235), f"Ликвидность: {fmt_usd(p1.get('reserve_usd'))}", fill="#e8edf2", font=f_sub)
+    draw.text((50, 275), f"DEX: {p1.get('dex', '?')}", fill="#8b98a5", font=f_sub)
+    draw.text((50, 315), f"FDV: {fmt_usd(p1.get('fdv_usd'))}", fill="#8b98a5", font=f_sub)
 
-    # Правый токен
-    draw.text((W // 2 + 40, 50), s2, fill="#ffffff", font=f_sym)
-    draw.text((W // 2 + 40, 120), fmt_pct(c2) + " (24ч)", fill="#26d07c" if c2 >= 0 else "#ff4d6a", font=f_pct)
-    draw.text((W // 2 + 40, 190), f"Объём: {fmt_usd(p2.get('volume_h24'))}", fill="#e8edf2", font=f_sub)
-    draw.text((W // 2 + 40, 230), f"Ликвидность: {fmt_usd(p2.get('reserve_usd'))}", fill="#e8edf2", font=f_sub)
-    draw.text((W // 2 + 40, 270), f"DEX: {p2.get('dex', '?')}", fill="#8b98a5", font=f_sub)
-    draw.text((W // 2 + 40, 310), f"FDV: {fmt_usd(p2.get('fdv_usd'))}", fill="#8b98a5", font=f_sub)
+    # Правый токен (x=730 — свободный отступ от центрального круга)
+    r_x = W // 2 + 130
+    draw.text((r_x, 50), s2, fill="#ffffff", font=f_sym)
+    draw.text((r_x, 120), fmt_pct(c2) + " (24ч)", fill="#26d07c" if c2 >= 0 else "#ff4d6a", font=f_pct)
+    draw.text((r_x, 195), f"Объём: {fmt_usd(p2.get('volume_h24'))}", fill="#e8edf2", font=f_sub)
+    draw.text((r_x, 235), f"Ликвидность: {fmt_usd(p2.get('reserve_usd'))}", fill="#e8edf2", font=f_sub)
+    draw.text((r_x, 275), f"DEX: {p2.get('dex', '?')}", fill="#8b98a5", font=f_sub)
+    draw.text((r_x, 315), f"FDV: {fmt_usd(p2.get('fdv_usd'))}", fill="#8b98a5", font=f_sub)
 
     # Круг VS по центру
-    cx, cy, r = W // 2, 280, 55
+    cx, cy, r = W // 2, 230, 48
     draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#fba43a", outline="#ffffff", width=3)
-    draw.text((cx - 42, cy - 35), "VS", fill="#000000", font=f_vs)
+    draw.text((cx - 34, cy - 30), "VS", fill="#000000", font=f_vs)
 
     # Водяной знак
     draw.text((30, H - 42), config.CARD_MARK, fill="#7cf03d", font=f_mark)

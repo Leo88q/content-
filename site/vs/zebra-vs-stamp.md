@@ -2,7 +2,7 @@
 
 > Algorithmic Verdict: По ончейн-метрикам TalkChart: ZEBRA опережает по ценовому импульсу (+719.8% против +303.3%). Кроме того, у Stamp более надёжная ликвидность ($227.8K против $66.9K). Краткосрочный фаворит по совокупности факторов: Stamp.
 
-## Head-to-Head Metrics (Snapshot: 2026-09-21 13:46 UTC)
+## Head-to-Head Metrics (Snapshot: 2026-09-21 13:47 UTC)
 | Metric | ZEBRA | Stamp | Edge |
 |---|---|---|---|
 | 24h Price Change | +719.8% | +303.3% | ZEBRA |
