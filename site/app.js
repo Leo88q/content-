@@ -488,6 +488,62 @@ function showInterstitial() {
 function hideInterstitial() { $("#interstitial").classList.remove("show"); }
 
 /* ---------- трекинг (заглушка пикселя → будущий wallet-CRM) ---------- */
+/* ---------- трекинг & Watchtower телеметрия ---------- */
+function getPseudoSessionId() {
+  let sid = localStorage.getItem("tc_session_id");
+  if (!sid) {
+    sid = "sess_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    localStorage.setItem("tc_session_id", sid);
+  }
+  return sid;
+}
+
+function getNextSeq() {
+  let s = parseInt(localStorage.getItem("tc_seq"), 10) || 0;
+  s += 1;
+  localStorage.setItem("tc_seq", s);
+  return s;
+}
+
+function sendWatchtowerEvent(evtType, payload) {
+  const sid = getPseudoSessionId();
+  const seq = getNextSeq();
+  const cid = (payload && payload.campaignId) || "talkchart_interactive_radar";
+  const pid = (state.selected && state.selected.address) || "terminal";
+  const ev = {
+    eventId: "ev_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
+    identity: `offchain:trafficgen:${cid}:${pid}:${sid}:${seq}`,
+    chain: "offchain",
+    source: "trafficgen",
+    app: "trafficgen",
+    eventType: evtType,
+    timestamp: new Date().toISOString(),
+    observedAt: new Date().toISOString(),
+    campaignId: cid,
+    sourceId: "direct_web",
+    sourceType: "real",
+    pageId: pid,
+    sessionId: sid,
+    seq: seq,
+    payload: payload || {},
+    parserVersion: "trafficgen-v1",
+    dataQuality: "complete"
+  };
+
+  try {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/track", JSON.stringify(ev));
+    } else {
+      fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ev),
+        keepalive: true
+      }).catch(() => {});
+    }
+  } catch (e) {}
+}
+
 function track(evt, id) {
   const rec = { evt, id, ts: Date.now(), pool: state.selected?.address };
   window.__SLOT_CLICKS__.push(rec);
@@ -496,6 +552,27 @@ function track(evt, id) {
     localStorage.setItem(k, (parseInt(localStorage.getItem(k), 10) || 0) + 1);
   } catch (e) {}
   console.info("[track]", rec);
+
+  // Маппинг событий на канонические события Watchtower
+  let wtType = "Click";
+  let payload = { action: evt, target: id, pool: state.selected?.base_symbol };
+  if (evt === "click_slot") {
+    wtType = "CTAClicked";
+    payload.campaignId = "talkchart_interactive_radar";
+    payload.target = id;
+  } else if (evt === "click_tiplink") {
+    wtType = "CTAClicked";
+    payload.campaignId = "tiplink_welcome_drop";
+    payload.channel = "google_onboarding";
+  } else if (evt === "interstitial_cta") {
+    wtType = "CTAClicked";
+    payload.source = "interstitial";
+  } else if (evt === "page_view") {
+    wtType = "PageView";
+  } else if (evt === "call_resolved") {
+    wtType = "NavigationCompleted";
+  }
+  sendWatchtowerEvent(wtType, payload);
 }
 
 /* ---------- язык ---------- */
@@ -735,6 +812,13 @@ async function init() {
   $("#alert-btn").addEventListener("click", addAlert);
   $("#ist-close").addEventListener("click", hideInterstitial);
   $("#ist-skip").addEventListener("click", hideInterstitial);
+  try {
+    if (!sessionStorage.getItem("tc_session_started")) {
+      sessionStorage.setItem("tc_session_started", "1");
+      sendWatchtowerEvent("SessionStarted", { referrer: document.referrer || "direct" });
+    }
+    sendWatchtowerEvent("PageView", { path: location.pathname + location.hash, title: document.title });
+  } catch (e) {}
   renderGames();
   await loadPools();
   // deep link из SEO-страниц: index.html#pool=<address>

@@ -1,0 +1,22 @@
+{
+  "name": "talkchart-trafficgen",
+  "version": "1.0.0",
+  "description": "TalkChart Traffic Generator & Games Watchtower Integration Adapter",
+  "main": "site/app.js",
+  "scripts": {
+    "test": "python3 scripts/test_watchtower.py",
+    "smoke": "python3 scripts/smoke_watchtower.py",
+    "build": "python3 site/factory/generate_all.py",
+    "start": "python3 site/factory/watchtower_exporter.py"
+  },
+  "keywords": [
+    "watchtower",
+    "trafficgen",
+    "solana",
+    "crypto-games",
+    "analytics",
+    "prometheus"
+  ],
+  "author": "TalkChart Team",
+  "license": "MIT"
+}
