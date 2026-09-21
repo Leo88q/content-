@@ -1,0 +1,23 @@
+{
+ "generated_at": "2026-09-21T11:24:43+00:00",
+ "videos": [
+  {
+   "file": "videos/2026-09-21/ZEBRA.mp4",
+   "latest_file": "videos/latest/ZEBRA.mp4",
+   "symbol": "ZEBRA",
+   "chg_h24": 1225.606
+  },
+  {
+   "file": "videos/2026-09-21/Stamp.mp4",
+   "latest_file": "videos/latest/Stamp.mp4",
+   "symbol": "Stamp",
+   "chg_h24": 524.397
+  },
+  {
+   "file": "videos/2026-09-21/PUMPCAT.mp4",
+   "latest_file": "videos/latest/PUMPCAT.mp4",
+   "symbol": "PUMPCAT",
+   "chg_h24": 95.809
+  }
+ ]
+}
