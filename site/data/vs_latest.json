@@ -1,0 +1,17 @@
+{
+  "slug": "zebra-vs-stamp",
+  "token1": {
+    "symbol": "ZEBRA",
+    "change_24h": 1146.351,
+    "address": "8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d",
+    "volume": 6833534.12901551
+  },
+  "token2": {
+    "symbol": "Stamp",
+    "change_24h": 395.926,
+    "address": "Bgf45Fjqeobgd5viMX8P8AfhiydRewEFKPd7nmcFNQRb",
+    "volume": 13345954.0820059
+  },
+  "verdict": "По ончейн-метрикам TalkChart: ZEBRA опережает по ценовому импульсу (+1146.4% против +395.9%). Кроме того, у Stamp более надёжная ликвидность ($254.0K против $83.0K). Краткосрочный фаворит по совокупности факторов: Stamp.",
+  "updated_at": "2026-09-21 13:41 UTC"
+}

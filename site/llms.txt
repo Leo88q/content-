@@ -8,10 +8,11 @@ This site provides real-time and historical on-chain statistics for Solana liqui
 ## Machine-Readable Data Endpoints
 - **Live Snapshot (JSON)**: https://leo88q.github.io/content-/site/data/snapshot.json
 - **Top Gainers 24h (Markdown)**: https://leo88q.github.io/content-/site/gainers/latest.md
+- **On-Chain Battles Index**: https://leo88q.github.io/content-/site/vs/index.html
 - **All Pools Index (Markdown)**: https://leo88q.github.io/content-/site/pools/index.md
 - **Sitemap XML**: https://leo88q.github.io/content-/site/sitemap.xml
 
-## Top Monitored Solana Tokens (Snapshot: 2026-09-21T13:21:40Z)
+## Top Monitored Solana Tokens (Snapshot: 2026-09-21T13:41:38Z)
 - [ANTFUN](https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.md): ANTFUN / USDT on meteora — -78.8% 24h, Vol $48.43M, Liq $17.95M
 - [ZEC](https://leo88q.github.io/content-/site/pools/GTHKH8s82ZR8GTSFZ1dUu6wfdxhy59wpMShxzG5zjiPm.md): ZEC / USDC on orca — +6.7% 24h, Vol $26.15M, Liq $2.88M
 - [JEANPHIL](https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.md): JEANPHIL / SOL on pumpswap — -57.1% 24h, Vol $15.18M, Liq $190.2K

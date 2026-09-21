@@ -673,6 +673,55 @@ async function renderCardStrip() {
   } catch (e) { /* фабрика ещё не запускалась — витрина скрыта */ }
 }
 
+/* ---------- Ончейн-баттл дня (голосование + переход в игры) ---------- */
+async function renderVsWidget() {
+  const wrap = $("#vs-wrap");
+  const box = $("#vs-box");
+  if (!wrap || !box) return;
+  try {
+    const res = await fetch(`data/vs_latest.json?t=${Date.now()}`);
+    if (!res.ok) return;
+    const vs = await res.json();
+    if (!vs || !vs.token1 || !vs.token2) return;
+
+    const voteKey = `tc_vs_vote_${vs.slug}`;
+    const myVote = localStorage.getItem(voteKey);
+
+    box.innerHTML = `
+      <div class="vs-header">
+        <div class="vs-title">⚔️ ${esc(vs.token1.symbol)} (${fmtPct(vs.token1.change_24h)}) vs ${esc(vs.token2.symbol)} (${fmtPct(vs.token2.change_24h)})</div>
+        <a href="vs/${esc(vs.slug)}.html" style="font-size:12px;color:#7cf03d">полный разбор →</a>
+      </div>
+      <div class="vs-buttons">
+        <button class="vs-btn ${myVote === '1' ? 'voted' : ''}" id="vs-vote-1">
+          Голос за ${esc(vs.token1.symbol)}
+        </button>
+        <button class="vs-btn ${myVote === '2' ? 'voted' : ''}" id="vs-vote-2">
+          Голос за ${esc(vs.token2.symbol)}
+        </button>
+      </div>
+      <div class="vs-verdict"><b>🧠 Вердикт алгоритма:</b> ${esc(vs.verdict)}</div>
+    `;
+
+    box.querySelector("#vs-vote-1").onclick = () => {
+      localStorage.setItem(voteKey, "1");
+      banner(`🗳 Вы проголосовали за ${vs.token1.symbol}! Заберите TipLink-бонус к играм студии в левой колонке.`);
+      track("vs_vote", `${vs.slug}:token1`);
+      renderVsWidget();
+    };
+    box.querySelector("#vs-vote-2").onclick = () => {
+      localStorage.setItem(voteKey, "2");
+      banner(`🗳 Вы проголосовали за ${vs.token2.symbol}! Заберите TipLink-бонус к играм студии в левой колонке.`);
+      track("vs_vote", `${vs.slug}:token2`);
+      renderVsWidget();
+    };
+
+    wrap.style.display = "block";
+  } catch (e) {
+    // баттл ещё не собран — блок скрыт
+  }
+}
+
 /* ---------- init ---------- */
 async function init() {
   $("#lang-btn").textContent = state.lang === "ru" ? "EN" : "RU";
@@ -696,6 +745,7 @@ async function init() {
   renderVideoStrip();
   renderCallUI();
   fetchWhales(state.selected);
+  renderVsWidget();
   setInterval(async () => {
     await loadPools();
     renderHeader();

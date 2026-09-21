@@ -348,6 +348,7 @@ This site provides real-time and historical on-chain statistics for Solana liqui
 ## Machine-Readable Data Endpoints
 - **Live Snapshot (JSON)**: {config.SITE_URL}/data/snapshot.json
 - **Top Gainers 24h (Markdown)**: {config.SITE_URL}/gainers/latest.md
+- **On-Chain Battles Index**: {config.SITE_URL}/vs/index.html
 - **All Pools Index (Markdown)**: {config.SITE_URL}/pools/index.md
 - **Sitemap XML**: {config.SITE_URL}/sitemap.xml
 
@@ -419,8 +420,11 @@ Sitemap: {config.SITE_URL}/sitemap.xml
 def build_sitemap_xml(pools, now_iso):
     urls = [
         (f"{config.SITE_URL}/index.html", "hourly", "1.0"),
+        (f"{config.SITE_URL}/queue.html", "hourly", "0.9"),
         (f"{config.SITE_URL}/gainers/latest.html", "hourly", "0.9"),
         (f"{config.SITE_URL}/gainers/latest.md", "hourly", "0.8"),
+        (f"{config.SITE_URL}/vs/latest.html", "hourly", "0.9"),
+        (f"{config.SITE_URL}/vs/index.html", "hourly", "0.8"),
         (f"{config.SITE_URL}/pools/index.html", "hourly", "0.8"),
         (f"{config.SITE_URL}/pools/index.md", "hourly", "0.7"),
     ]

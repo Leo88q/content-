@@ -220,6 +220,26 @@ body {
 }
 .videos-strip video:hover { border-color: var(--acc); }
 
+/* Баттл-виджет */
+.vs-box {
+  background: #121820; border: 1px solid #1c2530; border-radius: 10px; padding: 14px;
+}
+.vs-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+}
+.vs-title { font-weight: bold; font-size: 15px; color: #fff; }
+.vs-buttons {
+  display: flex; gap: 10px; margin: 10px 0;
+}
+.vs-btn {
+  flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #2e3e50;
+  background: #182230; color: #fff; font-weight: bold; cursor: pointer; text-align: center;
+  transition: all 0.15s;
+}
+.vs-btn:hover { background: #223044; }
+.vs-btn.voted { border-color: #7cf03d; color: #7cf03d; }
+.vs-verdict { font-size: 12px; color: #b0bcc8; line-height: 1.5; margin-top: 8px; border-top: 1px solid #1c2530; padding-top: 8px; }
+
 .foot { padding: 14px 20px; color: var(--mut); font-size: 11px; border-top: 1px solid var(--line); text-align: center; }
 
 @media (max-width: 860px) {

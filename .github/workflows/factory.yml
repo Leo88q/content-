@@ -59,8 +59,20 @@ jobs:
       - name: Render 15s vertical videos (ffmpeg; вежливо скипается без него)
         run: python site/factory/make_videos.py
 
+      - name: Generate on-chain battles (X vs Y SEO + cards)
+        run: python site/factory/make_vs.py
+
       - name: Generate daily digest (md + txt для постов)
         run: python site/factory/make_digest.py
+
+      - name: Auto-post to X / Twitter (вежливо скипается без TWITTER_* токенов)
+        if: github.event_name != 'pull_request'
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        run: python site/factory/post_x.py
 
       - name: Prune old artifacts
         run: python site/factory/prune.py

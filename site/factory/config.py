@@ -7,6 +7,7 @@ DATA_DIR = os.path.join(SITE_DIR, "data")
 CARDS_DIR = os.path.join(SITE_DIR, "cards")
 DIGESTS_DIR = os.path.join(SITE_DIR, "digests")
 POOLS_DIR = os.path.join(SITE_DIR, "pools")
+VS_DIR = os.path.join(SITE_DIR, "vs")
 FONTS_DIR = os.path.join(HERE, "fonts")
 
 SNAPSHOT = os.path.join(DATA_DIR, "snapshot.json")

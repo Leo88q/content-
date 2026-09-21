@@ -20,6 +20,7 @@ class FakeDraw:
     def textlength(self, s, font=None): return len(s) * 12.0
     def rectangle(self, *a, **k): calls["draw"] += 1
     def rounded_rectangle(self, *a, **k): calls["draw"] += 1
+    def ellipse(self, *a, **k): calls["draw"] += 1
     def line(self, pts, **k):
         assert len(pts) >= 2, "спарклайн без точек"
         calls["draw"] += 1
@@ -65,8 +66,14 @@ make_digest.main()
 import make_cards  # noqa: E402
 make_cards.main()
 
+import make_vs  # noqa: E402
+make_vs.main()
+
 import make_videos  # noqa: E402
 make_videos.main()  # без Pillow/ffmpeg — вежливый скип внутри main()
+
+import post_x  # noqa: E402
+post_x.main()  # вежливый скип без TWITTER_* секретов
 
 import prune  # noqa: E402
 prune.main()
@@ -75,7 +82,7 @@ prune.main()
 import config  # noqa: E402
 manifest = json.load(open(os.path.join(config.CARDS_DIR, "latest", "manifest.json")))
 assert manifest["cards"], "манифест пуст"
-assert calls["save"] == len(manifest["cards"]), (calls["save"], len(manifest["cards"]))
+assert calls["save"] >= len(manifest["cards"]), (calls["save"], len(manifest["cards"]))
 assert all(c["file"].startswith("cards/") for c in manifest["cards"])
 assert sum(1 for c in manifest["cards"] if c.get("latest_file")) == min(3, len(manifest["cards"]))
 latest_pngs = [f for f in os.listdir(os.path.join(config.CARDS_DIR, "latest")) if f.endswith(".png")]

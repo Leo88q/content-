@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: PAID is currently priced at $0.0170 (+21.8% 24h) on pumpswap (Solana). 24h trading volume is $8.99M with $730.8K liquidity. Algorithmic narrative: PAID растёт на +21.8% за сутки. пулу 6 дн., история короткая.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T13:21:40+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:41:11+00:00)
 - **Asset**: PAID (PAID / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -29,7 +29,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов PAID?
-По ончейн-данным пула PAID / SOL на DEX pumpswap (Solana), цена PAID составляет $0.0170. Динамика за 24ч: +21.8% (за 1ч: -1.4%, за 6ч: +16.8%). Суточный объём торгов равен $8.99M, общая ликвидность пула (TVL) — $730.8K, FDV — $17.07M. Данные зафиксированы на 2026-09-21T13:21:40+00:00.
+По ончейн-данным пула PAID / SOL на DEX pumpswap (Solana), цена PAID составляет $0.0170. Динамика за 24ч: +21.8% (за 1ч: -1.4%, за 6ч: +16.8%). Суточный объём торгов равен $8.99M, общая ликвидность пула (TVL) — $730.8K, FDV — $17.07M. Данные зафиксированы на 2026-09-21T13:41:11+00:00.
 
 ### Q: Почему движется цена PAID? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: PAID растёт на +21.8% за сутки. пулу 6 дн., история короткая. За последний час в ленте прошло 619 покупок и 476 продаж.
