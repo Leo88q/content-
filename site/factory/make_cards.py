@@ -95,7 +95,7 @@ def make_card(p, out_path, fonts):
     closes.reverse()  # API отдаёт новые -> старые
     sparkline(d, closes, 60, 400, W - 60, 540, col)
 
-    d.text((60, H - 56), config.WATERMARK, font=f_small, fill=ACC)
+    d.text((60, H - 56), config.CARD_MARK, font=f_small, fill=ACC)
     d.text((W - 60 - d.textlength(config.SITE_URL.split("//")[-1], font=f_small), H - 56),
            config.SITE_URL.split("//")[-1], font=f_small, fill=MUT)
 

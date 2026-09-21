@@ -26,3 +26,5 @@ DIGESTS_KEEP_DAYS = 30      # pruning дайджестов
 GT_RATE_SLEEP = 1.2         # сек между запросами API (free tier: 30/мин)
 
 WATERMARK = "📈 talkchart — графики, которые разговаривают"
+# Для PNG-рендера (Pillow/DejaVu без emoji-глифов — был бы «тофу»):
+CARD_MARK = "talkchart — графики, которые разговаривают"
