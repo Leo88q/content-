@@ -449,18 +449,22 @@ async function fetchWhales(pool) {
   let whales = pool.whales || [];
   if (state.live) {
     try {
-      const j = await fetchJson(`${GT}/networks/solana/pools/${pool.address}/trades?limit=100`);
+      const j = await fetchJson(`${GT}/networks/solana/pools/${pool.address}/trades?limit=1000`);
       const now = Date.now();
-      whales = (j.data || [])
-        .map((d) => d.attributes || {})
-        .filter((a) => parseFloat(a.volume_in_usd) >= 25000)
+      const rows = (j.data || []).map((d) => d.attributes || {});
+      const vols = rows.map((a) => parseFloat(a.volume_in_usd)).filter((v) => v > 0).sort((a, b) => a - b);
+      const median = vols.length ? vols[Math.floor(vols.length / 2)] : 0;
+      const thr = Math.max(250, 10 * median);   // калибровка ленты, как в фабрике
+      whales = rows
         .map((a) => ({
           kind: a.kind || "?",
           usd: parseFloat(a.volume_in_usd),
+          mult: median ? Math.round((parseFloat(a.volume_in_usd) / median) * 10) / 10 : null,
+          whale: parseFloat(a.volume_in_usd) >= 25000,
           hours_ago: Math.max(0, (now - new Date(a.block_timestamp).getTime()) / 3600000),
           addr8: (a.tx_from_address || "?").slice(0, 8),
         }))
-        .filter((w) => w.hours_ago <= 24)
+        .filter((w) => w.usd >= thr && w.hours_ago <= 24)
         .sort((a, b) => b.usd - a.usd)
         .slice(0, 6);
     } catch (e) { /* фолбэк: whales из snapshot фабрики */ }
@@ -476,7 +480,8 @@ function renderWhales(ws) {
   el.innerHTML = ws.map((w) => `<div class="whale ${w.kind === "buy" ? "buy" : "sell"}">
     <span class="w-side">${w.kind === "buy" ? "BUY" : "SELL"}</span>
     <b>${fmtUsd(w.usd)}</b>
-    <span class="mut">${w.hours_ago != null ? w.hours_ago.toFixed(1) + "ч назад" : ""} · ${esc(w.addr8)}…</span>
+    <span class="mut">${w.whale ? "whale" : (w.mult ? w.mult + "× медианы ленты" : "")}
+      ${w.hours_ago != null ? "· " + w.hours_ago.toFixed(1) + "ч назад" : ""} · ${esc(w.addr8)}…</span>
   </div>`).join("");
 }
 

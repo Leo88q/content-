@@ -26,7 +26,9 @@ DIGESTS_KEEP_DAYS = 30      # pruning дайджестов
 VIDEOS_DIR = os.path.join(SITE_DIR, "videos")
 VIDEOS_KEEP_DAYS = 7        # mp4 тяжелее карточек — держим меньше
 VIDEOS_TOP_N = 3            # вертикальных mp4 за прогон
-WHALE_MIN_USD = 25_000      # порог «китовой» сделки для радара
+WHALE_MIN_USD = 25_000      # абсолютный уровень метки «whale»
+WHALE_TAPE_MULT = 10        # крупная сделка = >=10× медианы ленты (калибровка 2026-09-21)
+WHALE_NOISE_FLOOR_USD = 250 # пол от мелкого шума
 WHALE_POOLS_N = 8           # скольким пулам за прогон снимаем ленту сделок
 GT_RATE_SLEEP = 1.2         # сек между запросами API (free tier: 30/мин)
 

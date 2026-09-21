@@ -103,7 +103,14 @@ def narrative(p):
         verb = "купил" if top.get("kind") == "buy" else "продал"
         ago = top.get("hours_ago")
         ago_s = f"{ago:.0f}ч назад" if ago is not None else "только что"
-        parts.append(f"кит {verb} {fmt_usd(top.get('usd'))} ({ago_s})")
+        if top.get("whale"):
+            parts.append(f"кит {verb} {fmt_usd(top.get('usd'))} ({ago_s})")
+        else:
+            mult = top.get("mult")
+            parts.append(
+                f"крупная сделка на фоне ленты: {verb} {fmt_usd(top.get('usd'))}"
+                + (f" ({mult:.0f}× медианы, {ago_s})" if mult else f" ({ago_s})")
+            )
         buys_usd = sum(w.get("usd", 0) for w in wh if w.get("kind") == "buy")
         sells_usd = sum(w.get("usd", 0) for w in wh if w.get("kind") == "sell")
         net = buys_usd - sells_usd

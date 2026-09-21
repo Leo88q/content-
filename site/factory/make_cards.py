@@ -97,7 +97,8 @@ def make_card(p, out_path, fonts):
         y += 40
         fx = 60
         for w in whales:
-            label = f"WHALE {('BUY' if w.get('kind') == 'buy' else 'SELL')} {fmt_usd(w.get('usd'))}"
+            tag = "WHALE" if w.get("whale") else "BIG"
+            label = f"{tag} {('BUY' if w.get('kind') == 'buy' else 'SELL')} {fmt_usd(w.get('usd'))}"
             fx = pill(fx, y, label, GREEN if w.get("kind") == "buy" else RED)
 
     closes = [c[4] for c in (p.get("ohlcv_h1") or [])]

@@ -96,11 +96,23 @@ def fetch_whales(address):
     except Exception as e:  # noqa: BLE001
         print(f"  ! trades {address[:8]}…: {e}", file=sys.stderr)
         return None
-    out = []
+    trades = []
     for d in j.get("data", []):
         a = d.get("attributes", {}) or {}
         usd = _f(a.get("volume_in_usd"))
-        if usd is None or usd < config.WHALE_MIN_USD:
+        if usd is None or usd <= 0:
+            continue
+        trades.append((a, usd))
+    # Калибровка по живой ленте (2026-09-21): на пуле с $16M/день медиана
+    # сделки ~$30, «китов» от $25K в свежем тейпе не бывает. Поэтому порог
+    # относительный: >=10× медианы ленты (и абсолютный пол от шума),
+    # а метка «whale» остаётся за сделками от WHALE_MIN_USD.
+    vols = sorted(u for _, u in trades)
+    median = vols[len(vols) // 2] if vols else 0.0
+    thr = max(config.WHALE_NOISE_FLOOR_USD, config.WHALE_TAPE_MULT * median)
+    out = []
+    for a, usd in trades:
+        if usd < thr:
             continue
         ts = a.get("block_timestamp")
         hours_ago = None
@@ -113,6 +125,8 @@ def fetch_whales(address):
         out.append({
             "kind": a.get("kind") or "?",
             "usd": round(usd, 2),
+            "mult": round(usd / median, 1) if median else None,
+            "whale": usd >= config.WHALE_MIN_USD,
             "hours_ago": round(hours_ago, 1) if hours_ago is not None else None,
             "addr8": (a.get("tx_from_address") or "?")[:8],
         })
