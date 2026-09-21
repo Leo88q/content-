@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/ANTFUN_-84.png",
+  "title": "TalkChart: ANTFUN (-84.1%) — Solana On-Chain Radar",
+  "description": "ANTFUN в обвале: -84.1% за 24ч. давление продаж нарастает. покупатели доминируют (64% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. стакан глубокий: $14.63M ликвидности. крупная сделка на фоне ленты: купил $5.9K (167× медианы, 0ч назад). нетто китов за сутки −$5.6K.\n\nОбъём: $49.65M · Ликвидность: $14.63M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп ANTFUN (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-CWZ6BsdnjkDVTGkmL6bGbJXXig6ceef12KvyGQW14cMt"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

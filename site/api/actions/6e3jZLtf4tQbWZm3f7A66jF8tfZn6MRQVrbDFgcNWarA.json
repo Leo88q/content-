@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/PAID_-12.png",
+  "title": "TalkChart: PAID (-12.1%) — Solana On-Chain Radar",
+  "description": "PAID теряет -12.1% за сутки. давление продаж нарастает. пулу 6 дн., история короткая.\n\nОбъём: $9.33M · Ликвидность: $652.6K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп PAID (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-98kfF7rmsg1QDUEoCqNE7g7M1FdrTt92TEp2CLzypump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=6e3jZLtf4tQbWZm3f7A66jF8tfZn6MRQVrbDFgcNWarA"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

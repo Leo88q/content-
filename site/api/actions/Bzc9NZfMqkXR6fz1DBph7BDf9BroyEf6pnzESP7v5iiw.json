@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Fartcoin_+6.png",
+  "title": "TalkChart: Fartcoin (+6.2%) — Solana On-Chain Radar",
+  "description": "Fartcoin в боковике: +6.2% за сутки. стакан глубокий: $8.33M ликвидности.\n\nОбъём: $2.30M · Ликвидность: $8.33M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Fartcoin (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

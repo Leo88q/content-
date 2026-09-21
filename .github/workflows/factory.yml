@@ -1,0 +1,121 @@
+name: Content Factory
+
+# Фабрика контента: данные -> SEO-страницы -> карточки -> дайджест.
+#
+# ВАЖНО: schedule срабатывает только из default-branch (main).
+# До мержа PR ветка arena/... гоняет полный конвейер по push-триггеру —
+# это и есть боевая проверка: артефакты коммитятся обратно в ветку.
+# Собственные коммиты через GITHUB_TOKEN новый run не триггерят (защита от цикла).
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"   # каждый 4-й час в :17 UTC
+  workflow_dispatch:
+  push:
+    branches: [arena/01a0c170-content, main]
+    paths:
+      - "site/**"
+      - ".github/workflows/factory.yml"
+  pull_request:
+
+permissions:
+  contents: write
+
+concurrency:
+  # Фабрике важен только самый свежий прогон своего типа события:
+  # push-прогоны (они коммитят артефакты) не должны отменяться PR dry-run'ами
+  # и наоборот (run 35594055004, 35594170297 — жертвы общей группы)
+  group: content-factory-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  factory:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Pillow (пинг)
+        run: pip install pillow==10.4.0
+
+      - name: Ensure ffmpeg (для видео-шага; на runner обычно предуставновлен)
+        run: |
+          command -v ffmpeg && ffmpeg -version | head -1 || {
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && command -v ffmpeg;
+          }
+
+      - name: Fetch live market data (GeckoTerminal)
+        run: python site/factory/fetch_data.py
+
+      - name: Build programmatic SEO pages (registry long-tail)
+        run: python site/build_seo.py
+
+      - name: Generate share cards (1200x630 PNG)
+        run: python site/factory/make_cards.py
+
+      - name: Render 15s vertical videos (ffmpeg; вежливо скипается без него)
+        run: python site/factory/make_videos.py
+
+      - name: Generate on-chain battles (X vs Y SEO + cards)
+        run: python site/factory/make_vs.py
+
+      - name: Generate daily digest (md + txt для постов)
+        run: python site/factory/make_digest.py
+
+      - name: Auto-post to X / Twitter (вежливо скипается без TWITTER_* токенов)
+        if: github.event_name != 'pull_request'
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        run: python site/factory/post_x.py
+
+      - name: Prune old artifacts
+        run: python site/factory/prune.py
+
+      - name: Upload artifacts (PR dry-run)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-dry-run
+          path: |
+            site/cards
+            site/digests
+            site/videos
+            site/gainers
+            site/data/snapshot.json
+
+      - name: Upload videos artifact (очередь постинга; mp4 вне git по конвенции .gitignore)
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-for-posting
+          path: site/videos
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Stage artifacts (git add)
+        if: github.event_name != 'pull_request'
+        run: |
+          ls site/ | tr '\n' ' '; echo
+          # -A по всей site/: не падает на отсутствующих подкаталогах
+          # (exit 128 в run 35592885947 — pathspec отсутствующего каталога)
+          git add -A site/
+          git status --short | head -20
+
+      - name: Commit & push artifacts
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --cached --quiet; then
+            echo "изменений нет — артефакты идентичны"
+            exit 0
+          fi
+          git commit -m "factory: $(date -u '+%F %H:%M') UTC — data, SEO, cards, videos, digest"
+          git pull --rebase origin "${GITHUB_REF_NAME}" --autostash || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || git push origin "HEAD:${GITHUB_REF_NAME}"

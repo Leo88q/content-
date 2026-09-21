@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Командный Центр TalkChart — Панель управления</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --bg: #0a0e14;
+  --panel: #121820;
+  --panel-hover: #16202c;
+  --border: #1c2530;
+  --acc: #7cf03d;
+  --warn: #fba43a;
+  --info: #3dd9f0;
+  --x-blue: #1d9bf0;
+  --text: #e8edf2;
+  --mut: #8b98a5;
+  --danger: #ff4d6a;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, ui-monospace, Menlo, monospace;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+}
+/* Левое меню */
+.sidebar {
+  width: 260px;
+  background: #0d1219;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.sidebar-hdr {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand span { color: var(--acc); }
+.brand-badge {
+  font-size: 10px;
+  background: rgba(124, 240, 61, 0.15);
+  color: var(--acc);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(124, 240, 61, 0.4);
+}
+.nav-menu {
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+.nav-btn {
+  background: transparent;
+  color: var(--mut);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s;
+}
+.nav-btn:hover {
+  background: var(--panel);
+  color: var(--text);
+}
+.nav-btn.active {
+  background: rgba(124, 240, 61, 0.12);
+  color: var(--acc);
+  border: 1px solid rgba(124, 240, 61, 0.3);
+}
+.sidebar-foot {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+.sidebar-foot a {
+  color: var(--mut);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 6px;
+}
+.sidebar-foot a:hover { color: var(--acc); }
+
+/* Основной контент */
+.main-view {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  max-width: 1100px;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.15s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-subtitle {
+  color: var(--mut);
+  font-size: 14px;
+  margin: 0 0 24px 0;
+}
+
+/* Карточки и сетка */
+.grid-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.stat-val {
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff;
+  margin-top: 4px;
+}
+.stat-lbl {
+  font-size: 12px;
+  color: var(--mut);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 24px;
+}
+.panel-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.panel-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Формы и поля */
+.form-row {
+  margin-bottom: 14px;
+}
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mut);
+  margin-bottom: 6px;
+}
+input[type="text"], input[type="url"], input[type="number"], textarea, select {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0a0e14;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #fff;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: inherit;
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+.btn-primary {
+  background: var(--acc);
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary {
+  background: #1c2530;
+  color: #e8edf2;
+  border: 1px solid #2e3e50;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 9px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-secondary:hover { background: #263445; }
+.btn-x {
+  background: var(--x-blue);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-x:hover { background: #1a8cd8; }
+
+/* Таблицы */
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.data-table th, table.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+table.data-table th {
+  color: var(--mut);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* Бейджи */
+.badge-green { background: rgba(38, 208, 124, 0.15); color: #26d07c; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+.badge-red { background: rgba(255, 77, 106, 0.15); color: #ff4d6a; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+.badge-warn { background: rgba(251, 164, 58, 0.15); color: #fba43a; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+
+/* Редактор кода */
+pre.code-block {
+  background: #080b0f;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  color: #c0cad4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* Игры в редакторе */
+.game-edit-card {
+  background: #0a0e14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+</style>
+<script src="games.js"></script>
+</head>
+<body>
+
+<div class="admin-shell">
+  <!-- Боковое меню -->
+  <aside class="sidebar">
+    <div class="sidebar-hdr">
+      <div class="brand">📈 <b>Talk</b>Chart <span>Командный Центр</span></div>
+      <div style="font-size:11px;color:var(--mut);margin-top:4px;">Панель управления воронкой и фабрикой</div>
+    </div>
+    <nav class="nav-menu">
+      <button class="nav-btn active" data-tab="tab-overview">📊 Обзор и статус</button>
+      <button class="nav-btn" data-tab="tab-games">🎮 Игры студии & TipLink</button>
+      <button class="nav-btn" data-tab="tab-social">📢 Станция публикаций (X)</button>
+      <button class="nav-btn" data-tab="tab-whales">🐋 Китовый радар</button>
+      <button class="nav-btn" data-tab="tab-battles">⚔️ Баттлы и SEO/GEO</button>
+      <button class="nav-btn" data-tab="tab-analytics">📈 Аналитика воронки</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div style="font-weight:600;margin-bottom:8px;color:#fff;">Быстрый переход:</div>
+      <a href="index.html" target="_blank">🖥 Открыть терминал TalkChart ↗</a>
+      <a href="queue.html" target="_blank">📢 Очередь постов ↗</a>
+      <a href="vs/index.html" target="_blank">⚔️ Каталог баттлов ↗</a>
+      <a href="gainers/latest.html" target="_blank">🔥 Топ-ганнеры дня ↗</a>
+      <a href="llms.txt" target="_blank">🤖 Спецификация llms.txt ↗</a>
+    </div>
+  </aside>
+
+  <!-- Основная рабочая область -->
+  <main class="main-view">
+
+    <!-- ВКЛАДКА 1: ОБЗОР -->
+    <section id="tab-overview" class="tab-content active">
+      <h1 class="page-title">🚀 Состояние машины и фабрики</h1>
+      <p class="page-subtitle">Текущий срез ончейн-данных, статус генераторов контента и здоровье конвейера.</p>
+
+      <div class="grid-stats">
+        <div class="stat-card">
+          <div class="stat-lbl">Конвейер фабрики</div>
+          <div class="stat-val" style="color:var(--acc);" id="stat-ci-status">АКТИВЕН</div>
+          <div style="font-size:11px;color:var(--mut);margin-top:4px;">Расписание: каждые 4 часа</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Пулов в мониторинге</div>
+          <div class="stat-val" id="stat-pools-cnt">—</div>
+          <div style="font-size:11px;color:var(--mut);margin-top:4px;" id="stat-data-age">Срез обновляется</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Крупных сделок китов</div>
+          <div class="stat-val" style="color:var(--warn);" id="stat-whales-cnt">—</div>
+          <div style="font-size:11px;color:var(--mut);margin-top:4px;">Порог: ≥10× медианы ленты</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Игр подключено</div>
+          <div class="stat-val" style="color:var(--info);">4 слота</div>
+          <div style="font-size:11px;color:var(--mut);margin-top:4px;">TipLink онбординг: ВКЛ</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">⚡ Оперативные действия</h2>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;">
+          <a class="btn-x" href="queue.html" target="_blank">📢 Открыть очередь публикации в X</a>
+          <a class="btn-secondary" href="index.html" target="_blank">📈 Проверить живой терминал</a>
+          <a class="btn-secondary" href="vs/latest.html" target="_blank">⚔️ Посмотреть свежий баттл дня</a>
+          <a class="btn-secondary" href="https://github.com/Leo88q/content-/actions" target="_blank">⚙️ Логи GitHub Actions ↗</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">🔥 Топ-5 активов текущего среза</h2>
+          <span style="font-size:12px;color:var(--mut);" id="snapshot-ts">—</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Токен</th>
+              <th>24ч динамика</th>
+              <th>Объём 24ч</th>
+              <th>Ликвидность</th>
+              <th>Ончейн-сигнал</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="top-pools-tbody">
+            <tr><td colspan="6" style="color:var(--mut);text-align:center;">Загрузка данных…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 2: ИГРЫ И TIPLINK -->
+    <section id="tab-games" class="tab-content">
+      <h1 class="page-title">🎮 Управление 4 играми студии & TipLink</h1>
+      <p class="page-subtitle">Настройка промо-слотов, UTM-меток и Google-онбординга. Редактируйте параметры прямо здесь и сохраняйте в <code>site/games.js</code>.</p>
+
+      <div class="panel" style="border-left:4px solid var(--warn);">
+        <div class="panel-hdr">
+          <h2 class="panel-title" style="color:var(--warn);">🎁 TipLink Onboarding (вход без сид-фраз через Google)</h2>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="tl-enabled" checked> Включить промо-бокс TipLink
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="form-row">
+            <label class="form-label">Заголовок промо-бокса</label>
+            <input type="text" id="tl-title" value="🎁 Стартовый стек (без сид-фраз)">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Текст кнопки CTA</label>
+            <input type="text" id="tl-cta" value="Забрать TipLink через Google 🎁">
+          </div>
+          <div class="form-row" style="grid-column: span 2;">
+            <label class="form-label">Ссылка кампании TipLink Pro (куда ведёт кнопка)</label>
+            <input type="url" id="tl-url" value="https://tiplink.io/campaign/talkchart-starter?utm_source=talkchart&utm_medium=tiplink_pass">
+            <span style="font-size:11px;color:var(--mut);">Создайте кампанию в TipLink Pro (tiplink.io) и вставьте ссылку сюда.</span>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Бонус за стрик 3+ угаданных свечей (кредитов)</label>
+            <input type="number" id="tl-bonus" value="500">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">🕹 Слоты 4 крипто-игр</h2>
+          <span style="font-size:12px;color:var(--mut);">Отображаются в левой колонке терминала</span>
+        </div>
+
+        <div id="games-editor-container"></div>
+
+        <div style="display:flex;gap:12px;margin-top:16px;">
+          <button class="btn-primary" id="btn-save-games">📋 Скопировать обновлённый games.js в буфер</button>
+          <button class="btn-secondary" id="btn-download-games">⬇ Скачать games.js</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">📄 Сгенерированный код site/games.js</h2>
+        </div>
+        <pre class="code-block" id="games-code-preview">// Загрузка...</pre>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 3: ПУБЛИКАЦИЯ И СОЦСЕТИ -->
+    <section id="tab-social" class="tab-content">
+      <h1 class="page-title">📢 Центр публикаций (X / Twitter / Blinks)</h1>
+      <p class="page-subtitle">Управление очередью постов, мгновенный шеринг в 1 клик и статус автопостинга.</p>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">🔥 Готовый дайджест дня</h2>
+          <span class="badge-green" id="social-digest-date">Загрузка…</span>
+        </div>
+        <textarea id="social-post-text" rows="7" style="font-family:monospace;font-size:13px;line-height:1.6;margin-bottom:14px;"></textarea>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <a class="btn-x" id="social-btn-x" href="#" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Опубликовать в X (1 клик)
+          </a>
+          <button class="btn-secondary" id="social-copy-text">📋 Скопировать текст</button>
+          <button class="btn-secondary" id="social-copy-blink">🔗 Скопировать Blink для X</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">🖼 Свежая карточка дня для прикрепления к посту</h2>
+        </div>
+        <div style="max-width:650px;">
+          <img id="social-card-img" src="" alt="Карточка дня" style="width:100%;border-radius:8px;border:1px solid var(--border);margin-bottom:10px;">
+          <a id="social-card-dl" class="btn-secondary" href="#" download style="text-decoration:none;display:inline-block;">⬇ Скачать PNG карточки (1200×630)</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">🤖 Статус автоматической публикации</h2>
+        </div>
+        <p style="color:var(--mut);font-size:13px;margin:0 0 10px 0;">Модуль <code>site/factory/post_x.py</code> работает в пайплайне GitHub Actions.</p>
+        <div style="background:#0a0e14;border:1px solid var(--border);border-radius:6px;padding:12px;font-size:12px;line-height:1.7;">
+          <div><b>Как включить автопостинг каждые 4 часа:</b></div>
+          <div style="color:var(--mut);">1. В репозитории откройте <b>Settings → Secrets and variables → Actions</b>.</div>
+          <div style="color:var(--mut);">2. Добавьте 4 секрета Twitter API: <code>TWITTER_API_KEY</code>, <code>TWITTER_API_SECRET</code>, <code>TWITTER_ACCESS_TOKEN</code>, <code>TWITTER_ACCESS_SECRET</code>.</div>
+          <div style="color:var(--mut);">3. После сохранения фабрика начнёт публиковать посты с прикреплёнными карточками полностью на автопилоте.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 4: КИТОВЫЙ РАДАР -->
+    <section id="tab-whales" class="tab-content">
+      <h1 class="page-title">🐋 Инспектор китового радара</h1>
+      <p class="page-subtitle">Крупные ончейн-сделки, обнаруженные фабрикой по относительному порогу (≥10× медианы ленты сделок пула).</p>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">Топ крупных сделок за последний прогон</h2>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Токен</th>
+              <th>Тип</th>
+              <th>Сумма USD</th>
+              <th>Кратность к медиане</th>
+              <th>Время назад</th>
+              <th>Кошелёк</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="whales-tbody">
+            <tr><td colspan="7" style="color:var(--mut);text-align:center;">Загрузка ленты сделок…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 5: БАТТЛЫ И SEO/GEO -->
+    <section id="tab-battles" class="tab-content">
+      <h1 class="page-title">⚔️ Ончейн-баттлы «X vs Y» & GEO</h1>
+      <p class="page-subtitle">Автоматические страницы сравнения лидеров суток, визуальные баттл-карточки и AI-поисковые эндпоинты.</p>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">⚔️ Главный ончейн-баттл дня</h2>
+          <a class="badge-green" href="vs/latest.html" target="_blank" style="text-decoration:none;">Открыть страницу баттла ↗</a>
+        </div>
+        <div id="battle-summary-box" style="font-size:13px;line-height:1.7;">
+          Загрузка данных баттла…
+        </div>
+        <div style="margin-top:14px;">
+          <img id="battle-card-img" src="cards/vs/zebra-vs-stamp.png" alt="Баттл-карточка" style="max-width:650px;width:100%;border-radius:8px;border:1px solid var(--border);display:block;margin-bottom:10px;">
+          <a id="battle-card-dl" class="btn-secondary" href="cards/vs/zebra-vs-stamp.png" download style="text-decoration:none;display:inline-block;">⬇ Скачать PNG баттл-карточки</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">🤖 Проверка GEO & AI-поиска</h2>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Эндпоинт</th>
+              <th>Назначение</th>
+              <th>Формат</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code><a href="llms.txt" target="_blank" style="color:var(--acc);">site/llms.txt</a></code></td>
+              <td>Спецификация для LLM-агентов (llmstxt.org)</td>
+              <td>Markdown</td>
+              <td><span class="badge-green">АКТИВЕН</span></td>
+            </tr>
+            <tr>
+              <td><code><a href="llms-full.txt" target="_blank" style="color:var(--acc);">site/llms-full.txt</a></code></td>
+              <td>Полные досье пулов за 1 запрос</td>
+              <td>Markdown</td>
+              <td><span class="badge-green">АКТИВЕН</span></td>
+            </tr>
+            <tr>
+              <td><code><a href="robots.txt" target="_blank" style="color:var(--acc);">site/robots.txt</a></code></td>
+              <td>Разрешение GPTBot, PerplexityBot, ClaudeBot</td>
+              <td>robots.txt</td>
+              <td><span class="badge-green">АКТИВЕН</span></td>
+            </tr>
+            <tr>
+              <td><code><a href="sitemap.xml" target="_blank" style="color:var(--acc);">site/sitemap.xml</a></code></td>
+              <td>Динамическая карта сайта с lastmod</td>
+              <td>XML</td>
+              <td><span class="badge-green">АКТИВЕН</span></td>
+            </tr>
+            <tr>
+              <td><code><a href="actions.json" target="_blank" style="color:var(--acc);">site/actions.json</a></code></td>
+              <td>Спецификация Solana Actions & Blinks</td>
+              <td>JSON</td>
+              <td><span class="badge-green">АКТИВЕН</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 6: АНАЛИТИКА ВОРОНКИ -->
+    <section id="tab-analytics" class="tab-content">
+      <h1 class="page-title">📈 Аналитика воронки аудитории</h1>
+      <p class="page-subtitle">Статистика взаимодействий: клики по игровым слотам, шеринги карточек, свопы и прогнозы.</p>
+
+      <div class="grid-stats">
+        <div class="stat-card">
+          <div class="stat-lbl">Клики по слотам игр</div>
+          <div class="stat-val" id="an-slot-clicks">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Интерстишал-переходы</div>
+          <div class="stat-val" id="an-ist-clicks">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Клики по TipLink</div>
+          <div class="stat-val" id="an-tl-clicks">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Бумажных прогнозов</div>
+          <div class="stat-val" id="an-calls-cnt">0</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-hdr">
+          <h2 class="panel-title">📋 Лог последних событий (localStorage)</h2>
+          <button class="btn-secondary" id="btn-clear-analytics" style="padding:4px 10px;font-size:11px;">Сбросить локальные счетчики</button>
+        </div>
+        <pre class="code-block" id="analytics-log-box" style="max-height:260px;">Загрузка журнала событий…</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ---------- Навигация по вкладкам ---------- */
+document.querySelectorAll(".nav-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+    btn.classList.add("active");
+    const target = document.getElementById(btn.dataset.tab);
+    if (target) target.classList.add("active");
+  });
+});
+
+/* ---------- Загрузка данных снапшота и китов ---------- */
+async function loadOverviewData() {
+  try {
+    const res = await fetch(`data/snapshot.json?t=${Date.now()}`);
+    if (!res.ok) return;
+    const snap = await res.json();
+    const pools = snap.pools || [];
+
+    document.getElementById("stat-pools-cnt").textContent = pools.length;
+    if (snap.captured_at) {
+      const dt = new Date(snap.captured_at);
+      document.getElementById("snapshot-ts").textContent = `Срез: ${dt.toLocaleTimeString()} (${dt.toLocaleDateString()})`;
+      const minAgo = Math.round((Date.now() - dt.getTime()) / 60000);
+      document.getElementById("stat-data-age").textContent = `${minAgo} мин. назад`;
+    }
+
+    // Собираем всех китов
+    const allWhales = [];
+    pools.forEach((p) => {
+      (p.whales || []).forEach((w) => {
+        allWhales.push({ ...w, symbol: p.base_symbol, poolAddr: p.address });
+      });
+    });
+    document.getElementById("stat-whales-cnt").textContent = allWhales.length;
+
+    // Рендерим топ-5 пулов
+    const sorted = [...pools].sort((a, b) => (b.volume_h24 || 0) - (a.volume_h24 || 0)).slice(0, 5);
+    const tbody = document.getElementById("top-pools-tbody");
+    tbody.innerHTML = sorted.map((p) => {
+      const c24 = (p.change && p.change.h24) || 0;
+      const isUp = c24 >= 0;
+      return `
+        <tr>
+          <td><b>${esc(p.base_symbol)}</b> <span style="font-size:11px;color:var(--mut);">(${esc(p.name)})</span></td>
+          <td style="color:${isUp ? 'var(--acc)' : 'var(--danger)'};font-weight:bold;">${c24 >= 0 ? '+' : ''}${c24.toFixed(1)}%</td>
+          <td>$${fmtNum(p.volume_h24)}</td>
+          <td>$${fmtNum(p.reserve_usd)}</td>
+          <td style="font-size:12px;color:#c0cad4;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.base_symbol)} на ${esc(p.dex)}</td>
+          <td><a href="index.html#pool=${p.address}" target="_blank" class="badge-green" style="text-decoration:none;">Открыть чарт →</a></td>
+        </tr>
+      `;
+    }).join("");
+
+    // Рендерим ленту китов
+    const wTbody = document.getElementById("whales-tbody");
+    if (allWhales.length) {
+      allWhales.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+      wTbody.innerHTML = allWhales.map((w) => {
+        const isBuy = w.kind === "buy";
+        return `
+          <tr>
+            <td><b>${esc(w.symbol)}</b></td>
+            <td><span class="${isBuy ? 'badge-green' : 'badge-red'}">${isBuy ? 'ПОКУПКА' : 'ПРОДАЖА'}</span></td>
+            <td><b>$${Math.round(w.usd || 0).toLocaleString()}</b></td>
+            <td>${w.mult ? `${Math.round(w.mult)}× медианы` : '—'}</td>
+            <td>${w.hours_ago !== undefined ? `${w.hours_ago}ч назад` : 'недавно'}</td>
+            <td><code>${esc(w.addr8 || '—')}</code></td>
+            <td><a href="index.html#pool=${w.poolAddr}" target="_blank" style="color:var(--acc);font-size:12px;">В терминал →</a></td>
+          </tr>
+        `;
+      }).join("");
+    } else {
+      wTbody.innerHTML = `<tr><td colspan="7" style="color:var(--mut);text-align:center;">Крупных аномальных сделок в последних срезах не найдено</td></tr>`;
+    }
+
+  } catch (e) {
+    console.warn("Ошибка загрузки snapshot:", e);
+  }
+}
+
+/* ---------- Загрузка и управление баттлами ---------- */
+async function loadBattleData() {
+  try {
+    const res = await fetch(`data/vs_latest.json?t=${Date.now()}`);
+    if (!res.ok) return;
+    const vs = await res.json();
+    const box = document.getElementById("battle-summary-box");
+    box.innerHTML = `
+      <div><b>Пара баттла:</b> <span style="color:var(--acc);">${esc(vs.token1.symbol)} (${vs.token1.change_24h > 0 ? '+' : ''}${vs.token1.change_24h.toFixed(1)}%)</span> против <span style="color:var(--info);">${esc(vs.token2.symbol)} (${vs.token2.change_24h > 0 ? '+' : ''}${vs.token2.change_24h.toFixed(1)}%)</span></div>
+      <div style="margin:8px 0;"><b>Вердикт алгоритма:</b> ${esc(vs.verdict)}</div>
+      <div style="font-size:11px;color:var(--mut);">Обновлено: ${esc(vs.updated_at)} · slug: <code>${esc(vs.slug)}</code></div>
+    `;
+    const cardImg = document.getElementById("battle-card-img");
+    const cardDl = document.getElementById("battle-card-dl");
+    const path = `cards/vs/${vs.slug}.png`;
+    cardImg.src = path;
+    cardDl.href = path;
+  } catch (e) {}
+}
+
+/* ---------- Загрузка центра публикаций ---------- */
+async function loadSocialData() {
+  const dateStr = new Date().toISOString().slice(0, 10);
+  document.getElementById("social-digest-date").textContent = dateStr;
+  let text = "";
+  try {
+    const res = await fetch(`digests/${dateStr}.txt?t=${Date.now()}`);
+    if (res.ok) text = await res.text();
+  } catch (e) {}
+
+  if (!text) {
+    text = "Solana · история дня\\nГрафики, которые разговаривают ↓\\n" + location.origin;
+  }
+  const textarea = document.getElementById("social-post-text");
+  textarea.value = text;
+
+  const updateTweetBtn = () => {
+    document.getElementById("social-btn-x").href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(textarea.value)}`;
+  };
+  textarea.addEventListener("input", updateTweetBtn);
+  updateTweetBtn();
+
+  document.getElementById("social-copy-text").onclick = () => {
+    navigator.clipboard.writeText(textarea.value).then(() => alert("Текст поста скопирован в буфер!"));
+  };
+
+  const blinkMatch = text.match(/https:\/\/dial\.to\/\?action=[^\s]+/);
+  const blinkUrl = blinkMatch ? blinkMatch[0] : "";
+  document.getElementById("social-copy-blink").onclick = () => {
+    if (blinkUrl) {
+      navigator.clipboard.writeText(blinkUrl).then(() => alert("Blink-ссылка скопирована!"));
+    } else {
+      alert("Blink-ссылка не найдена в текущем тексте дайджеста");
+    }
+  };
+
+  try {
+    const mres = await fetch(`cards/latest/manifest.json?t=${Date.now()}`);
+    if (mres.ok) {
+      const m = await mres.json();
+      if (m.cards && m.cards.length) {
+        const top = m.cards[0];
+        const cardPath = top.latest_file || top.file;
+        document.getElementById("social-card-img").src = cardPath;
+        document.getElementById("social-card-dl").href = cardPath;
+      }
+    }
+  } catch (e) {}
+}
+
+/* ---------- Редактор 4 игр и TipLink ---------- */
+function initGamesEditor() {
+  const container = document.getElementById("games-editor-container");
+  const games = window.GAMES || [];
+
+  container.innerHTML = games.map((g, idx) => `
+    <div class="game-edit-card" data-idx="${idx}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <b style="color:${g.accent || '#fff'};">Слот #${idx + 1}: ${esc(g.name)}</b>
+        <input type="color" class="game-color" value="${g.accent || '#7cf03d'}" style="width:36px;height:24px;border:none;background:none;cursor:pointer;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label class="form-label">Название игры</label>
+          <input type="text" class="game-name" value="${esc(g.name)}">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Слоган (хук)</label>
+          <input type="text" class="game-tagline" value="${esc(g.tagline)}">
+        </div>
+        <div class="form-row">
+          <label class="form-label">URL (deep link с UTM)</label>
+          <input type="url" class="game-url" value="${esc(g.url)}">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Текст кнопки CTA</label>
+          <input type="text" class="game-cta" value="${esc(g.cta)}">
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  if (window.TIPLINK_CONFIG) {
+    const tc = window.TIPLINK_CONFIG;
+    document.getElementById("tl-enabled").checked = tc.enabled !== false;
+    document.getElementById("tl-title").value = tc.title || "";
+    document.getElementById("tl-cta").value = tc.cta || "";
+    document.getElementById("tl-url").value = tc.claimUrl || "";
+    document.getElementById("tl-bonus").value = tc.streakBonusCredits || 500;
+  }
+
+  updateGamesCodePreview();
+
+  container.querySelectorAll("input").forEach((inp) => {
+    inp.addEventListener("input", updateGamesCodePreview);
+  });
+  ["tl-enabled", "tl-title", "tl-cta", "tl-url", "tl-bonus"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", updateGamesCodePreview);
+  });
+}
+
+function collectGamesConfig() {
+  const cards = document.querySelectorAll(".game-edit-card");
+  const games = [];
+  cards.forEach((card, idx) => {
+    games.push({
+      id: `game${idx + 1}`,
+      name: card.querySelector(".game-name").value,
+      tagline: card.querySelector(".game-tagline").value,
+      url: card.querySelector(".game-url").value,
+      cta: card.querySelector(".game-cta").value,
+      accent: card.querySelector(".game-color").value,
+    });
+  });
+
+  const tl = {
+    enabled: document.getElementById("tl-enabled").checked,
+    title: document.getElementById("tl-title").value,
+    description: "Вход через Google за 2 секунды. Забери приветственные кредиты в игры студии:",
+    cta: document.getElementById("tl-cta").value,
+    claimUrl: document.getElementById("tl-url").value,
+    streakBonusCredits: parseInt(document.getElementById("tl-bonus").value, 10) || 500,
+  };
+
+  return { games, tl };
+}
+
+function generateGamesJsCode() {
+  const { games, tl } = collectGamesConfig();
+  return `// ============================================================
+// СЛОТ ИГР — настройки 4 игр студии (сгенерировано в Командном Центре).
+// ============================================================
+window.GAMES = ${JSON.stringify(games, null, 2)};
+
+// Как часто показывать playable-интерстишал: после каждого N-го переключения пула.
+window.INTERSTITIAL_EVERY = 5;
+
+// ============================================================
+// TIPLINK ONBOARDING (без сид-фраз: вход через Google)
+// ============================================================
+window.TIPLINK_CONFIG = ${JSON.stringify(tl, null, 2)};
+`;
+}
+
+function updateGamesCodePreview() {
+  const code = generateGamesJsCode();
+  document.getElementById("games-code-preview").textContent = code;
+}
+
+document.getElementById("btn-save-games").onclick = () => {
+  const code = generateGamesJsCode();
+  navigator.clipboard.writeText(code).then(() => {
+    alert("Код games.js скопирован в буфер обмена!\n\nЗамените им содержимое файла site/games.js.");
+  });
+};
+
+document.getElementById("btn-download-games").onclick = () => {
+  const code = generateGamesJsCode();
+  const blob = new Blob([code], { type: "text/javascript" });
+  const a = document.createElement("a");
+  a.download = "games.js";
+  a.href = URL.createObjectURL(blob);
+  a.click();
+};
+
+/* ---------- Аналитика воронки ---------- */
+function loadAnalytics() {
+  const logs = [];
+  let slotClicks = 0;
+  let istClicks = 0;
+  let tlClicks = 0;
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k.startsWith("tc_")) {
+      logs.push(`${k} = ${localStorage.getItem(k)}`);
+    }
+  }
+
+  // Проверяем бумажные прогнозы
+  try {
+    const raw = localStorage.getItem("tc_calls");
+    if (raw) {
+      const calls = JSON.parse(raw);
+      const total = (calls.history || []).length + (calls.pending || []).length;
+      document.getElementById("an-calls-cnt").textContent = total;
+    }
+  } catch (e) {}
+
+  document.getElementById("an-slot-clicks").textContent = localStorage.getItem("tc_click_slot_cnt") || 0;
+  document.getElementById("an-ist-clicks").textContent = localStorage.getItem("tc_ist_click_cnt") || 0;
+  document.getElementById("an-tl-clicks").textContent = localStorage.getItem("tc_tl_click_cnt") || 0;
+
+  const logBox = document.getElementById("analytics-log-box");
+  logBox.textContent = logs.length ? logs.join("\n") : "Событий в localStorage пока не зафиксировано (посетите терминал для генерации событий).";
+
+  document.getElementById("btn-clear-analytics").onclick = () => {
+    if (confirm("Очистить локальные счётчики аналитики?")) {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k.startsWith("tc_")) keys.push(k);
+      }
+      keys.forEach((k) => localStorage.removeItem(k));
+      loadAnalytics();
+    }
+  };
+}
+
+/* ---------- Хелперы ---------- */
+function esc(s) {
+  if (s == null) return "";
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function fmtNum(n) {
+  if (n == null) return "—";
+  if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  return Number(n).toFixed(2);
+}
+
+/* ---------- Старт ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  loadOverviewData();
+  loadBattleData();
+  loadSocialData();
+  initGamesEditor();
+  loadAnalytics();
+});
+</script>
+</body>
+</html>

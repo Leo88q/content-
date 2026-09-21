@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/PEPENOM_+32.png",
+  "title": "TalkChart: PEPENOM (+32.1%) — Solana On-Chain Radar",
+  "description": "PEPENOM разрывает: +32.1% за 24ч. покупатели доминируют (74% сделок за час). ликвидность тонкая ($131.4K) — движения будут резкими. пулу 11 дн., история короткая. крупная сделка на фоне ленты: купил $1.9K (503× медианы, 0ч назад). нетто китов за сутки +$23.22.\n\nОбъём: $95.4K · Ликвидность: $131.4K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп PEPENOM (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-EpEfnZxQyiBXppSKi8sncc8w4corn1UJbF9G91fQpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Bd4wKg3xEBKJ4Xrw8skXMmJ4W65gk3x8yd7AovuBJisZ"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

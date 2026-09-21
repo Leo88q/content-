@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/CALI_-18.png",
+  "title": "TalkChart: CALI (-17.8%) — Solana On-Chain Radar",
+  "description": "CALI теряет -17.8% за сутки. давление продаж нарастает. ликвидность тонкая ($89.4K) — движения будут резкими. пулу 4 дн., история короткая.\n\nОбъём: $802.1K · Ликвидность: $89.4K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп CALI (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-8k4sBtEeK4pf26noKqApv8NBTnuSJcbdwpKYknk5PbAA"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=2i2iULr7UwK1SDRB17T5FUtiMnFQL7fyy7rh69brZihc"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

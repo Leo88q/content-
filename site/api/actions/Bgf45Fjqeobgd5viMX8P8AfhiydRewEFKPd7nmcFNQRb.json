@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Stamp_+59.png",
+  "title": "TalkChart: Stamp (+59.5%) — Solana On-Chain Radar",
+  "description": "Stamp разрывает: +59.5% за 24ч. давление продаж нарастает. объём $13.75M больше капы в 11.5× — бумага в огне. ликвидность тонкая ($142.4K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $3.0K (52× медианы, 0ч назад). нетто китов за сутки −$2.8K.\n\nОбъём: $13.75M · Ликвидность: $142.4K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Stamp (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-EKtmPPLaCbEEKiwoHHtV7TsRsmPXs5CMGtQtZFSiinsc"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Bgf45Fjqeobgd5viMX8P8AfhiydRewEFKPd7nmcFNQRb"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

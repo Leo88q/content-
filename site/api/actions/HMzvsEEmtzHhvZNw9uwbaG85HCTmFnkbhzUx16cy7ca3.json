@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/CATE_-13.png",
+  "title": "TalkChart: CATE (-12.6%) — Solana On-Chain Radar",
+  "description": "CATE теряет -12.6% за сутки. давление продаж нарастает. покупатели доминируют (83% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. стакан глубокий: $3.63M ликвидности.\n\nОбъём: $5.04M · Ликвидность: $3.63M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп CATE (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-Ai66LHZG9MCzg1WKdawwqduVAXpNDUuV8M3uyq5ppump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
