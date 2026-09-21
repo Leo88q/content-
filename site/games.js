@@ -42,3 +42,20 @@ window.GAMES = [
 // Как часто показывать playable-интерстишал: после каждого N-го
 // переключения пула. Правило прокладки: <=1 слот на 5 действий.
 window.INTERSTITIAL_EVERY = 5;
+
+// ============================================================
+// TIPLINK ONBOARDING (без сид-фраз: вход через Google)
+// Позволяет онбордить новых игроков без установки кошельков.
+// Игрок переходит по ссылке, авторизуется через Google (Web3Auth/TipLink)
+// и сразу получает стартовый стек кредитов в игры студии.
+// Замените claimUrl на реальный URL кампании в TipLink Pro / TipLink API.
+// ============================================================
+window.TIPLINK_CONFIG = {
+  enabled: true,
+  title: "🎁 Стартовый стек (без сид-фраз)",
+  description: "Вход через Google за 2 секунды. Забери приветственные кредиты в игры студии:",
+  cta: "Забрать TipLink через Google 🎁",
+  claimUrl: "https://tiplink.io/campaign/talkchart-starter?utm_source=talkchart&utm_medium=tiplink_pass",
+  streakBonusCredits: 500
+};
+

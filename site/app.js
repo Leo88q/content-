@@ -419,12 +419,25 @@ function wrapText(ctx, text, x, y, maxW, lh) {
 
 /* ---------- инвентарь игр ---------- */
 function renderGames() {
-  $("#games").innerHTML = window.GAMES.map((g) => `
+  let tiplinkHtml = "";
+  if (window.TIPLINK_CONFIG && window.TIPLINK_CONFIG.enabled) {
+    const tc = window.TIPLINK_CONFIG;
+    tiplinkHtml = `
+      <div class="tiplink-box">
+        <div class="tiplink-title">${esc(tc.title)}</div>
+        <div class="tiplink-sub">${esc(tc.description)}</div>
+        <a class="tiplink-cta" href="${esc(tc.claimUrl)}" target="_blank" rel="noopener" id="tiplink-claim-btn">${esc(tc.cta)}</a>
+      </div>
+    `;
+  }
+  $("#games").innerHTML = tiplinkHtml + window.GAMES.map((g) => `
     <a class="game-card" href="${esc(g.url)}" target="_blank" rel="noopener" data-game="${g.id}" style="--accent:${g.accent}">
       <div class="game-name">${esc(g.name)}</div>
       <div class="game-tag">${esc(g.tagline)}</div>
       <span class="game-cta">${esc(g.cta)} →</span>
     </a>`).join("");
+  const tlBtn = $("#tiplink-claim-btn");
+  if (tlBtn) tlBtn.addEventListener("click", () => track("click_tiplink", "sidebar"));
   document.querySelectorAll(".game-card").forEach((a) =>
     a.addEventListener("click", () => track("click_slot", a.dataset.game))
   );
@@ -570,6 +583,10 @@ function resolveCalls() {
     c.history.push({ ...pc, resolved_ts: now, exit: pool.price_usd, win });
     changed = true;
     banner(`${win ? "✅ Угадали" : "❌ Мимо"}: ${pc.sym} за час ${up ? "вырос" : "упал"} (${fmtUsd(pc.entry)} → ${fmtUsd(pool.price_usd)})`);
+    if (win && c.history.slice(-3).every((h) => h.win) && c.history.length >= 3) {
+      const bonus = (window.TIPLINK_CONFIG && window.TIPLINK_CONFIG.streakBonusCredits) || 500;
+      banner(`🔥 СЕРИЯ 3 ПОБЕДЫ! Открыт TipLink-бонус: +${bonus} кредитов к играм студии!`);
+    }
     track("call_resolved", pc.addr + ":" + (win ? "win" : "loss"));
     return false;
   });
@@ -612,6 +629,10 @@ function shareCallCard() {
   ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.font = "34px sans-serif";
   ctx.fillText(`угаданных свечей: ${st.wins} из ${st.n} · лучшая серия: ${st.best}`, 60, 370);
   ctx.fillText("бумажные прогнозы, часовой таймфрейм, без денег — только скилл", 60, 420);
+  if (st.best >= 3) {
+    ctx.fillStyle = "#fba43a"; ctx.font = "bold 30px sans-serif";
+    ctx.fillText("🎁 Разблокирован TipLink-бонус к играм студии", 60, 480);
+  }
   ctx.fillStyle = "#7cf03d"; ctx.font = "bold 30px sans-serif";
   ctx.fillText("📈 talkchart — графики, которые разговаривают", 60, H - 40);
   const a = document.createElement("a");

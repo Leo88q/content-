@@ -482,7 +482,7 @@ def build_solana_actions(pools, site_dir):
                         "href": f"{config.SITE_URL}/index.html#pool={addr}",
                     },
                     {
-                        "label": "🎮 Игры студии",
+                        "label": "🎁 TipLink: вход без сид-фраз",
                         "href": f"{config.SITE_URL}/index.html#games",
                     },
                 ]

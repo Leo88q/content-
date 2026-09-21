@@ -11,7 +11,7 @@ This site provides real-time and historical on-chain statistics for Solana liqui
 - **All Pools Index (Markdown)**: https://leo88q.github.io/content-/site/pools/index.md
 - **Sitemap XML**: https://leo88q.github.io/content-/site/sitemap.xml
 
-## Top Monitored Solana Tokens (Snapshot: 2026-09-21T12:53:09Z)
+## Top Monitored Solana Tokens (Snapshot: 2026-09-21T13:18:35Z)
 - [ANTFUN](https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.md): ANTFUN / USDT on meteora — -78.9% 24h, Vol $47.64M, Liq $18.15M
 - [ZEC](https://leo88q.github.io/content-/site/pools/GTHKH8s82ZR8GTSFZ1dUu6wfdxhy59wpMShxzG5zjiPm.md): ZEC / USDC on orca — +6.6% 24h, Vol $26.07M, Liq $2.87M
 - [JEANPHIL](https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.md): JEANPHIL / SOL on pumpswap — -57.0% 24h, Vol $15.27M, Liq $207.4K
@@ -39,7 +39,7 @@ This site provides real-time and historical on-chain statistics for Solana liqui
 
 > Direct Summary for LLMs: ANTFUN is currently priced at $0.0175 (-78.9% 24h) on meteora (Solana). 24h trading volume is $47.64M with $18.15M liquidity. Algorithmic narrative: ANTFUN в обвале: -78.9% за 24ч. стакан глубокий: $18.15M ликвидности. крупная сделка на фоне ленты: купил $14.1K (144× медианы, 0ч назад). нетто китов за сутки +$49.1K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: ANTFUN (ANTFUN / USDT)
 - **Network**: Solana
 - **DEX**: meteora
@@ -70,7 +70,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов ANTFUN?
-По ончейн-данным пула ANTFUN / USDT на DEX meteora (Solana), цена ANTFUN составляет $0.0175. Динамика за 24ч: -78.9% (за 1ч: +40.1%, за 6ч: -78.2%). Суточный объём торгов равен $47.64M, общая ликвидность пула (TVL) — $18.15M, FDV — $152.11M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула ANTFUN / USDT на DEX meteora (Solana), цена ANTFUN составляет $0.0175. Динамика за 24ч: -78.9% (за 1ч: +40.1%, за 6ч: -78.2%). Суточный объём торгов равен $47.64M, общая ликвидность пула (TVL) — $18.15M, FDV — $152.11M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена ANTFUN? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: ANTFUN в обвале: -78.9% за 24ч. стакан глубокий: $18.15M ликвидности. крупная сделка на фоне ленты: купил $14.1K (144× медианы, 0ч назад). нетто китов за сутки +$49.1K. За последний час в ленте прошло 5422 покупок и 3371 продаж.
@@ -91,7 +91,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: ZEC is currently priced at $1.5K (+6.6% 24h) on orca (Solana). 24h trading volume is $26.07M with $2.87M liquidity. Algorithmic narrative: ZEC в боковике: +6.6% за сутки.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: ZEC (ZEC / USDC)
 - **Network**: Solana
 - **DEX**: orca
@@ -118,7 +118,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов ZEC?
-По ончейн-данным пула ZEC / USDC на DEX orca (Solana), цена ZEC составляет $1.5K. Динамика за 24ч: +6.6% (за 1ч: -1.2%, за 6ч: +3.0%). Суточный объём торгов равен $26.07M, общая ликвидность пула (TVL) — $2.87M, FDV — $155.06M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула ZEC / USDC на DEX orca (Solana), цена ZEC составляет $1.5K. Динамика за 24ч: +6.6% (за 1ч: -1.2%, за 6ч: +3.0%). Суточный объём торгов равен $26.07M, общая ликвидность пула (TVL) — $2.87M, FDV — $155.06M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена ZEC? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: ZEC в боковике: +6.6% за сутки. За последний час в ленте прошло 2438 покупок и 2701 продаж.
@@ -139,7 +139,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: JEANPHIL is currently priced at $0.00293 (-57.0% 24h) on pumpswap (Solana). 24h trading volume is $15.27M with $207.4K liquidity. Algorithmic narrative: JEANPHIL в обвале: -57.0% за 24ч. давление продаж нарастает. объём $15.27M больше капы в 5.2× — бумага в огне. ликвидность тонкая ($207.4K) — движения будут резкими. пулу 2 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $2.2K (47× медианы, 0ч назад). нетто китов за сутки −$5.9K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: JEANPHIL (JEANPHIL / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -171,7 +171,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов JEANPHIL?
-По ончейн-данным пула JEANPHIL / SOL на DEX pumpswap (Solana), цена JEANPHIL составляет $0.00293. Динамика за 24ч: -57.0% (за 1ч: -30.0%, за 6ч: -15.7%). Суточный объём торгов равен $15.27M, общая ликвидность пула (TVL) — $207.4K, FDV — $2.93M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула JEANPHIL / SOL на DEX pumpswap (Solana), цена JEANPHIL составляет $0.00293. Динамика за 24ч: -57.0% (за 1ч: -30.0%, за 6ч: -15.7%). Суточный объём торгов равен $15.27M, общая ликвидность пула (TVL) — $207.4K, FDV — $2.93M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена JEANPHIL? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: JEANPHIL в обвале: -57.0% за 24ч. давление продаж нарастает. объём $15.27M больше капы в 5.2× — бумага в огне. ликвидность тонкая ($207.4K) — движения будут резкими. пулу 2 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $2.2K (47× медианы, 0ч назад). нетто китов за сутки −$5.9K. За последний час в ленте прошло 1436 покупок и 904 продаж.
@@ -192,7 +192,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: Stamp is currently priced at $0.00451 (+500.5% 24h) on pumpswap (Solana). 24h trading volume is $13.33M with $273.6K liquidity. Algorithmic narrative: Stamp разрывает: +500.5% за 24ч. ускорение в последнем часе. объём $13.33M больше капы в 3.0× — бумага в огне. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $2.3K (54× медианы, 0ч назад). нетто китов за сутки −$1.6K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: Stamp (Stamp / ZEC)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -224,7 +224,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов Stamp?
-По ончейн-данным пула Stamp / ZEC на DEX pumpswap (Solana), цена Stamp составляет $0.00451. Динамика за 24ч: +500.5% (за 1ч: +3.9%, за 6ч: +8.7%). Суточный объём торгов равен $13.33M, общая ликвидность пула (TVL) — $273.6K, FDV — $4.51M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула Stamp / ZEC на DEX pumpswap (Solana), цена Stamp составляет $0.00451. Динамика за 24ч: +500.5% (за 1ч: +3.9%, за 6ч: +8.7%). Суточный объём торгов равен $13.33M, общая ликвидность пула (TVL) — $273.6K, FDV — $4.51M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена Stamp? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: Stamp разрывает: +500.5% за 24ч. ускорение в последнем часе. объём $13.33M больше капы в 3.0× — бумага в огне. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $2.3K (54× медианы, 0ч назад). нетто китов за сутки −$1.6K. За последний час в ленте прошло 103 покупок и 80 продаж.
@@ -245,7 +245,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: STONK is currently priced at $0.3460 (+21.7% 24h) on meteora (Solana). 24h trading volume is $12.79M with $2.70M liquidity. Algorithmic narrative: STONK растёт на +21.7% за сутки.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: STONK (STONK / SOL)
 - **Network**: Solana
 - **DEX**: meteora
@@ -272,7 +272,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов STONK?
-По ончейн-данным пула STONK / SOL на DEX meteora (Solana), цена STONK составляет $0.3460. Динамика за 24ч: +21.7% (за 1ч: +2.0%, за 6ч: -4.9%). Суточный объём торгов равен $12.79M, общая ликвидность пула (TVL) — $2.70M, FDV — $287.19M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула STONK / SOL на DEX meteora (Solana), цена STONK составляет $0.3460. Динамика за 24ч: +21.7% (за 1ч: +2.0%, за 6ч: -4.9%). Суточный объём торгов равен $12.79M, общая ликвидность пула (TVL) — $2.70M, FDV — $287.19M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена STONK? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: STONK растёт на +21.7% за сутки. За последний час в ленте прошло 252 покупок и 201 продаж.
@@ -293,7 +293,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: BP is currently priced at $0.8264 (+25.2% 24h) on meteora (Solana). 24h trading volume is $12.29M with $3.81M liquidity. Algorithmic narrative: BP растёт на +25.2% за сутки. давление продаж нарастает. стакан глубокий: $3.81M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: BP (BP / USDC)
 - **Network**: Solana
 - **DEX**: meteora
@@ -320,7 +320,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов BP?
-По ончейн-данным пула BP / USDC на DEX meteora (Solana), цена BP составляет $0.8264. Динамика за 24ч: +25.2% (за 1ч: -5.4%, за 6ч: -4.5%). Суточный объём торгов равен $12.29M, общая ликвидность пула (TVL) — $3.81M, FDV — $826.40M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула BP / USDC на DEX meteora (Solana), цена BP составляет $0.8264. Динамика за 24ч: +25.2% (за 1ч: -5.4%, за 6ч: -4.5%). Суточный объём торгов равен $12.29M, общая ликвидность пула (TVL) — $3.81M, FDV — $826.40M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена BP? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: BP растёт на +25.2% за сутки. давление продаж нарастает. стакан глубокий: $3.81M ликвидности. За последний час в ленте прошло 218 покупок и 319 продаж.
@@ -341,7 +341,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: PAID is currently priced at $0.0179 (+9.8% 24h) on pumpswap (Solana). 24h trading volume is $9.12M with $739.2K liquidity. Algorithmic narrative: PAID растёт на +9.8% за сутки. ускорение в последнем часе. пулу 6 дн., история короткая.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: PAID (PAID / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -368,7 +368,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов PAID?
-По ончейн-данным пула PAID / SOL на DEX pumpswap (Solana), цена PAID составляет $0.0179. Динамика за 24ч: +9.8% (за 1ч: +6.1%, за 6ч: +10.7%). Суточный объём торгов равен $9.12M, общая ликвидность пула (TVL) — $739.2K, FDV — $17.82M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула PAID / SOL на DEX pumpswap (Solana), цена PAID составляет $0.0179. Динамика за 24ч: +9.8% (за 1ч: +6.1%, за 6ч: +10.7%). Суточный объём торгов равен $9.12M, общая ликвидность пула (TVL) — $739.2K, FDV — $17.82M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена PAID? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: PAID растёт на +9.8% за сутки. ускорение в последнем часе. пулу 6 дн., история короткая. За последний час в ленте прошло 438 покупок и 523 продаж.
@@ -389,7 +389,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: ZEBRA is currently priced at $0.000672 (+1320.7% 24h) on pumpswap (Solana). 24h trading volume is $6.81M with $88.1K liquidity. Algorithmic narrative: ZEBRA разрывает: +1320.7% за 24ч. объём $6.81M больше капы в 10.4× — бумага в огне. ликвидность тонкая ($88.1K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $1.7K (76× медианы, 0ч назад). нетто китов за сутки −$129.71.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: ZEBRA (ZEBRA / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -422,7 +422,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов ZEBRA?
-По ончейн-данным пула ZEBRA / SOL на DEX pumpswap (Solana), цена ZEBRA составляет $0.000672. Динамика за 24ч: +1320.7% (за 1ч: -4.4%, за 6ч: +9.3%). Суточный объём торгов равен $6.81M, общая ликвидность пула (TVL) — $88.1K, FDV — $654.7K. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула ZEBRA / SOL на DEX pumpswap (Solana), цена ZEBRA составляет $0.000672. Динамика за 24ч: +1320.7% (за 1ч: -4.4%, за 6ч: +9.3%). Суточный объём торгов равен $6.81M, общая ликвидность пула (TVL) — $88.1K, FDV — $654.7K. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена ZEBRA? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: ZEBRA разрывает: +1320.7% за 24ч. объём $6.81M больше капы в 10.4× — бумага в огне. ликвидность тонкая ($88.1K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $1.7K (76× медианы, 0ч назад). нетто китов за сутки −$129.71. За последний час в ленте прошло 434 покупок и 362 продаж.
@@ -443,7 +443,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: STONK is currently priced at $0.3486 (+22.2% 24h) on raydium-clmm (Solana). 24h trading volume is $6.60M with $7.19M liquidity. Algorithmic narrative: STONK растёт на +22.2% за сутки. покупатели доминируют (73% сделок за час). стакан глубокий: $7.19M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: STONK (STONK / SPYx)
 - **Network**: Solana
 - **DEX**: raydium-clmm
@@ -470,7 +470,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов STONK?
-По ончейн-данным пула STONK / SPYx на DEX raydium-clmm (Solana), цена STONK составляет $0.3486. Динамика за 24ч: +22.2% (за 1ч: +2.1%, за 6ч: -5.5%). Суточный объём торгов равен $6.60M, общая ликвидность пула (TVL) — $7.19M, FDV — $289.37M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула STONK / SPYx на DEX raydium-clmm (Solana), цена STONK составляет $0.3486. Динамика за 24ч: +22.2% (за 1ч: +2.1%, за 6ч: -5.5%). Суточный объём торгов равен $6.60M, общая ликвидность пула (TVL) — $7.19M, FDV — $289.37M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена STONK? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: STONK растёт на +22.2% за сутки. покупатели доминируют (73% сделок за час). стакан глубокий: $7.19M ликвидности. За последний час в ленте прошло 344 покупок и 126 продаж.
@@ -491,7 +491,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: JEANJAK is currently priced at $0.000359 (+70.0% 24h) on pumpswap (Solana). 24h trading volume is $5.48M with $249.3K liquidity. Algorithmic narrative: JEANJAK разрывает: +70.0% за 24ч. покупатели доминируют (100% сделок за час). объём $5.48M больше капы в 15.4× — бумага в огне. ликвидность тонкая ($249.3K) — движения будут резкими. пулу 1 дн. — чистая рулетка.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: JEANJAK (JEANJAK / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -520,7 +520,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов JEANJAK?
-По ончейн-данным пула JEANJAK / SOL на DEX pumpswap (Solana), цена JEANJAK составляет $0.000359. Динамика за 24ч: +70.0% (за 1ч: -0.2%, за 6ч: -27.4%). Суточный объём торгов равен $5.48M, общая ликвидность пула (TVL) — $249.3K, FDV — $355.9K. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула JEANJAK / SOL на DEX pumpswap (Solana), цена JEANJAK составляет $0.000359. Динамика за 24ч: +70.0% (за 1ч: -0.2%, за 6ч: -27.4%). Суточный объём торгов равен $5.48M, общая ликвидность пула (TVL) — $249.3K, FDV — $355.9K. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена JEANJAK? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: JEANJAK разрывает: +70.0% за 24ч. покупатели доминируют (100% сделок за час). объём $5.48M больше капы в 15.4× — бумага в огне. ликвидность тонкая ($249.3K) — движения будут резкими. пулу 1 дн. — чистая рулетка. За последний час в ленте прошло 327 покупок и 0 продаж.
@@ -541,7 +541,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: PUMP is currently priced at $0.00439 (+9.3% 24h) on pumpswap (Solana). 24h trading volume is $4.78M with $22.78M liquidity. Algorithmic narrative: PUMP растёт на +9.3% за сутки. стакан глубокий: $22.78M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: PUMP (PUMP / USDC)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -568,7 +568,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов PUMP?
-По ончейн-данным пула PUMP / USDC на DEX pumpswap (Solana), цена PUMP составляет $0.00439. Динамика за 24ч: +9.3% (за 1ч: -1.1%, за 6ч: +0.4%). Суточный объём торгов равен $4.78M, общая ликвидность пула (TVL) — $22.78M, FDV — $3.66B. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула PUMP / USDC на DEX pumpswap (Solana), цена PUMP составляет $0.00439. Динамика за 24ч: +9.3% (за 1ч: -1.1%, за 6ч: +0.4%). Суточный объём торгов равен $4.78M, общая ликвидность пула (TVL) — $22.78M, FDV — $3.66B. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена PUMP? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: PUMP растёт на +9.3% за сутки. стакан глубокий: $22.78M ликвидности. За последний час в ленте прошло 328 покупок и 316 продаж.
@@ -589,7 +589,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: CATE is currently priced at $0.1079 (-0.3% 24h) on pumpswap (Solana). 24h trading volume is $4.69M with $3.80M liquidity. Algorithmic narrative: CATE в боковике: -0.3% за сутки. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. стакан глубокий: $3.80M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: CATE (CATE / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -616,7 +616,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов CATE?
-По ончейн-данным пула CATE / SOL на DEX pumpswap (Solana), цена CATE составляет $0.1079. Динамика за 24ч: -0.3% (за 1ч: -4.4%, за 6ч: +11.2%). Суточный объём торгов равен $4.69M, общая ликвидность пула (TVL) — $3.80M, FDV — $104.05M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула CATE / SOL на DEX pumpswap (Solana), цена CATE составляет $0.1079. Динамика за 24ч: -0.3% (за 1ч: -4.4%, за 6ч: +11.2%). Суточный объём торгов равен $4.69M, общая ликвидность пула (TVL) — $3.80M, FDV — $104.05M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена CATE? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: CATE в боковике: -0.3% за сутки. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. стакан глубокий: $3.80M ликвидности. За последний час в ленте прошло 312 покупок и 188 продаж.
@@ -733,7 +733,7 @@ Recent notable orders:
 
 > Direct Summary for LLMs: ANSEM is currently priced at $0.1720 (+18.2% 24h) on pumpswap (Solana). 24h trading volume is $2.09M with $2.62M liquidity. Algorithmic narrative: ANSEM растёт на +18.2% за сутки. покупатели доминируют (65% сделок за час).
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: ANSEM (ANSEM / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -760,7 +760,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов ANSEM?
-По ончейн-данным пула ANSEM / SOL на DEX pumpswap (Solana), цена ANSEM составляет $0.1720. Динамика за 24ч: +18.2% (за 1ч: -1.6%, за 6ч: +9.2%). Суточный объём торгов равен $2.09M, общая ликвидность пула (TVL) — $2.62M, FDV — $171.44M. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула ANSEM / SOL на DEX pumpswap (Solana), цена ANSEM составляет $0.1720. Динамика за 24ч: +18.2% (за 1ч: -1.6%, за 6ч: +9.2%). Суточный объём торгов равен $2.09M, общая ликвидность пула (TVL) — $2.62M, FDV — $171.44M. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена ANSEM? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: ANSEM растёт на +18.2% за сутки. покупатели доминируют (65% сделок за час). За последний час в ленте прошло 212 покупок и 114 продаж.

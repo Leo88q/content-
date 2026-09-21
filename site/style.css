@@ -172,6 +172,44 @@ body {
 #cards-wrap { display: none; }
 #cards-wrap.has-cards { display: block; }
 
+/* TipLink Onboarding Box */
+.tiplink-box {
+  background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%);
+  border: 1px solid #415a77;
+  border-left: 4px solid #fba43a;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.tiplink-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #fba43a;
+  margin-bottom: 4px;
+}
+.tiplink-sub {
+  font-size: 11px;
+  color: #b0bcc8;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.tiplink-cta {
+  display: block;
+  text-align: center;
+  background: #fba43a;
+  color: #000;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 7px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: transform 0.1s, opacity 0.15s;
+}
+.tiplink-cta:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 /* фабрика: вертикальные видео */
 #videos-wrap { display: none; }
 #videos-wrap.has-cards { display: block; }

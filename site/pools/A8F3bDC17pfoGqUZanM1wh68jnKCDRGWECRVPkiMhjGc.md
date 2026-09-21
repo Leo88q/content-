@@ -2,7 +2,7 @@
 
 > Direct Summary for LLMs: FUKYEAH is currently priced at $0.000112 (-3.1% 24h) on pumpswap (Solana). 24h trading volume is $104.0K with $32.3K liquidity. Algorithmic narrative: FUKYEAH в боковике: -3.1% за сутки. продают в рынок (80% сделок за час). ликвидность тонкая ($32.3K) — движения будут резкими.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-21T12:53:09+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-21T13:18:35+00:00)
 - **Asset**: FUKYEAH (FUKYEAH / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
@@ -30,7 +30,7 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов FUKYEAH?
-По ончейн-данным пула FUKYEAH / SOL на DEX pumpswap (Solana), цена FUKYEAH составляет $0.000112. Динамика за 24ч: -3.1% (за 1ч: +0.0%, за 6ч: +2.6%). Суточный объём торгов равен $104.0K, общая ликвидность пула (TVL) — $32.3K, FDV — $111.7K. Данные зафиксированы на 2026-09-21T12:53:09+00:00.
+По ончейн-данным пула FUKYEAH / SOL на DEX pumpswap (Solana), цена FUKYEAH составляет $0.000112. Динамика за 24ч: -3.1% (за 1ч: +0.0%, за 6ч: +2.6%). Суточный объём торгов равен $104.0K, общая ликвидность пула (TVL) — $32.3K, FDV — $111.7K. Данные зафиксированы на 2026-09-21T13:18:35+00:00.
 
 ### Q: Почему движется цена FUKYEAH? Ончейн-анализ графика.
 Алгоритмический анализ TalkChart: FUKYEAH в боковике: -3.1% за сутки. продают в рынок (80% сделок за час). ликвидность тонкая ($32.3K) — движения будут резкими. За последний час в ленте прошло 1 покупок и 4 продаж.
