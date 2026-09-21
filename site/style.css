@@ -138,6 +138,19 @@ body {
 .ist-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
 .ist-note { color: var(--mut); font-size: 10px; }
 
+/* фабрика: витрина карточек дня */
+.cards-strip {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px;
+}
+.cards-strip a { flex: 0 0 auto; }
+.cards-strip img {
+  height: 130px; width: auto; border: 1px solid var(--line); border-radius: 8px;
+  display: block; transition: border-color 0.15s;
+}
+.cards-strip img:hover { border-color: var(--acc); }
+#cards-wrap { display: none; }
+#cards-wrap.has-cards { display: block; }
+
 .foot { padding: 14px 20px; color: var(--mut); font-size: 11px; border-top: 1px solid var(--line); text-align: center; }
 
 @media (max-width: 860px) {

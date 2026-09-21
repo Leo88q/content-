@@ -443,6 +443,20 @@ function toggleLang() {
   renderNarrative();
 }
 
+/* ---------- витрина карточек фабрики (cards/latest/manifest.json) ---------- */
+async function renderCardStrip() {
+  try {
+    const j = await fetchJson("cards/latest/manifest.json");
+    const cards = (j.cards || []).slice(0, 8);
+    if (!cards.length) return;
+    $("#cards-strip").innerHTML = cards.map((c) =>
+      `<a href="${esc(c.file)}" target="_blank" rel="noopener" title="${esc(c.symbol)} ${fmtPct(c.chg_h24)}">
+         <img loading="lazy" src="${esc(c.latest_file || c.file)}" alt="Карточка ${esc(c.symbol)}">
+       </a>`).join("");
+    $("#cards-wrap").classList.add("has-cards");
+  } catch (e) { /* фабрика ещё не запускалась — витрина скрыта */ }
+}
+
 /* ---------- init ---------- */
 async function init() {
   $("#lang-btn").textContent = state.lang === "ru" ? "EN" : "RU";
@@ -460,6 +474,7 @@ async function init() {
   }
   renderHeader();
   await loadOhlcv(state.selected);
+  renderCardStrip();
   setInterval(async () => {
     await loadPools();
     renderHeader();

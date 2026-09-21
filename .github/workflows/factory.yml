@@ -1,0 +1,78 @@
+name: Content Factory
+
+# Фабрика контента: данные -> SEO-страницы -> карточки -> дайджест.
+#
+# ВАЖНО: schedule срабатывает только из default-branch (main).
+# До мержа PR ветка arena/... гоняет полный конвейер по push-триггеру —
+# это и есть боевая проверка: артефакты коммитятся обратно в ветку.
+# Собственные коммиты через GITHUB_TOKEN новый run не триггерят (защита от цикла).
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"   # каждый 4-й час в :17 UTC
+  workflow_dispatch:
+  push:
+    branches: [arena/01a0c170-content, main]
+    paths:
+      - "site/**"
+      - ".github/workflows/factory.yml"
+  pull_request:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: content-factory
+  cancel-in-progress: false
+
+jobs:
+  factory:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Pillow (пинг)
+        run: pip install pillow==10.4.0
+
+      - name: Fetch live market data (GeckoTerminal)
+        run: python site/factory/fetch_data.py
+
+      - name: Build programmatic SEO pages (registry long-tail)
+        run: python site/build_seo.py
+
+      - name: Generate share cards (1200x630 PNG)
+        run: python site/factory/make_cards.py
+
+      - name: Generate daily digest (md + txt для постов)
+        run: python site/factory/make_digest.py
+
+      - name: Prune old artifacts
+        run: python site/factory/prune.py
+
+      - name: Upload artifacts (PR dry-run)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-dry-run
+          path: |
+            site/cards
+            site/digests
+            site/data/snapshot.json
+
+      - name: Commit & push artifacts
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data site/pools site/cards site/digests
+          if git diff --cached --quiet; then
+            echo "изменений нет — артефакты идентичны"
+          else
+            git commit -m "factory: $(date -u '+%F %H:%M') UTC — data, SEO, cards, digest"
+            git pull --rebase origin "${GITHUB_REF_NAME}" --autostash || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
