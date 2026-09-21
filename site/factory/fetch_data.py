@@ -88,7 +88,8 @@ def fetch_whales(address):
     attributes.volume_in_usd, attributes.block_timestamp (ISO),
     attributes.tx_from_address.
     """
-    url = f"{config.GT}/networks/{config.NETWORK}/pools/{address}/trades?limit=100"
+    # 1000 сделок = широкое окно ленты на активных пулах (100 было бы = минуты)
+    url = f"{config.GT}/networks/{config.NETWORK}/pools/{address}/trades?limit=1000"
     now = datetime.now(timezone.utc)
     try:
         j = get(url, retries=1)

@@ -576,9 +576,12 @@ async function renderVideoStrip() {
     const j = await fetchJson("videos/latest/manifest.json");
     const vs = (j.videos || []).slice(0, 3);
     if (!vs.length) return;
+    // mp4 живут в CI-артефактах (конвенция репо: *.mp4 вне git); на Pages их нет —
+    // onerror прячет витрину, в локальном превью файлы есть и играют
     $("#videos-strip").innerHTML = vs.map((v) =>
       `<video src="${esc(v.latest_file || v.file)}" muted loop playsinline preload="metadata"
         title="${esc(v.symbol)} ${fmtPct(v.chg_h24)} — 15с история"
+        onerror="this.parentElement && this.parentElement.childElementCount <= 1 ? document.getElementById('videos-wrap').remove() : this.remove()"
         onclick="this.paused ? this.play() : this.pause()"></video>`).join("");
     $("#videos-wrap").classList.add("has-cards");
   } catch (e) { /* фабрика ещё не рендерила видео — витрина скрыта */ }
