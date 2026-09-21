@@ -22,8 +22,10 @@ permissions:
   contents: write
 
 concurrency:
+  # Фабрике важен только самый свежий прогон: новый run отменяет висящий
+  # (иначе PR dry-run'ы сериализуют и отменяли push-прогоны — run 35594055004)
   group: content-factory
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   factory:
