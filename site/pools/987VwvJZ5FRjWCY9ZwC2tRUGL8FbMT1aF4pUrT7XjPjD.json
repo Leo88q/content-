@@ -1,0 +1,32 @@
+{
+  "pool": {
+    "address": "987VwvJZ5FRjWCY9ZwC2tRUGL8FbMT1aF4pUrT7XjPjD",
+    "name": "RAYCAT / RAY",
+    "base_symbol": "RAYCAT",
+    "base_name": "RAYCAT",
+    "base_address": "CFNRDaxFcvRwRSNnA5cHrCCr6AHhk9dNkHWpRUjNupFL",
+    "dex": "raydium-clmm",
+    "price_usd": 0.00851098470304045,
+    "created_at": "2026-08-13T12:29:41Z",
+    "fdv_usd": 8204703.13735473,
+    "reserve_usd": 652366.4798,
+    "volume_h24": 1451451.63357555,
+    "change": {
+      "h1": 5.624,
+      "h6": 40.773,
+      "h24": 67.756
+    },
+    "tx_h1": {
+      "buys": 161,
+      "sells": 232
+    },
+    "first_seen": "2026-09-21T17:54:41+00:00",
+    "last_seen": "2026-09-21T17:54:41+00:00"
+  },
+  "narrative": "RAYCAT разрывает: +67.8% за 24ч. ускорение в последнем часе.",
+  "flags": [
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
+  "updated_at": "2026-09-21T17:54:41Z"
+}

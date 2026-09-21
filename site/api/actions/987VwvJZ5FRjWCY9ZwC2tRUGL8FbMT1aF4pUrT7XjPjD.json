@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/RAYCAT_+68.png",
+  "title": "TalkChart: RAYCAT (+67.8%) — Solana On-Chain Radar",
+  "description": "RAYCAT разрывает: +67.8% за 24ч. ускорение в последнем часе.\n\nОбъём: $1.45M · Ликвидность: $652.4K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп RAYCAT (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-CFNRDaxFcvRwRSNnA5cHrCCr6AHhk9dNkHWpRUjNupFL"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=987VwvJZ5FRjWCY9ZwC2tRUGL8FbMT1aF4pUrT7XjPjD"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

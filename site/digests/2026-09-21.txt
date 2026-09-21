@@ -1,10 +1,10 @@
 Solana · история дня · 2026-09-21
-1. ZEBRA +181.5% — ZEBRA разрывает: +181.5% за 24ч. давление продаж нарастает
-2. ANTFUN -84.1% — ANTFUN в обвале: -84.1% за 24ч. давление продаж нарастает
-3. TIGRINO -80.9% — TIGRINO в обвале: -80.9% за 24ч. давление продаж нарастает
-4. JEANJAK +72.8% — JEANJAK разрывает: +72.8% за 24ч. покупатели доминируют (100% сделок за час)
-5. JEANPHIL -69.1% — JEANPHIL в обвале: -69.1% за 24ч. давление продаж нарастает
+1. FAMILY +634.9% — FAMILY разрывает: +634.9% за 24ч. объём $7.17M больше капы в 20.2× — бумага в огне
+2. ZEBRA +228.9% — ZEBRA разрывает: +228.9% за 24ч. объём $7.19M больше капы в 47.4× — бумага в огне
+3. Stamp +88.0% — Stamp разрывает: +88.0% за 24ч. объём $14.26M больше капы в 10.2× — бумага в огне
+4. ANTFUN -85.5% — ANTFUN в обвале: -85.5% за 24ч. давление продаж нарастает
+5. JEANPHIL -80.0% — JEANPHIL в обвале: -80.0% за 24ч. объём $8.25M больше капы в 4.7× — бумага в огне
 
-⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d.json
+⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/FdYPSUq2Zrw9vJXkA8uZFVNhNcCvUUuAcSWWVk6MZZhU.json
 Графики, которые разговаривают ↓
 https://leo88q.github.io/content-/site

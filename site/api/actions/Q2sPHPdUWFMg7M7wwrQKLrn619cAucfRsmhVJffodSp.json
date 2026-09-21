@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/USELESS_+15.png",
+  "title": "TalkChart: USELESS (+15.5%) — Solana On-Chain Radar",
+  "description": "USELESS растёт на +15.5% за сутки. стакан глубокий: $5.76M ликвидности.\n\nОбъём: $3.67M · Ликвидность: $5.76M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп USELESS (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-Dz9mQ9NzkBcCsuGPFJ3r1bS4wgqKMHBPiVuniW8Mbonk"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

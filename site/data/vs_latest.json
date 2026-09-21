@@ -1,17 +1,17 @@
 {
-  "slug": "zebra-vs-jeanjak",
+  "slug": "family-vs-zebra",
   "token1": {
-    "symbol": "ZEBRA",
-    "change_24h": 181.514,
-    "address": "8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d",
-    "volume": 7062059.47886114
+    "symbol": "FAMILY",
+    "change_24h": 634.885,
+    "address": "FdYPSUq2Zrw9vJXkA8uZFVNhNcCvUUuAcSWWVk6MZZhU",
+    "volume": 7169474.04308924
   },
   "token2": {
-    "symbol": "JEANJAK",
-    "change_24h": 72.784,
-    "address": "7kXuEjAZ8xcH5G2XmKaUcMeraxvVVZndf7qryDiSW7o5",
-    "volume": 5482796.64683539
+    "symbol": "ZEBRA",
+    "change_24h": 228.945,
+    "address": "8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d",
+    "volume": 7186578.42943413
   },
-  "verdict": "По ончейн-метрикам TalkChart: ZEBRA опережает по ценовому импульсу (+181.5% против +72.8%). Кроме того, у JEANJAK более надёжная ликвидность ($276.2K против $38.6K). Краткосрочный фаворит по совокупности факторов: JEANJAK.",
-  "updated_at": "2026-09-21 14:55 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: FAMILY опережает по ценовому импульсу (+634.9% против +228.9%). Краткосрочный фаворит по совокупности факторов: FAMILY.",
+  "updated_at": "2026-09-21 17:54 UTC"
 }
