@@ -1,0 +1,76 @@
+{
+  "pool": {
+    "address": "7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ",
+    "name": "CLIP / SOL",
+    "base_symbol": "CLIP",
+    "base_name": "CLIP",
+    "base_address": "9DdHxVe1BSPaTy3iGEwvWsooRchNLK61XFAvzot59FwD",
+    "dex": "pumpswap",
+    "price_usd": 0.0009954724835063802,
+    "created_at": "2026-09-21T14:09:22Z",
+    "fdv_usd": 995428.378437124,
+    "reserve_usd": 112130.7973,
+    "volume_h24": 8086258.11113031,
+    "change": {
+      "h1": 19.646,
+      "h6": 9.524,
+      "h24": 1970.356
+    },
+    "tx_h1": {
+      "buys": 1186,
+      "sells": 821
+    },
+    "whales": [
+      {
+        "kind": "sell",
+        "usd": 1998.18,
+        "mult": 103.8,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "6qxQAcQe"
+      },
+      {
+        "kind": "buy",
+        "usd": 1099.07,
+        "mult": 57.1,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "8zkgFGVZ"
+      },
+      {
+        "kind": "sell",
+        "usd": 991.78,
+        "mult": 51.5,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "rwpmjQdj"
+      },
+      {
+        "kind": "sell",
+        "usd": 985.84,
+        "mult": 51.2,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "9CFDyFFi"
+      },
+      {
+        "kind": "buy",
+        "usd": 948.1,
+        "mult": 49.2,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "AvRs9vqW"
+      }
+    ],
+    "first_seen": "2026-09-21T23:23:05+00:00",
+    "last_seen": "2026-09-21T23:23:05+00:00"
+  },
+  "narrative": "CLIP разрывает: +1970.4% за 24ч. объём $8.09M больше капы в 8.1× — бумага в огне. ликвидность тонкая ($112.1K) — движения будут резкими. пулу 0 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $2.0K (104× медианы, 0ч назад). нетто китов за сутки −$1.9K.",
+  "flags": [
+    "тонкая ликвидность",
+    "молодой пул",
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: продажа на $2.0K (104× медианы). Нетто-поток китов: $-1.9K.",
+  "updated_at": "2026-09-21T23:23:05Z"
+}

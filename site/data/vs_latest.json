@@ -1,17 +1,17 @@
 {
-  "slug": "family-vs-zebra",
+  "slug": "clip-vs-family",
   "token1": {
-    "symbol": "FAMILY",
-    "change_24h": 634.885,
-    "address": "FdYPSUq2Zrw9vJXkA8uZFVNhNcCvUUuAcSWWVk6MZZhU",
-    "volume": 7169474.04308924
+    "symbol": "CLIP",
+    "change_24h": 1970.356,
+    "address": "7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ",
+    "volume": 8086258.11113031
   },
   "token2": {
-    "symbol": "ZEBRA",
-    "change_24h": 228.945,
-    "address": "8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d",
-    "volume": 7186578.42943413
+    "symbol": "FAMILY",
+    "change_24h": 251.838,
+    "address": "FdYPSUq2Zrw9vJXkA8uZFVNhNcCvUUuAcSWWVk6MZZhU",
+    "volume": 7440955.5383757
   },
-  "verdict": "По ончейн-метрикам TalkChart: FAMILY опережает по ценовому импульсу (+634.9% против +228.9%). Краткосрочный фаворит по совокупности факторов: FAMILY.",
-  "updated_at": "2026-09-21 17:54 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: CLIP опережает по ценовому импульсу (+1970.4% против +251.8%). Кроме того, у CLIP существенно глубже пул ликвидности ($112.1K против $41.6K), что снижает риск проскальзывания. Краткосрочный фаворит по совокупности факторов: CLIP.",
+  "updated_at": "2026-09-21 23:23 UTC"
 }
