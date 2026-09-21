@@ -38,6 +38,12 @@ jobs:
       - name: Install Pillow (пинг)
         run: pip install pillow==10.4.0
 
+      - name: Ensure ffmpeg (для видео-шага; на runner обычно предуставновлен)
+        run: |
+          command -v ffmpeg && ffmpeg -version | head -1 || {
+            sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && command -v ffmpeg;
+          }
+
       - name: Fetch live market data (GeckoTerminal)
         run: python site/factory/fetch_data.py
 
@@ -68,16 +74,24 @@ jobs:
             site/gainers
             site/data/snapshot.json
 
+      - name: Stage artifacts (git add)
+        if: github.event_name != 'pull_request'
+        run: |
+          ls site/ | tr '\n' ' '; echo
+          # -A по всей site/: не падает на отсутствующих подкаталогах
+          # (exit 128 в run 35592885947 — pathspec отсутствующего каталога)
+          git add -A site/
+          git status --short | head -20
+
       - name: Commit & push artifacts
         if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/data site/pools site/cards site/digests site/gainers site/videos
           if git diff --cached --quiet; then
             echo "изменений нет — артефакты идентичны"
-          else
-            git commit -m "factory: $(date -u '+%F %H:%M') UTC — data, SEO, cards, digest"
-            git pull --rebase origin "${GITHUB_REF_NAME}" --autostash || true
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            exit 0
           fi
+          git commit -m "factory: $(date -u '+%F %H:%M') UTC — data, SEO, cards, videos, digest"
+          git pull --rebase origin "${GITHUB_REF_NAME}" --autostash || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || git push origin "HEAD:${GITHUB_REF_NAME}"
