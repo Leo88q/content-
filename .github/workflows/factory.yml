@@ -22,9 +22,10 @@ permissions:
   contents: write
 
 concurrency:
-  # Фабрике важен только самый свежий прогон: новый run отменяет висящий
-  # (иначе PR dry-run'ы сериализуют и отменяли push-прогоны — run 35594055004)
-  group: content-factory
+  # Фабрике важен только самый свежий прогон своего типа события:
+  # push-прогоны (они коммитят артефакты) не должны отменяться PR dry-run'ами
+  # и наоборот (run 35594055004, 35594170297 — жертвы общей группы)
+  group: content-factory-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
