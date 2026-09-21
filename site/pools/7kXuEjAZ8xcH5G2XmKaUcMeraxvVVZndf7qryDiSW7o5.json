@@ -1,0 +1,32 @@
+{
+  "pool": {
+    "address": "7kXuEjAZ8xcH5G2XmKaUcMeraxvVVZndf7qryDiSW7o5",
+    "name": "JEANJAK / SOL",
+    "base_symbol": "JEANJAK",
+    "base_name": "JEANJAK",
+    "base_address": "CDAC33JvozJ1UjxBMkvZgJcVXoxdH9iGxeBXUJdXpump",
+    "dex": "pumpswap",
+    "price_usd": 5.515283842398969e-06,
+    "created_at": "2026-09-20T16:06:10Z",
+    "fdv_usd": 5460.6178303594,
+    "reserve_usd": 250043.6573,
+    "volume_h24": 5482743.02437384,
+    "change": {
+      "h1": -98.451,
+      "h6": -99.693,
+      "h24": -97.393
+    },
+    "tx_h1": {
+      "buys": 338,
+      "sells": 20
+    },
+    "first_seen": "2026-09-21T11:24:28+00:00",
+    "last_seen": "2026-09-21T12:09:58+00:00"
+  },
+  "narrative": "JEANJAK в обвале: -97.4% за 24ч. давление продаж нарастает. покупатели доминируют (94% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $5.48M больше капы в 1004.1× — бумага в огне. пулу 1 дн. — чистая рулетка.",
+  "flags": [
+    "молодой пул"
+  ],
+  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
+  "updated_at": "2026-09-21T12:09:58Z"
+}

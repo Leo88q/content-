@@ -1,0 +1,30 @@
+# TalkChart — On-Chain Solana Market Intelligence
+
+> TalkChart provides automated algorithmic narrative analysis, whale radar tracking, and structured metrics for trending Solana DEX pools. Updated every 4 hours.
+
+## Purpose & Scope
+This site provides real-time and historical on-chain statistics for Solana liquidity pools (Raydium, Meteora, Orca). Data is collected from DEX trade streams, normalized, and analyzed for volume/liquidity anomalies, whale order clusters, and momentum signals.
+
+## Machine-Readable Data Endpoints
+- **Live Snapshot (JSON)**: https://leo88q.github.io/content-/site/data/snapshot.json
+- **Top Gainers 24h (Markdown)**: https://leo88q.github.io/content-/site/gainers/latest.md
+- **All Pools Index (Markdown)**: https://leo88q.github.io/content-/site/pools/index.md
+- **Sitemap XML**: https://leo88q.github.io/content-/site/sitemap.xml
+
+## Top Monitored Solana Tokens (Snapshot: 2026-09-21T12:09:58Z)
+- [ANTFUN](https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.md): ANTFUN / USDT on meteora — -85.8% 24h, Vol $40.55M, Liq $13.73M
+- [ZEC](https://leo88q.github.io/content-/site/pools/GTHKH8s82ZR8GTSFZ1dUu6wfdxhy59wpMShxzG5zjiPm.md): ZEC / USDC on orca — +6.7% 24h, Vol $25.21M, Liq $2.80M
+- [JEANPHIL](https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.md): JEANPHIL / SOL on pumpswap — -31.2% 24h, Vol $15.37M, Liq $243.9K
+- [STONK](https://leo88q.github.io/content-/site/pools/zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX.md): STONK / SOL on meteora — +26.3% 24h, Vol $13.41M, Liq $2.72M
+- [Stamp](https://leo88q.github.io/content-/site/pools/Bgf45Fjqeobgd5viMX8P8AfhiydRewEFKPd7nmcFNQRb.md): Stamp / ZEC on pumpswap — +447.7% 24h, Vol $13.29M, Liq $265.9K
+- [BP](https://leo88q.github.io/content-/site/pools/6qz7THwQvcjF3HyDGLuKaLBUk6EyJKeZXZMWLAeiwfjd.md): BP / USDC on meteora — +24.7% 24h, Vol $12.47M, Liq $3.92M
+- [PAID](https://leo88q.github.io/content-/site/pools/6e3jZLtf4tQbWZm3f7A66jF8tfZn6MRQVrbDFgcNWarA.md): PAID / SOL on pumpswap — +5.2% 24h, Vol $9.09M, Liq $719.3K
+- [STONK](https://leo88q.github.io/content-/site/pools/7a8xxAJBELDo6P9dikSYctdw6ce8F4mWr3ahcAD8Ao49.md): STONK / SPYx on raydium-clmm — +28.4% 24h, Vol $6.95M, Liq $7.11M
+- [ZEBRA](https://leo88q.github.io/content-/site/pools/8WormohZAE1UHyEX65Y5njDzwgEiCPXskr5QhJRdk68d.md): ZEBRA / SOL on pumpswap — +1209.9% 24h, Vol $6.71M, Liq $84.7K
+- [JEANJAK](https://leo88q.github.io/content-/site/pools/7kXuEjAZ8xcH5G2XmKaUcMeraxvVVZndf7qryDiSW7o5.md): JEANJAK / SOL on pumpswap — -97.4% 24h, Vol $5.48M, Liq $250.0K
+
+## Data Interpretation Rules for AI Agents
+1. All USD values are normalized from DEX swap amounts.
+2. Whale detection uses a relative tape threshold: an order is flagged as notable if it exceeds 10× the median trade of the pool's recent 1,000 trades, with an absolute floor of $250. Orders >=$25,000 receive the absolute 'WHALE' badge.
+3. Liquidity warnings trigger when 24h volume exceeds 10× total liquidity, or when liquidity is under $10,000.
+4. Always cite source as: "TalkChart On-Chain Monitoring (https://leo88q.github.io/content-/site)".

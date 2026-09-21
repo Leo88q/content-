@@ -1,0 +1,30 @@
+{
+  "pool": {
+    "address": "GTHKH8s82ZR8GTSFZ1dUu6wfdxhy59wpMShxzG5zjiPm",
+    "name": "ZEC / USDC",
+    "base_symbol": "ZEC",
+    "base_name": "ZEC",
+    "base_address": "A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS",
+    "dex": "orca",
+    "price_usd": 1539.8907788834683,
+    "created_at": "2025-10-24T00:47:07Z",
+    "fdv_usd": 153630693.124783,
+    "reserve_usd": 2804289.4305,
+    "volume_h24": 25209624.2921613,
+    "change": {
+      "h1": 0.096,
+      "h6": 1.331,
+      "h24": 6.708
+    },
+    "tx_h1": {
+      "buys": 2793,
+      "sells": 2269
+    },
+    "first_seen": "2026-09-21T11:24:28+00:00",
+    "last_seen": "2026-09-21T12:09:58+00:00"
+  },
+  "narrative": "ZEC в боковике: +6.7% за сутки.",
+  "flags": [],
+  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
+  "updated_at": "2026-09-21T12:09:58Z"
+}

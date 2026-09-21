@@ -1,0 +1,36 @@
+# TalkChart robots.txt — Generative Engine Optimization (GEO) & AI Crawlers Enabled
+User-agent: *
+Allow: /
+
+# Explicit AI Search & Answer Engine Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://leo88q.github.io/content-/site/sitemap.xml

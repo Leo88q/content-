@@ -1,0 +1,30 @@
+{
+  "pool": {
+    "address": "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+    "name": "PUMP / USDC",
+    "base_symbol": "PUMP",
+    "base_name": "PUMP",
+    "base_address": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+    "dex": "pumpswap",
+    "price_usd": 0.004435274928143017,
+    "created_at": "2025-07-14T16:55:54Z",
+    "fdv_usd": 3692088111.98901,
+    "reserve_usd": 22834690.1397,
+    "volume_h24": 4732337.57459978,
+    "change": {
+      "h1": -0.76,
+      "h6": 0.501,
+      "h24": 9.602
+    },
+    "tx_h1": {
+      "buys": 724,
+      "sells": 472
+    },
+    "first_seen": "2026-09-21T11:24:28+00:00",
+    "last_seen": "2026-09-21T12:09:58+00:00"
+  },
+  "narrative": "PUMP растёт на +9.6% за сутки. стакан глубокий: $22.83M ликвидности.",
+  "flags": [],
+  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
+  "updated_at": "2026-09-21T12:09:58Z"
+}
