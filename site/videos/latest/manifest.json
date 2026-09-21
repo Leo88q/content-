@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-09-21T11:36:03+00:00",
+ "generated_at": "2026-09-21T11:41:42+00:00",
  "videos": [
   {
    "file": "videos/2026-09-21/ZEBRA.mp4",
    "latest_file": "videos/latest/ZEBRA.mp4",
    "symbol": "ZEBRA",
-   "chg_h24": 1187.863
+   "chg_h24": 1209.889
   },
   {
    "file": "videos/2026-09-21/Stamp.mp4",
    "latest_file": "videos/latest/Stamp.mp4",
    "symbol": "Stamp",
-   "chg_h24": 460.591
+   "chg_h24": 447.668
   },
   {
-   "file": "videos/2026-09-21/ANTFUN.mp4",
-   "latest_file": "videos/latest/ANTFUN.mp4",
-   "symbol": "ANTFUN",
-   "chg_h24": -86.037
+   "file": "videos/2026-09-21/JEANJAK.mp4",
+   "latest_file": "videos/latest/JEANJAK.mp4",
+   "symbol": "JEANJAK",
+   "chg_h24": -97.393
   }
  ]
 }
