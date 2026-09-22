@@ -1,10 +1,10 @@
 Solana · история дня · 2026-09-22
-1. KCAT +206.9% — KCAT разрывает: +206.9% за 24ч. объём $2.34M больше капы в 16.8× — бумага в огне
-2. biketyson +181.3% — biketyson разрывает: +181.3% за 24ч. ускорение в последнем часе
-3. CATEWALK +158.3% — CATEWALK разрывает: +158.3% за 24ч. давление продаж нарастает
-4. JEANPHIL +127.8% — JEANPHIL разрывает: +127.8% за 24ч. ускорение в последнем часе
-5. EMBER +45.6% — EMBER разрывает: +45.6% за 24ч. ускорение в последнем часе
+1. JEANPHIL +289.4% — JEANPHIL разрывает: +289.4% за 24ч. ускорение в последнем часе
+2. SI +231.4% — SI разрывает: +231.4% за 24ч. давление продаж нарастает
+3. biketyson +123.7% — biketyson разрывает: +123.7% за 24ч. ликвидность тонкая ($249.1K) — движения будут резкими.
+4. KCAT +121.1% — KCAT разрывает: +121.1% за 24ч. давление продаж нарастает
+5. ANTFUN +105.9% — ANTFUN разрывает: +105.9% за 24ч. ускорение в последнем часе
 
-⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG.json
+⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.json
 Графики, которые разговаривают ↓
 https://leo88q.github.io/content-/site

@@ -1,17 +1,17 @@
 {
-  "icon": "https://leo88q.github.io/content-/site/cards/latest/KCAT_+207.png",
-  "title": "TalkChart: KCAT (+206.9%) — Solana On-Chain Radar",
-  "description": "KCAT разрывает: +206.9% за 24ч. объём $2.34M больше капы в 16.8× — бумага в огне. ликвидность тонкая ($35.0K) — движения будут резкими. пулу 0 дн. — чистая рулетка.\n\nОбъём: $2.34M · Ликвидность: $35.0K",
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/JEANPHIL_+289.png",
+  "title": "TalkChart: JEANPHIL (+289.4%) — Solana On-Chain Radar",
+  "description": "JEANPHIL разрывает: +289.4% за 24ч. ускорение в последнем часе. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $5.0K (198× медианы, 0ч назад). нетто китов за сутки +$287.55.\n\nОбъём: $6.47M · Ликвидность: $335.4K",
   "label": "Своп через Jupiter",
   "links": {
     "actions": [
       {
-        "label": "⚡ Своп KCAT (Jupiter)",
-        "href": "https://jup.ag/swap/SOL-MboMMGXjGDi45hfjCVzYru32kEM5nw7VzCqCofZpump"
+        "label": "⚡ Своп JEANPHIL (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump"
       },
       {
         "label": "📈 Живой график + киты",
-        "href": "https://leo88q.github.io/content-/site/index.html#pool=4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG"
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj"
       },
       {
         "label": "🎁 TipLink: вход без сид-фраз",
