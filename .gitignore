@@ -74,3 +74,7 @@ backend/data/
 .idea/
 .vscode/*
 !.vscode/settings.json.example
+*.db-shm
+*.db-wal
+*.sqlite-shm
+*.sqlite-wal

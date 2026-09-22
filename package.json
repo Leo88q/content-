@@ -6,6 +6,7 @@
   "scripts": {
     "test": "python3 scripts/test_watchtower.py",
     "smoke": "python3 scripts/smoke_watchtower.py",
+    "scan": "python3 scripts/scan_secrets.py",
     "build": "python3 site/factory/generate_all.py",
     "start": "python3 site/factory/watchtower_exporter.py"
   },

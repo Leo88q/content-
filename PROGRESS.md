@@ -862,3 +862,40 @@ DOM-смоук в `vm` на живом API — 0 ошибок за три фаз
 
 Единственное, что проверить нельзя: как это выглядит на экране. Цвета,
 отступы и ощущение от анимаций — на вашей стороне.
+
+---
+
+## 2026-09-22 — Games Watchtower: исполнение мастер-промта интеграции trafficgen
+
+В роли агента генератора трафика выполнен мастер-промт
+`PROMPT_TRAFFIC_GENERATOR_INTEGRATION.md` в этом же репозитории: аудит gap'ов →
+реализация → контрактные тесты → смоук → сканер секретов → отчёт.
+
+**Что сделано** (подробно — код и отчёт в чате сессии):
+
+- `site/factory/watchtower_exporter.py` переписан: schema-rejected (нет eventType,
+  seq<1, не-UTC время, плохой sourceType), псевдонимизация `sessionId` до `sess_<sha256>`,
+  `DataGapHealed` + lifecycle алертов active/resolved, invalid cursor → 400
+  `invalid_cursor`, 405 + `Allow` на POST/PUT/DELETE/PATCH, rate limit 30 rps
+  (`429 + Retry-After` + системное событие `RateLimited`), consent DNT/Sec-GPC → 202
+  без записи, retention-прайнинг 30d, счётчики Prometheus переживают рестарт
+  (таблица `metrics_state`), суточная серия метрик с avg/p50/p95 и разрезами
+  campaign/source/page и real/bot, честная воронка без подстановок из конфига (R3),
+  принудительная bot-нормализация `factory_pipeline`, исключение синтетики
+  (`payload.synthetic`) из агрегатов, реконсилёр каталогов (реальные lifecycle-события
+  кампаний/источников/страниц из config store, идемпотентно).
+- `site/app.js`: opt-out (`?notrack=1`, `tc_notrack`, DNT/GPC), реферер классом
+  (`classifyReferrer`), `pageId: target_terminal`, адрес пула — публичный в payload,
+  `SessionEnded` по `pagehide`.
+- Паспорт `WATCHTOWER_INTEGRATION.md` переписан под шаблон с `implemented_events` (17)
+  и `unavailable_events` (12, с причинами). Новые файлы: `PRIVACY.md`, `.env.example`,
+  `scripts/scan_secrets.py` (12 сигнатур), мастер-промт `PROMPT_TRAFFIC_GENERATOR_INTEGRATION.md`.
+- Тесты: `scripts/test_watchtower.py` → 17 контрактных (16 групп §11.1), все зелёные;
+  `scripts/smoke_watchtower.py` → 45 e2e проверок, все зелёные; secret-с scan — чисто.
+- CI: джоб `watchtower-contract` в `.github/workflows/factory.yml` (scan → tests → smoke);
+  `npm run scan` добавлен в package.json.
+
+**Честные расхождения с ТЗ**: `CampaignStarted` не имел эмиттера — получен реальный
+(реконсилёр), `LandingReached` остался `unavailable` (нет механизма подтверждения),
+голые `name` и публичные адреса пулов не чистятся (не PII; персональные ключи имени —
+чистятся). Детали — в отчёте.
