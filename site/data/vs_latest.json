@@ -1,17 +1,17 @@
 {
-  "slug": "clip-vs-family",
+  "slug": "clip-vs-kcat",
   "token1": {
     "symbol": "CLIP",
-    "change_24h": 800.403,
+    "change_24h": 1015.673,
     "address": "7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ",
-    "volume": 8725395.20216004
+    "volume": 9019158.44198093
   },
   "token2": {
-    "symbol": "FAMILY",
-    "change_24h": 249.727,
-    "address": "FdYPSUq2Zrw9vJXkA8uZFVNhNcCvUUuAcSWWVk6MZZhU",
-    "volume": 7574912.56949185
+    "symbol": "KCAT",
+    "change_24h": 619.409,
+    "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
+    "volume": 1807917.89077723
   },
-  "verdict": "По ончейн-метрикам TalkChart: CLIP опережает по ценовому импульсу (+800.4% против +249.7%). Краткосрочный фаворит по совокупности факторов: CLIP.",
-  "updated_at": "2026-09-22 05:07 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: CLIP опережает по ценовому импульсу (+1015.7% против +619.4%). Краткосрочный фаворит по совокупности факторов: CLIP.",
+  "updated_at": "2026-09-22 13:30 UTC"
 }

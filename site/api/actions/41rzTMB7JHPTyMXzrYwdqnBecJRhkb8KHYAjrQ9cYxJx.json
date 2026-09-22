@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/biketyson_+67.png",
+  "title": "TalkChart: biketyson (+67.0%) — Solana On-Chain Radar",
+  "description": "biketyson разрывает: +67.0% за 24ч. ускорение в последнем часе. ликвидность тонкая ($222.9K) — движения будут резкими.\n\nОбъём: $600.7K · Ликвидность: $222.9K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп biketyson (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-CbyTNf7UPzvewHh4Zp6umogM2RWahhmGRJWLJnPwpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

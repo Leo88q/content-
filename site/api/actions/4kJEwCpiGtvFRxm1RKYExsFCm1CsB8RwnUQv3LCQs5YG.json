@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/KCAT_+619.png",
+  "title": "TalkChart: KCAT (+619.4%) — Solana On-Chain Radar",
+  "description": "KCAT разрывает: +619.4% за 24ч. объём $1.81M больше капы в 5.6× — бумага в огне. ликвидность тонкая ($53.1K) — движения будут резкими. пулу 0 дн. — чистая рулетка.\n\nОбъём: $1.81M · Ликвидность: $53.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп KCAT (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-MboMMGXjGDi45hfjCVzYru32kEM5nw7VzCqCofZpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

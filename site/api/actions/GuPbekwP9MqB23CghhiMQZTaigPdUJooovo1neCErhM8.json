@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/ZCAT_-22.png",
+  "title": "TalkChart: ZCAT (-21.8%) — Solana On-Chain Radar",
+  "description": "ZCAT теряет -21.8% за сутки. покупатели доминируют (89% сделок за час). но цена всё равно падает — кто-то разгружается в стакан.\n\nОбъём: $3.10M · Ликвидность: $1.04M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп ZCAT (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-HcRLc9VDgjLeK154xDawfb1dmVJ98DoSqcwTHGqiDeJR"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=GuPbekwP9MqB23CghhiMQZTaigPdUJooovo1neCErhM8"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

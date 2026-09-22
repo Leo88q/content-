@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/TOAD_+31.png",
+  "title": "TalkChart: TOAD (+30.9%) — Solana On-Chain Radar",
+  "description": "TOAD разрывает: +30.9% за 24ч. покупатели доминируют (69% сделок за час).\n\nОбъём: $168.3K · Ликвидность: $313.4K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп TOAD (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-A13oRB9FFaiUjfi6LdCg6p9ka1u8SfGkUFs4SKvPpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Nx9dcwNs3iJxM5YAxshMHE4aYJHdDyyGMhVcmaSgfu8"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
