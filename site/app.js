@@ -487,8 +487,22 @@ function showInterstitial() {
 }
 function hideInterstitial() { $("#interstitial").classList.remove("show"); }
 
-/* ---------- трекинг (заглушка пикселя → будущий wallet-CRM) ---------- */
 /* ---------- трекинг & Watchtower телеметрия ---------- */
+/* Consent/opt-out (PRIVACY.md): ?notrack=1 и localStorage tc_notrack=1 выключают
+   отправку телеметрии немедленно и персистентно; ?notrack=0 включает обратно.
+   Дополнительно уважаются navigator.doNotTrack и Global Privacy Control.      */
+function trackingOptOut() {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.has("notrack")) {
+      localStorage.setItem("tc_notrack", q.get("notrack") === "1" ? "1" : "0");
+    }
+    if (localStorage.getItem("tc_notrack") === "1") return true;
+    if (navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true) return true;
+  } catch (e) {}
+  return false;
+}
+
 function getPseudoSessionId() {
   let sid = localStorage.getItem("tc_session_id");
   if (!sid) {
@@ -505,11 +519,43 @@ function getNextSeq() {
   return s;
 }
 
+/* Источник хранится КЛАССОМ (source_systems контракта), а не полным URL —
+   полный referrer может содержать чувствительные query-параметры (PII). */
+function classifyReferrer(r) {
+  if (!r) return "direct_web";
+  try {
+    const h = new URL(r).hostname.toLowerCase();
+    if (h.includes("t.co") || h.includes("twitter.") || h.includes("x.com")) return "x_twitter";
+    if (h.includes("perplexity.")) return "perplexity_ai";
+    if (h.includes("openai.") || h.includes("chatgpt.")) return "chatgpt_search";
+    if (h.includes("google.") || h.includes("bing.") || h.includes("duckduckgo.")) return "google_search";
+    if (h.includes("tiktok.") || h.includes("youtube.") || h.includes("youtu.be")
+        || h.includes("instagram.") || h.includes("facebook.")) return "short_video";
+    if (h.includes("tiplink.")) return "tiplink_referral";
+  } catch (e) {}
+  return "direct_web";
+}
+
+function bumpTabEventCount() {
+  try {
+    const n = (parseInt(sessionStorage.getItem("tc_tab_events"), 10) || 0) + 1;
+    sessionStorage.setItem("tc_tab_events", String(n));
+    return n;
+  } catch (e) { return 1; }
+}
+
 function sendWatchtowerEvent(evtType, payload) {
+  if (trackingOptOut()) return;
   const sid = getPseudoSessionId();
   const seq = getNextSeq();
+  bumpTabEventCount();
   const cid = (payload && payload.campaignId) || "talkchart_interactive_radar";
-  const pid = (state.selected && state.selected.address) || "terminal";
+  const pid = "target_terminal"; // канонический pageId; адрес пула — в payload
+  const p = {
+    ...(payload || {}),
+    pool: state.selected?.base_symbol,
+    poolAddress: state.selected?.address, // публичный on-chain адрес пула, не PII
+  };
   const ev = {
     eventId: "ev_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
     identity: `offchain:trafficgen:${cid}:${pid}:${sid}:${seq}`,
@@ -520,12 +566,12 @@ function sendWatchtowerEvent(evtType, payload) {
     timestamp: new Date().toISOString(),
     observedAt: new Date().toISOString(),
     campaignId: cid,
-    sourceId: "direct_web",
+    sourceId: classifyReferrer(document.referrer),
     sourceType: "real",
     pageId: pid,
     sessionId: sid,
     seq: seq,
-    payload: payload || {},
+    payload: p,
     parserVersion: "trafficgen-v1",
     dataQuality: "complete"
   };
@@ -543,6 +589,18 @@ function sendWatchtowerEvent(evtType, payload) {
     }
   } catch (e) {}
 }
+
+/* Явное завершение сессии: реальная длительность вкладки и число событий. */
+window.addEventListener("pagehide", () => {
+  try {
+    const start = parseInt(sessionStorage.getItem("tc_tab_start"), 10) || Date.now();
+    const count = parseInt(sessionStorage.getItem("tc_tab_events"), 10) || 0;
+    sendWatchtowerEvent("SessionEnded", {
+      durationSeconds: Math.max(0, Math.round((Date.now() - start) / 1000)),
+      eventCount: count
+    });
+  } catch (e) {}
+});
 
 function track(evt, id) {
   const rec = { evt, id, ts: Date.now(), pool: state.selected?.address };
@@ -815,7 +873,8 @@ async function init() {
   try {
     if (!sessionStorage.getItem("tc_session_started")) {
       sessionStorage.setItem("tc_session_started", "1");
-      sendWatchtowerEvent("SessionStarted", { referrer: document.referrer || "direct" });
+      sessionStorage.setItem("tc_tab_start", String(Date.now()));
+      sendWatchtowerEvent("SessionStarted", { referrerSource: classifyReferrer(document.referrer) });
     }
     sendWatchtowerEvent("PageView", { path: location.pathname + location.hash, title: document.title });
   } catch (e) {}

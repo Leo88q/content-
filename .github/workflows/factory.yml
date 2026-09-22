@@ -29,6 +29,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  watchtower-contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Secret scan (public + свой сканер)
+        run: python3 scripts/scan_secrets.py
+      - name: Contract tests (17)
+        run: python3 scripts/test_watchtower.py
+      - name: End-to-end smoke (45 checks)
+        run: python3 scripts/smoke_watchtower.py
+
   factory:
     runs-on: ubuntu-24.04
     steps:
