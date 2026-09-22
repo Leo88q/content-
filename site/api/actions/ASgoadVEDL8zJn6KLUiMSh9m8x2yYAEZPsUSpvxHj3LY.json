@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Tilcayo_+1.png",
+  "title": "TalkChart: Tilcayo (+1.2%) — Solana On-Chain Radar",
+  "description": "Tilcayo в боковике: +1.2% за сутки. ликвидность тонкая ($148.1K) — движения будут резкими. пулу 5 дн., история короткая.\n\nОбъём: $1.09M · Ликвидность: $148.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Tilcayo (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-AyYNfPtftg2zDP4ZbgcoQMggQtwLh4zpfVVmUJs2thto"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=ASgoadVEDL8zJn6KLUiMSh9m8x2yYAEZPsUSpvxHj3LY"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

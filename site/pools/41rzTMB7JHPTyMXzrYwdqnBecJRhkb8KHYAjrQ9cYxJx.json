@@ -6,19 +6,19 @@
     "base_name": "biketyson",
     "base_address": "CbyTNf7UPzvewHh4Zp6umogM2RWahhmGRJWLJnPwpump",
     "dex": "pumpswap",
-    "price_usd": 0.0031475503158912904,
+    "price_usd": 0.0035804727071526692,
     "created_at": "2026-09-03T16:16:10Z",
-    "fdv_usd": 3154820.89,
-    "reserve_usd": 250896.402,
-    "volume_h24": 771864.861261981,
+    "fdv_usd": 3625705.018,
+    "reserve_usd": 270200.2216,
+    "volume_h24": 911011.084369926,
     "change": {
-      "h1": 9.876,
-      "h6": 37.31,
-      "h24": 158.146
+      "h1": 21.181,
+      "h6": 40.915,
+      "h24": 181.272
     },
     "tx_h1": {
-      "buys": 357,
-      "sells": 216
+      "buys": 518,
+      "sells": 531
     },
     "ohlcv_h1": [
       [
@@ -407,54 +407,54 @@
       ]
     ],
     "first_seen": "2026-09-22T13:30:00+00:00",
-    "last_seen": "2026-09-22T18:55:16+00:00",
+    "last_seen": "2026-09-22T19:48:51+00:00",
     "whales": [
       {
         "kind": "sell",
-        "usd": 7089.67,
-        "mult": 378.6,
-        "whale": false,
-        "hours_ago": 0.3,
-        "addr8": "E8s4zuuK"
-      },
-      {
-        "kind": "buy",
-        "usd": 4923.39,
-        "mult": 262.9,
+        "usd": 2627.99,
+        "mult": 108.3,
         "whale": false,
         "hours_ago": 0.4,
-        "addr8": "6o7smhip"
+        "addr8": "J3GREfw1"
+      },
+      {
+        "kind": "sell",
+        "usd": 1819.42,
+        "mult": 75.0,
+        "whale": false,
+        "hours_ago": 0.4,
+        "addr8": "FdhJ4TWE"
+      },
+      {
+        "kind": "sell",
+        "usd": 1556.06,
+        "mult": 64.2,
+        "whale": false,
+        "hours_ago": 0.4,
+        "addr8": "J3GREfw1"
       },
       {
         "kind": "buy",
-        "usd": 4922.48,
-        "mult": 262.9,
+        "usd": 1506.17,
+        "mult": 62.1,
         "whale": false,
-        "hours_ago": 0.5,
-        "addr8": "6o7smhip"
+        "hours_ago": 0.3,
+        "addr8": "AgmLJBMD"
       },
       {
         "kind": "buy",
-        "usd": 4477.27,
-        "mult": 239.1,
+        "usd": 1189.68,
+        "mult": 49.0,
         "whale": false,
-        "hours_ago": 0.2,
-        "addr8": "8oSD5a9E"
-      },
-      {
-        "kind": "buy",
-        "usd": 2953.5,
-        "mult": 157.7,
-        "whale": false,
-        "hours_ago": 0.1,
-        "addr8": "6o7smhip"
+        "hours_ago": 0.4,
+        "addr8": "5K53Bs6i"
       }
     ]
   },
-  "narrative": "biketyson разрывает: +158.1% за 24ч. ускорение в последнем часе. покупатели доминируют (62% сделок за час). крупная сделка на фоне ленты: продал $7.1K (379× медианы, 0ч назад). нетто китов за сутки +$10.2K.",
+  "narrative": "biketyson разрывает: +181.3% за 24ч. ускорение в последнем часе. крупная сделка на фоне ленты: продал $2.6K (108× медианы, 0ч назад). нетто китов за сутки −$3.3K.",
   "flags": [
     "перегрет за 24ч"
   ],
-  "whale_summary": "Зафиксировано крупных сделок: 5 (4 покупок, 1 продаж). Крупнейшая: продажа на $7.1K (379× медианы). Нетто-поток китов: +$10.2K.",
-  "updated_at": "2026-09-22T18:55:16Z"
+  "whale_summary": "Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: продажа на $2.6K (108× медианы). Нетто-поток китов: $-3.3K.",
+  "updated_at": "2026-09-22T19:48:51Z"
 }

@@ -1,17 +1,17 @@
 {
-  "slug": "kcat-vs-catewalk",
+  "slug": "kcat-vs-biketyson",
   "token1": {
     "symbol": "KCAT",
-    "change_24h": 263.52,
+    "change_24h": 206.878,
     "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
-    "volume": 2309802.74860438
+    "volume": 2336363.13852693
   },
   "token2": {
-    "symbol": "CATEWALK",
-    "change_24h": 218.964,
-    "address": "HdiUXnAwQkLBwdFpSh3gUKM1cM5QAC1G39nM1RGVwGrn",
-    "volume": 3934078.56040305
+    "symbol": "biketyson",
+    "change_24h": 181.272,
+    "address": "41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx",
+    "volume": 911011.084369926
   },
-  "verdict": "По ончейн-метрикам TalkChart: KCAT опережает по ценовому импульсу (+263.5% против +219.0%). Кроме того, у CATEWALK более надёжная ликвидность ($100.0K против $32.8K). Краткосрочный фаворит по совокупности факторов: CATEWALK.",
-  "updated_at": "2026-09-22 18:55 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: KCAT опережает по ценовому импульсу (+206.9% против +181.3%). Кроме того, у biketyson более надёжная ликвидность ($270.2K против $35.0K). Кроме того, у KCAT объём превышает ликвидность в 66.7× — признак экстремального хайпа и волатильности. Краткосрочный фаворит по совокупности факторов: biketyson.",
+  "updated_at": "2026-09-22 19:49 UTC"
 }
