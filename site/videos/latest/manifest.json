@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-09-21T23:23:20+00:00",
+ "generated_at": "2026-09-22T05:07:20+00:00",
  "videos": [
   {
-   "file": "videos/2026-09-21/CLIP.mp4",
+   "file": "videos/2026-09-22/CLIP.mp4",
    "latest_file": "videos/latest/CLIP.mp4",
    "symbol": "CLIP",
-   "chg_h24": 1970.356
+   "chg_h24": 800.403
   },
   {
-   "file": "videos/2026-09-21/FAMILY.mp4",
+   "file": "videos/2026-09-22/FAMILY.mp4",
    "latest_file": "videos/latest/FAMILY.mp4",
    "symbol": "FAMILY",
-   "chg_h24": 251.838
+   "chg_h24": 249.727
   },
   {
-   "file": "videos/2026-09-21/ANTFUN.mp4",
-   "latest_file": "videos/latest/ANTFUN.mp4",
-   "symbol": "ANTFUN",
-   "chg_h24": -90.164
+   "file": "videos/2026-09-22/CALI.mp4",
+   "latest_file": "videos/latest/CALI.mp4",
+   "symbol": "CALI",
+   "chg_h24": 166.752
   }
  ]
 }

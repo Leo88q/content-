@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/SOL_+4.png",
+  "title": "TalkChart: SOL (+4.4%) — Solana On-Chain Radar",
+  "description": "SOL в боковике: +4.4% за сутки. стакан глубокий: $41.84M ликвидности.\n\nОбъём: $87.55M · Ликвидность: $41.84M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп SOL (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-So11111111111111111111111111111111111111112"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

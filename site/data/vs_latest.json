@@ -2,16 +2,16 @@
   "slug": "clip-vs-family",
   "token1": {
     "symbol": "CLIP",
-    "change_24h": 1970.356,
+    "change_24h": 800.403,
     "address": "7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ",
-    "volume": 8086258.11113031
+    "volume": 8725395.20216004
   },
   "token2": {
     "symbol": "FAMILY",
-    "change_24h": 251.838,
+    "change_24h": 249.727,
     "address": "FdYPSUq2Zrw9vJXkA8uZFVNhNcCvUUuAcSWWVk6MZZhU",
-    "volume": 7440955.5383757
+    "volume": 7574912.56949185
   },
-  "verdict": "По ончейн-метрикам TalkChart: CLIP опережает по ценовому импульсу (+1970.4% против +251.8%). Кроме того, у CLIP существенно глубже пул ликвидности ($112.1K против $41.6K), что снижает риск проскальзывания. Краткосрочный фаворит по совокупности факторов: CLIP.",
-  "updated_at": "2026-09-21 23:23 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: CLIP опережает по ценовому импульсу (+800.4% против +249.7%). Краткосрочный фаворит по совокупности факторов: CLIP.",
+  "updated_at": "2026-09-22 05:07 UTC"
 }
