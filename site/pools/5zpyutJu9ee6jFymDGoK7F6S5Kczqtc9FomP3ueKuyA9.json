@@ -1,0 +1,30 @@
+{
+  "pool": {
+    "address": "5zpyutJu9ee6jFymDGoK7F6S5Kczqtc9FomP3ueKuyA9",
+    "name": "Bonk / SOL",
+    "base_symbol": "Bonk",
+    "base_name": "Bonk",
+    "base_address": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+    "dex": "orca",
+    "price_usd": 3.5654524377597942e-06,
+    "created_at": "2023-07-05T14:41:09Z",
+    "fdv_usd": 315222688.775649,
+    "reserve_usd": 344470.5102,
+    "volume_h24": 2470328.62235911,
+    "change": {
+      "h1": -0.181,
+      "h6": 0.719,
+      "h24": 5.069
+    },
+    "tx_h1": {
+      "buys": 1330,
+      "sells": 1023
+    },
+    "first_seen": "2026-09-22T18:55:16+00:00",
+    "last_seen": "2026-09-22T18:55:16+00:00"
+  },
+  "narrative": "Bonk в боковике: +5.1% за сутки.",
+  "flags": [],
+  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
+  "updated_at": "2026-09-22T18:55:16Z"
+}

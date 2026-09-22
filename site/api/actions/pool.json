@@ -1,17 +1,17 @@
 {
-  "icon": "https://leo88q.github.io/content-/site/cards/latest/CLIP_+1016.png",
-  "title": "TalkChart: CLIP (+1015.7%) — Solana On-Chain Radar",
-  "description": "CLIP разрывает: +1015.7% за 24ч. объём $9.02M больше капы в 16.8× — бумага в огне. ликвидность тонкая ($80.3K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $1.3K (122× медианы, 0ч назад). нетто китов за сутки +$5.4K.\n\nОбъём: $9.02M · Ликвидность: $80.3K",
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/KCAT_+264.png",
+  "title": "TalkChart: KCAT (+263.5%) — Solana On-Chain Radar",
+  "description": "KCAT разрывает: +263.5% за 24ч. давление продаж нарастает. объём $2.31M больше капы в 14.1× — бумага в огне. ликвидность тонкая ($32.8K) — движения будут резкими. пулу 0 дн. — чистая рулетка.\n\nОбъём: $2.31M · Ликвидность: $32.8K",
   "label": "Своп через Jupiter",
   "links": {
     "actions": [
       {
-        "label": "⚡ Своп CLIP (Jupiter)",
-        "href": "https://jup.ag/swap/SOL-9DdHxVe1BSPaTy3iGEwvWsooRchNLK61XFAvzot59FwD"
+        "label": "⚡ Своп KCAT (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-MboMMGXjGDi45hfjCVzYru32kEM5nw7VzCqCofZpump"
       },
       {
         "label": "📈 Живой график + киты",
-        "href": "https://leo88q.github.io/content-/site/index.html#pool=7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ"
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG"
       },
       {
         "label": "🎁 TipLink: вход без сид-фраз",

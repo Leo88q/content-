@@ -1,16 +1,16 @@
 # Solana Top Gainers (24h) — 2026-09-22
 
-> Automated on-chain leaderboard from TalkChart. Updated 2026-09-22 13:30 UTC.
+> Automated on-chain leaderboard from TalkChart. Updated 2026-09-22 18:55 UTC.
 
 | # | Symbol | 24h Change | 24h Volume | On-Chain Narrative |
 |---|--------|------------|------------|-------------------|
-| 1 | [CLIP](https://leo88q.github.io/content-/site/pools/7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ.md) | +1015.7% | $9.02M | CLIP разрывает: +1015.7% за 24ч. объём $9.02M больше капы в 16.8× — бумага в огне |
-| 2 | [KCAT](https://leo88q.github.io/content-/site/pools/4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG.md) | +619.4% | $1.81M | KCAT разрывает: +619.4% за 24ч. объём $1.81M больше капы в 5.6× — бумага в огне |
-| 3 | [biketyson](https://leo88q.github.io/content-/site/pools/41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx.md) | +67.0% | $600.7K | biketyson разрывает: +67.0% за 24ч. ускорение в последнем часе |
-| 4 | [TOAD](https://leo88q.github.io/content-/site/pools/Nx9dcwNs3iJxM5YAxshMHE4aYJHdDyyGMhVcmaSgfu8.md) | +30.9% | $168.3K | TOAD разрывает: +30.9% за 24ч. покупатели доминируют (69% сделок за час). |
-| 5 | [PUMPCAT](https://leo88q.github.io/content-/site/pools/6HLorrkY3vqPsyTZDFvTGTnwnZsLM343Jxw6XvEPTKRt.md) | +28.1% | $725.6K | PUMPCAT растёт на +28.1% за сутки. объём $725.6K больше капы в 8.1× — бумага в огне |
-| 6 | [FUKYEAH](https://leo88q.github.io/content-/site/pools/A8F3bDC17pfoGqUZanM1wh68jnKCDRGWECRVPkiMhjGc.md) | +25.5% | $190.7K | FUKYEAH растёт на +25.5% за сутки. продают в рынок (100% сделок за час) |
-| 7 | [EMBER](https://leo88q.github.io/content-/site/pools/GbrDAq3RjcVWeroLDUwmnuQ8N5xaaKj2Rk2dJDg64CLY.md) | +23.6% | $1.71M | EMBER растёт на +23.6% за сутки. пулу 13 дн., история короткая |
-| 8 | [PEPENOM](https://leo88q.github.io/content-/site/pools/Bd4wKg3xEBKJ4Xrw8skXMmJ4W65gk3x8yd7AovuBJisZ.md) | +15.3% | $132.9K | PEPENOM растёт на +15.3% за сутки. покупатели доминируют (71% сделок за час) |
-| 9 | [USELESS](https://leo88q.github.io/content-/site/pools/Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp.md) | +12.3% | $5.49M | USELESS растёт на +12.3% за сутки. стакан глубокий: $5.97M ликвидности. |
-| 10 | [Fartcoin](https://leo88q.github.io/content-/site/pools/Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw.md) | +12.0% | $5.10M | Fartcoin растёт на +12.0% за сутки. продают в рынок (64% сделок за час) |
+| 1 | [KCAT](https://leo88q.github.io/content-/site/pools/4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG.md) | +263.5% | $2.31M | KCAT разрывает: +263.5% за 24ч. давление продаж нарастает |
+| 2 | [CATEWALK](https://leo88q.github.io/content-/site/pools/HdiUXnAwQkLBwdFpSh3gUKM1cM5QAC1G39nM1RGVwGrn.md) | +219.0% | $3.93M | CATEWALK разрывает: +219.0% за 24ч. объём $3.93M больше капы в 3.7× — бумага в огне |
+| 3 | [biketyson](https://leo88q.github.io/content-/site/pools/41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx.md) | +158.1% | $771.9K | biketyson разрывает: +158.1% за 24ч. ускорение в последнем часе |
+| 4 | [SI](https://leo88q.github.io/content-/site/pools/B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD.md) | +93.2% | $9.79M | SI разрывает: +93.2% за 24ч. ускорение в последнем часе |
+| 5 | [JEANPHIL](https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.md) | +65.6% | $3.48M | JEANPHIL разрывает: +65.6% за 24ч. ускорение в последнем часе |
+| 6 | [ANTFUN](https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.md) | +34.6% | $16.39M | ANTFUN разрывает: +34.6% за 24ч. покупатели доминируют (67% сделок за час) |
+| 7 | [EMBER](https://leo88q.github.io/content-/site/pools/GbrDAq3RjcVWeroLDUwmnuQ8N5xaaKj2Rk2dJDg64CLY.md) | +29.5% | $1.46M | EMBER растёт на +29.5% за сутки. ускорение в последнем часе |
+| 8 | [PUMPCAT](https://leo88q.github.io/content-/site/pools/6HLorrkY3vqPsyTZDFvTGTnwnZsLM343Jxw6XvEPTKRt.md) | +28.1% | $725.6K | PUMPCAT растёт на +28.1% за сутки. объём $725.6K больше капы в 8.1× — бумага в огне |
+| 9 | [FUKYEAH](https://leo88q.github.io/content-/site/pools/A8F3bDC17pfoGqUZanM1wh68jnKCDRGWECRVPkiMhjGc.md) | +25.5% | $190.7K | FUKYEAH растёт на +25.5% за сутки. продают в рынок (100% сделок за час) |
+| 10 | [CLIP](https://leo88q.github.io/content-/site/pools/7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ.md) | +21.9% | $3.09M | CLIP растёт на +21.9% за сутки. объём $3.09M больше капы в 6.4× — бумага в огне |

@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/TIKTOK_-92.png",
+  "title": "TalkChart: TIKTOK (-91.9%) — Solana On-Chain Radar",
+  "description": "TIKTOK в обвале: -91.9% за 24ч. объём $140.99M больше капы в 2965.4× — бумага в огне. ликвидность тонкая ($0.00298) — движения будут резкими. пулу 1 дн. — чистая рулетка.\n\nОбъём: $140.99M · Ликвидность: $0.00298",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп TIKTOK (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-8H2n523qpSiD2ift11aygCDZ4ZzYyhKX5Qms7zQ2jC3c"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=DFZnu6CaxumwG8MeFv9i3Y4HhMxReyE1EYwHFQeRRCLY"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

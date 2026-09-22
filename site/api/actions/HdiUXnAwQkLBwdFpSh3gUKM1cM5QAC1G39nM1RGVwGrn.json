@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/CATEWALK_+219.png",
+  "title": "TalkChart: CATEWALK (+219.0%) — Solana On-Chain Radar",
+  "description": "CATEWALK разрывает: +219.0% за 24ч. объём $3.93M больше капы в 3.7× — бумага в огне. ликвидность тонкая ($100.0K) — движения будут резкими. пулу 1 дн. — чистая рулетка.\n\nОбъём: $3.93M · Ликвидность: $100.0K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп CATEWALK (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-BLSuVTxKYDL4vm4XmG3oEJfsSGfJZF3cgy98ri68pump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=HdiUXnAwQkLBwdFpSh3gUKM1cM5QAC1G39nM1RGVwGrn"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

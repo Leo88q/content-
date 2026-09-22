@@ -1,17 +1,17 @@
 {
-  "slug": "clip-vs-kcat",
+  "slug": "kcat-vs-catewalk",
   "token1": {
-    "symbol": "CLIP",
-    "change_24h": 1015.673,
-    "address": "7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ",
-    "volume": 9019158.44198093
+    "symbol": "KCAT",
+    "change_24h": 263.52,
+    "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
+    "volume": 2309802.74860438
   },
   "token2": {
-    "symbol": "KCAT",
-    "change_24h": 619.409,
-    "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
-    "volume": 1807917.89077723
+    "symbol": "CATEWALK",
+    "change_24h": 218.964,
+    "address": "HdiUXnAwQkLBwdFpSh3gUKM1cM5QAC1G39nM1RGVwGrn",
+    "volume": 3934078.56040305
   },
-  "verdict": "По ончейн-метрикам TalkChart: CLIP опережает по ценовому импульсу (+1015.7% против +619.4%). Краткосрочный фаворит по совокупности факторов: CLIP.",
-  "updated_at": "2026-09-22 13:30 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: KCAT опережает по ценовому импульсу (+263.5% против +219.0%). Кроме того, у CATEWALK более надёжная ликвидность ($100.0K против $32.8K). Краткосрочный фаворит по совокупности факторов: CATEWALK.",
+  "updated_at": "2026-09-22 18:55 UTC"
 }

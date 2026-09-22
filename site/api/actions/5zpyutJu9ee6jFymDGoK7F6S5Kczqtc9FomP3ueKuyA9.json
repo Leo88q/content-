@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Bonk_+5.png",
+  "title": "TalkChart: Bonk (+5.1%) — Solana On-Chain Radar",
+  "description": "Bonk в боковике: +5.1% за сутки.\n\nОбъём: $2.47M · Ликвидность: $344.5K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Bonk (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=5zpyutJu9ee6jFymDGoK7F6S5Kczqtc9FomP3ueKuyA9"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
