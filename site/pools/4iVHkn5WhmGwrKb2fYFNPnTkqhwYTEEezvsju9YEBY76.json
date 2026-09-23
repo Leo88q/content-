@@ -6,19 +6,19 @@
     "base_name": "ALLINU",
     "base_address": "4MMQY9bwkxxTtsK3W227Q5ABT6yFY8Pmn9Ze7wmAXKY8",
     "dex": "meteora",
-    "price_usd": 0.008960254934545924,
+    "price_usd": 0.00900997775158088,
     "created_at": "2026-09-11T20:56:40Z",
-    "fdv_usd": 8740077.05918135,
-    "reserve_usd": 388676.2546,
-    "volume_h24": 4001227.12120867,
+    "fdv_usd": 8971463.93542939,
+    "reserve_usd": 380482.0416,
+    "volume_h24": 3211439.97100993,
     "change": {
-      "h1": -4.039,
-      "h6": -4.05,
-      "h24": -34.363
+      "h1": 2.165,
+      "h6": 13.893,
+      "h24": -30.874
     },
     "tx_h1": {
-      "buys": 44,
-      "sells": 51
+      "buys": 65,
+      "sells": 56
     },
     "ohlcv_h1": [
       [
@@ -407,52 +407,52 @@
       ]
     ],
     "first_seen": "2026-09-23T04:53:04+00:00",
-    "last_seen": "2026-09-23T18:26:53+00:00",
+    "last_seen": "2026-09-23T20:34:16+00:00",
     "whales": [
       {
         "kind": "sell",
-        "usd": 13920.8,
-        "mult": 201.5,
+        "usd": 6689.6,
+        "mult": 75.8,
         "whale": false,
-        "hours_ago": 0.9,
+        "hours_ago": 0.4,
         "addr8": "Fmop8qaw"
       },
       {
         "kind": "buy",
-        "usd": 6654.57,
-        "mult": 96.3,
+        "usd": 3836.0,
+        "mult": 43.5,
         "whale": false,
-        "hours_ago": 1.5,
-        "addr8": "GAr1hsy7"
+        "hours_ago": 2.1,
+        "addr8": "3pFbdxmc"
+      },
+      {
+        "kind": "buy",
+        "usd": 3694.06,
+        "mult": 41.9,
+        "whale": false,
+        "hours_ago": 1.3,
+        "addr8": "Fmop8qaw"
       },
       {
         "kind": "sell",
-        "usd": 4402.77,
-        "mult": 63.7,
+        "usd": 3598.05,
+        "mult": 40.8,
         "whale": false,
-        "hours_ago": 0.9,
-        "addr8": "G9Ft2duZ"
+        "hours_ago": 0.1,
+        "addr8": "HdCYYBj5"
       },
       {
-        "kind": "buy",
-        "usd": 3935.24,
-        "mult": 57.0,
+        "kind": "sell",
+        "usd": 3445.96,
+        "mult": 39.1,
         "whale": false,
-        "hours_ago": 0.8,
-        "addr8": "7DZwqAmS"
-      },
-      {
-        "kind": "buy",
-        "usd": 3928.69,
-        "mult": 56.9,
-        "whale": false,
-        "hours_ago": 1.4,
-        "addr8": "AgmLJBMD"
+        "hours_ago": 1.0,
+        "addr8": "4g67JsXN"
       }
     ]
   },
-  "narrative": "ALLINU в обвале: -34.4% за 24ч. давление продаж нарастает. пулу 12 дн., история короткая. крупная сделка на фоне ленты: продал $13.9K (202× медианы, 1ч назад). нетто китов за сутки −$3.8K.",
+  "narrative": "ALLINU в обвале: -30.9% за 24ч. пулу 12 дн., история короткая. крупная сделка на фоне ленты: продал $6.7K (76× медианы, 0ч назад). нетто китов за сутки −$6.2K.",
   "flags": [],
-  "whale_summary": "Зафиксировано крупных сделок: 5 (3 покупок, 2 продаж). Крупнейшая: продажа на $13.9K (202× медианы). Нетто-поток китов: $-3.8K.",
-  "updated_at": "2026-09-23T18:26:53Z"
+  "whale_summary": "Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: продажа на $6.7K (76× медианы). Нетто-поток китов: $-6.2K.",
+  "updated_at": "2026-09-23T20:34:16Z"
 }

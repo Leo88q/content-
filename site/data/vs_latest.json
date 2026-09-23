@@ -1,17 +1,17 @@
 {
-  "slug": "archibrown-vs-sweep",
+  "slug": "archibrown-vs-gp",
   "token1": {
     "symbol": "ARCHIBROWN",
-    "change_24h": 570.804,
+    "change_24h": 660.41,
     "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
-    "volume": 2468397.29105031
+    "volume": 2548140.33217068
   },
   "token2": {
-    "symbol": "SWEEP",
-    "change_24h": 240.436,
-    "address": "EzN9f2oGkMzkEJxdJtySURqvBd6Y8Ah2EoEXsbgutbc1",
-    "volume": 3990527.70686498
+    "symbol": "GP",
+    "change_24h": 172.152,
+    "address": "8S2XFMPBNnUNBuzKTb1ZFC1B2DMJSRUFZQsbpSwFXhkx",
+    "volume": 4792646.7194004
   },
-  "verdict": "По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+570.8% против +240.4%). Краткосрочный фаворит по совокупности факторов: ARCHIBROWN.",
-  "updated_at": "2026-09-23 18:27 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+660.4% против +172.2%). Кроме того, у GP более надёжная ликвидность ($870.2K против $56.9K). Кроме того, у ARCHIBROWN объём превышает ликвидность в 44.7× — признак экстремального хайпа и волатильности. Краткосрочный фаворит по совокупности факторов: GP.",
+  "updated_at": "2026-09-23 20:34 UTC"
 }
