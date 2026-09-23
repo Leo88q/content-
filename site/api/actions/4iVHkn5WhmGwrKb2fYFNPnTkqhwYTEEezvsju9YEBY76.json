@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/ALLINU_-44.png",
+  "title": "TalkChart: ALLINU (-44.1%) — Solana On-Chain Radar",
+  "description": "ALLINU в обвале: -44.1% за 24ч. пулу 11 дн., история короткая.\n\nОбъём: $3.84M · Ликвидность: $458.3K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп ALLINU (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-4MMQY9bwkxxTtsK3W227Q5ABT6yFY8Pmn9Ze7wmAXKY8"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=4iVHkn5WhmGwrKb2fYFNPnTkqhwYTEEezvsju9YEBY76"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

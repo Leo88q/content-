@@ -12,17 +12,17 @@ This site provides real-time and historical on-chain statistics for Solana liqui
 - **All Pools Index (Markdown)**: https://leo88q.github.io/content-/site/pools/index.md
 - **Sitemap XML**: https://leo88q.github.io/content-/site/sitemap.xml
 
-## Top Monitored Solana Tokens (Snapshot: 2026-09-22T23:02:08Z)
+## Top Monitored Solana Tokens (Snapshot: 2026-09-23T04:53:04Z)
 - [TIKTOK](https://leo88q.github.io/content-/site/pools/DFZnu6CaxumwG8MeFv9i3Y4HhMxReyE1EYwHFQeRRCLY.md): TIKTOK / SOL on pumpswap — -91.9% 24h, Vol $140.99M, Liq $0.00298
 - [SOL](https://leo88q.github.io/content-/site/pools/58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2.md): SOL / USDC on raydium — +4.4% 24h, Vol $87.55M, Liq $41.84M
 - [ZEC](https://leo88q.github.io/content-/site/pools/GTHKH8s82ZR8GTSFZ1dUu6wfdxhy59wpMShxzG5zjiPm.md): ZEC / USDC on orca — +1.8% 24h, Vol $28.29M, Liq $2.88M
-- [STONK](https://leo88q.github.io/content-/site/pools/zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX.md): STONK / SOL on meteora — -16.6% 24h, Vol $18.06M, Liq $2.80M
+- [STONK](https://leo88q.github.io/content-/site/pools/zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX.md): STONK / SOL on meteora — -0.7% 24h, Vol $15.58M, Liq $2.81M
 - [ANTFUN](https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.md): ANTFUN / USDT on meteora — +105.9% 24h, Vol $15.57M, Liq $18.61M
-- [PUMP](https://leo88q.github.io/content-/site/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd.md): PUMP / USDC on pumpswap — +1.9% 24h, Vol $15.51M, Liq $23.19M
+- [PUMP](https://leo88q.github.io/content-/site/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd.md): PUMP / USDC on pumpswap — -1.3% 24h, Vol $14.36M, Liq $22.87M
 - [BP](https://leo88q.github.io/content-/site/pools/6qz7THwQvcjF3HyDGLuKaLBUk6EyJKeZXZMWLAeiwfjd.md): BP / USDC on meteora — +8.5% 24h, Vol $14.20M, Liq $3.98M
 - [SI](https://leo88q.github.io/content-/site/pools/B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD.md): SI / NVDAx on raydium — +231.4% 24h, Vol $9.68M, Liq $218.2K
-- [STONK](https://leo88q.github.io/content-/site/pools/7a8xxAJBELDo6P9dikSYctdw6ce8F4mWr3ahcAD8Ao49.md): STONK / SPYx on raydium-clmm — -15.5% 24h, Vol $8.16M, Liq $5.35M
-- [JEANPHIL](https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.md): JEANPHIL / SOL on pumpswap — +289.4% 24h, Vol $6.47M, Liq $335.4K
+- [JEANPHIL](https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.md): JEANPHIL / SOL on pumpswap — +157.7% 24h, Vol $7.65M, Liq $309.5K
+- [USELESS](https://leo88q.github.io/content-/site/pools/Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp.md): USELESS / SOL on raydium — +33.3% 24h, Vol $6.24M, Liq $6.42M
 
 ## Data Interpretation Rules for AI Agents
 1. All USD values are normalized from DEX swap amounts.
@@ -183,24 +183,24 @@ Recent notable orders:
 
 # STONK (STONK / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: STONK is currently priced at $0.2979 (-16.6% 24h) on meteora (Solana). 24h trading volume is $18.06M with $2.80M liquidity. Algorithmic narrative: STONK теряет -16.6% за сутки. крупная сделка на фоне ленты: купил $19.7K (348× медианы, 0ч назад). нетто китов за сутки +$19.8K.
+> Direct Summary for LLMs: STONK is currently priced at $0.3225 (-0.7% 24h) on meteora (Solana). 24h trading volume is $15.58M with $2.81M liquidity. Algorithmic narrative: STONK в боковике: -0.7% за сутки. крупная сделка на фоне ленты: купил $19.7K (348× медианы, 0ч назад). нетто китов за сутки +$19.8K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
 - **Asset**: STONK (STONK / SOL)
 - **Network**: Solana
 - **DEX**: meteora
 - **Pool Address**: `zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX`
 - **Token Mint**: `6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx`
-- **Price USD**: $0.2979
-- **Change 1h / 6h / 24h**: -0.8% / -9.5% / -16.6%
-- **24h Volume**: $18.06M
-- **Liquidity (TVL)**: $2.80M
-- **FDV**: $247.83M
-- **Hourly Trades**: 1655 buys / 1249 sells
+- **Price USD**: $0.3225
+- **Change 1h / 6h / 24h**: +3.5% / +3.3% / -0.7%
+- **24h Volume**: $15.58M
+- **Liquidity (TVL)**: $2.81M
+- **FDV**: $265.70M
+- **Hourly Trades**: 419 buys / 425 sells
 - **Pool Age**: Created 2026-08-12T10:51:40Z
 
 ## Algorithmic Narrative & Signals
-STONK теряет -16.6% за сутки. крупная сделка на фоне ленты: купил $19.7K (348× медианы, 0ч назад). нетто китов за сутки +$19.8K.
+STONK в боковике: -0.7% за сутки. крупная сделка на фоне ленты: купил $19.7K (348× медианы, 0ч назад). нетто китов за сутки +$19.8K.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -216,16 +216,16 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов STONK?
-По ончейн-данным пула STONK / SOL на DEX meteora (Solana), цена STONK составляет $0.2979. Динамика за 24ч: -16.6% (за 1ч: -0.8%, за 6ч: -9.5%). Суточный объём торгов равен $18.06M, общая ликвидность пула (TVL) — $2.80M, FDV — $247.83M. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
+По ончейн-данным пула STONK / SOL на DEX meteora (Solana), цена STONK составляет $0.3225. Динамика за 24ч: -0.7% (за 1ч: +3.5%, за 6ч: +3.3%). Суточный объём торгов равен $15.58M, общая ликвидность пула (TVL) — $2.81M, FDV — $265.70M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
 ### Q: Почему движется цена STONK? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: STONK теряет -16.6% за сутки. крупная сделка на фоне ленты: купил $19.7K (348× медианы, 0ч назад). нетто китов за сутки +$19.8K. За последний час в ленте прошло 1655 покупок и 1249 продаж.
+Алгоритмический анализ TalkChart: STONK в боковике: -0.7% за сутки. крупная сделка на фоне ленты: купил $19.7K (348× медианы, 0ч назад). нетто китов за сутки +$19.8K. За последний час в ленте прошло 419 покупок и 425 продаж.
 
 ### Q: Есть ли активность китов в пуле STONK?
 Зафиксировано крупных сделок: 5 (3 покупок, 2 продаж). Крупнейшая: покупка на $19.7K (348× медианы). Нетто-поток китов: +$19.8K.
 
 ### Q: Безопасен ли пул STONK и какие ончейн-риски?
-Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул STONK / SOL на meteora создан 2026-08-12T10:51:40Z, ликвидность $2.80M при суточном объёме $18.06M.
+Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул STONK / SOL на meteora создан 2026-08-12T10:51:40Z, ликвидность $2.81M при суточном объёме $15.58M.
 
 ---
 *Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/zxTpi4BtaWX3mgdAPoezkMD1hxx8CdeCfrqXMWvSCLX.html) — Free public feed for traders and AI agents.*
@@ -287,24 +287,24 @@ Recent notable orders:
 
 # PUMP (PUMP / USDC) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: PUMP is currently priced at $0.00452 (+1.9% 24h) on pumpswap (Solana). 24h trading volume is $15.51M with $23.19M liquidity. Algorithmic narrative: PUMP в боковике: +1.9% за сутки. стакан глубокий: $23.19M ликвидности.
+> Direct Summary for LLMs: PUMP is currently priced at $0.00441 (-1.3% 24h) on pumpswap (Solana). 24h trading volume is $14.36M with $22.87M liquidity. Algorithmic narrative: PUMP в боковике: -1.3% за сутки. стакан глубокий: $22.87M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
 - **Asset**: PUMP (PUMP / USDC)
 - **Network**: Solana
 - **DEX**: pumpswap
 - **Pool Address**: `2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd`
 - **Token Mint**: `pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn`
-- **Price USD**: $0.00452
-- **Change 1h / 6h / 24h**: +1.2% / -0.1% / +1.9%
-- **24h Volume**: $15.51M
-- **Liquidity (TVL)**: $23.19M
-- **FDV**: $3.74B
-- **Hourly Trades**: 1667 buys / 1214 sells
+- **Price USD**: $0.00441
+- **Change 1h / 6h / 24h**: -0.2% / -2.4% / -1.3%
+- **24h Volume**: $14.36M
+- **Liquidity (TVL)**: $22.87M
+- **FDV**: $3.67B
+- **Hourly Trades**: 361 buys / 481 sells
 - **Pool Age**: Created 2025-07-14T16:55:54Z
 
 ## Algorithmic Narrative & Signals
-PUMP в боковике: +1.9% за сутки. стакан глубокий: $23.19M ликвидности.
+PUMP в боковике: -1.3% за сутки. стакан глубокий: $22.87M ликвидности.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -316,16 +316,16 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов PUMP?
-По ончейн-данным пула PUMP / USDC на DEX pumpswap (Solana), цена PUMP составляет $0.00452. Динамика за 24ч: +1.9% (за 1ч: +1.2%, за 6ч: -0.1%). Суточный объём торгов равен $15.51M, общая ликвидность пула (TVL) — $23.19M, FDV — $3.74B. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
+По ончейн-данным пула PUMP / USDC на DEX pumpswap (Solana), цена PUMP составляет $0.00441. Динамика за 24ч: -1.3% (за 1ч: -0.2%, за 6ч: -2.4%). Суточный объём торгов равен $14.36M, общая ликвидность пула (TVL) — $22.87M, FDV — $3.67B. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
 ### Q: Почему движется цена PUMP? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: PUMP в боковике: +1.9% за сутки. стакан глубокий: $23.19M ликвидности. За последний час в ленте прошло 1667 покупок и 1214 продаж.
+Алгоритмический анализ TalkChart: PUMP в боковике: -1.3% за сутки. стакан глубокий: $22.87M ликвидности. За последний час в ленте прошло 361 покупок и 481 продаж.
 
 ### Q: Есть ли активность китов в пуле PUMP?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
 
 ### Q: Безопасен ли пул PUMP и какие ончейн-риски?
-Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул PUMP / USDC на pumpswap создан 2025-07-14T16:55:54Z, ликвидность $23.19M при суточном объёме $15.51M.
+Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул PUMP / USDC на pumpswap создан 2025-07-14T16:55:54Z, ликвидность $22.87M при суточном объёме $14.36M.
 
 ---
 *Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd.html) — Free public feed for traders and AI agents.*
@@ -383,7 +383,7 @@ Recent notable orders:
 
 # SI (SI / NVDAx) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: SI is currently priced at $0.00355 (+231.4% 24h) on raydium (Solana). 24h trading volume is $9.68M with $218.2K liquidity. Algorithmic narrative: SI разрывает: +231.4% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $9.68M больше капы в 2.8× — бумага в огне. ликвидность тонкая ($218.2K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $4.2K (87× медианы, 0ч назад). нетто китов за сутки −$11.2K.
+> Direct Summary for LLMs: SI is currently priced at $0.00355 (+231.4% 24h) on raydium (Solana). 24h trading volume is $9.68M with $218.2K liquidity. Algorithmic narrative: SI разрывает: +231.4% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $9.68M больше капы в 2.8× — бумага в огне. ликвидность тонкая ($218.2K) — движения будут резкими. пулу 2 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $4.2K (87× медианы, 0ч назад). нетто китов за сутки −$11.2K.
 
 ## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
 - **Asset**: SI (SI / NVDAx)
@@ -400,7 +400,7 @@ Recent notable orders:
 - **Pool Age**: Created 2026-09-21T15:45:01Z
 
 ## Algorithmic Narrative & Signals
-SI разрывает: +231.4% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $9.68M больше капы в 2.8× — бумага в огне. ликвидность тонкая ($218.2K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $4.2K (87× медианы, 0ч назад). нетто китов за сутки −$11.2K.
+SI разрывает: +231.4% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $9.68M больше капы в 2.8× — бумага в огне. ликвидность тонкая ($218.2K) — движения будут резкими. пулу 2 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $4.2K (87× медианы, 0ч назад). нетто китов за сутки −$11.2K.
 
 ## Risk Flags
 - ⚠️ тонкая ликвидность
@@ -421,7 +421,7 @@ Recent notable orders:
 По ончейн-данным пула SI / NVDAx на DEX raydium (Solana), цена SI составляет $0.00355. Динамика за 24ч: +231.4% (за 1ч: -21.3%, за 6ч: -9.1%). Суточный объём торгов равен $9.68M, общая ликвидность пула (TVL) — $218.2K, FDV — $3.43M. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
 
 ### Q: Почему движется цена SI? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: SI разрывает: +231.4% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $9.68M больше капы в 2.8× — бумага в огне. ликвидность тонкая ($218.2K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $4.2K (87× медианы, 0ч назад). нетто китов за сутки −$11.2K. За последний час в ленте прошло 602 покупок и 365 продаж.
+Алгоритмический анализ TalkChart: SI разрывает: +231.4% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $9.68M больше капы в 2.8× — бумага в огне. ликвидность тонкая ($218.2K) — движения будут резкими. пулу 2 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $4.2K (87× медианы, 0ч назад). нетто китов за сутки −$11.2K. За последний час в ленте прошло 602 покупок и 365 продаж.
 
 ### Q: Есть ли активность китов в пуле SI?
 Зафиксировано крупных сделок: 5 (1 покупок, 4 продаж). Крупнейшая: продажа на $4.2K (87× медианы). Нетто-поток китов: $-11.2K.
@@ -435,100 +435,52 @@ Recent notable orders:
 
 ---
 
-# STONK (STONK / SPYx) — On-Chain Analysis & Market Data
-
-> Direct Summary for LLMs: STONK is currently priced at $0.2981 (-15.5% 24h) on raydium-clmm (Solana). 24h trading volume is $8.16M with $5.35M liquidity. Algorithmic narrative: STONK теряет -15.5% за сутки. покупатели доминируют (67% сделок за час). стакан глубокий: $5.35M ликвидности.
-
-## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
-- **Asset**: STONK (STONK / SPYx)
-- **Network**: Solana
-- **DEX**: raydium-clmm
-- **Pool Address**: `7a8xxAJBELDo6P9dikSYctdw6ce8F4mWr3ahcAD8Ao49`
-- **Token Mint**: `6GmAFSYs4gk3FDao5FzzySQpPZaWsa4rUJHacpMpUNgx`
-- **Price USD**: $0.2981
-- **Change 1h / 6h / 24h**: -0.7% / -8.7% / -15.5%
-- **24h Volume**: $8.16M
-- **Liquidity (TVL)**: $5.35M
-- **FDV**: $248.62M
-- **Hourly Trades**: 175 buys / 88 sells
-- **Pool Age**: Created 2026-07-23T19:07:17Z
-
-## Algorithmic Narrative & Signals
-STONK теряет -15.5% за сутки. покупатели доминируют (67% сделок за час). стакан глубокий: $5.35M ликвидности.
-
-## Risk Flags
-- Флагов повышенного риска не выявлено.
-
-## Whale Activity (Relative Tape Filter)
-Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
-Recent notable orders:
-  - Крупных сделок свыше 10× медианы в последних 1000 ордерах не зафиксировано.
-
-## Frequently Asked Questions (GEO Facts)
-### Q: Какая текущая цена, динамика и объём торгов STONK?
-По ончейн-данным пула STONK / SPYx на DEX raydium-clmm (Solana), цена STONK составляет $0.2981. Динамика за 24ч: -15.5% (за 1ч: -0.7%, за 6ч: -8.7%). Суточный объём торгов равен $8.16M, общая ликвидность пула (TVL) — $5.35M, FDV — $248.62M. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
-
-### Q: Почему движется цена STONK? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: STONK теряет -15.5% за сутки. покупатели доминируют (67% сделок за час). стакан глубокий: $5.35M ликвидности. За последний час в ленте прошло 175 покупок и 88 продаж.
-
-### Q: Есть ли активность китов в пуле STONK?
-Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
-
-### Q: Безопасен ли пул STONK и какие ончейн-риски?
-Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул STONK / SPYx на raydium-clmm создан 2026-07-23T19:07:17Z, ликвидность $5.35M при суточном объёме $8.16M.
-
----
-*Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/7a8xxAJBELDo6P9dikSYctdw6ce8F4mWr3ahcAD8Ao49.html) — Free public feed for traders and AI agents.*
-
-
----
-
 # JEANPHIL (JEANPHIL / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: JEANPHIL is currently priced at $0.00697 (+289.4% 24h) on pumpswap (Solana). 24h trading volume is $6.47M with $335.4K liquidity. Algorithmic narrative: JEANPHIL разрывает: +289.4% за 24ч. ускорение в последнем часе. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $5.0K (198× медианы, 0ч назад). нетто китов за сутки +$287.55.
+> Direct Summary for LLMs: JEANPHIL is currently priced at $0.00542 (+157.7% 24h) on pumpswap (Solana). 24h trading volume is $7.65M with $309.5K liquidity. Algorithmic narrative: JEANPHIL разрывает: +157.7% за 24ч. давление продаж нарастает. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $4.7K (144× медианы, 0ч назад). нетто китов за сутки +$1.1K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
 - **Asset**: JEANPHIL (JEANPHIL / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
 - **Pool Address**: `4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj`
 - **Token Mint**: `GTBxUiw6wJdmmkCGZgRHLyYxqu1vG4KtRpeox6yDpump`
-- **Price USD**: $0.00697
-- **Change 1h / 6h / 24h**: +28.0% / +125.4% / +289.4%
-- **24h Volume**: $6.47M
-- **Liquidity (TVL)**: $335.4K
-- **FDV**: $6.79M
-- **Hourly Trades**: 2573 buys / 2204 sells
+- **Price USD**: $0.00542
+- **Change 1h / 6h / 24h**: -12.6% / -17.3% / +157.7%
+- **24h Volume**: $7.65M
+- **Liquidity (TVL)**: $309.5K
+- **FDV**: $5.42M
+- **Hourly Trades**: 494 buys / 525 sells
 - **Pool Age**: Created 2026-09-19T19:06:59Z
 
 ## Algorithmic Narrative & Signals
-JEANPHIL разрывает: +289.4% за 24ч. ускорение в последнем часе. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $5.0K (198× медианы, 0ч назад). нетто китов за сутки +$287.55.
+JEANPHIL разрывает: +157.7% за 24ч. давление продаж нарастает. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $4.7K (144× медианы, 0ч назад). нетто китов за сутки +$1.1K.
 
 ## Risk Flags
 - ⚠️ молодой пул
 - ⚠️ перегрет за 24ч
 
 ## Whale Activity (Relative Tape Filter)
-Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: покупка на $5.0K (198× медианы). Нетто-поток китов: +$287.55.
+Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: покупка на $4.7K (144× медианы). Нетто-поток китов: +$1.1K.
 Recent notable orders:
-  - BUY $4,952 (198× медианы ленты, 0.1ч назад) кошелёк `7FBJEubx`
-  - SELL $2,951 (118× медианы ленты, 0.1ч назад) кошелёк `J8NZqfG3`
-  - SELL $1,900 (76× медианы ленты, 0.1ч назад) кошелёк `AJofLRzr`
-  - BUY $1,756 (70× медианы ленты, 0.0ч назад) кошелёк `2xgmXoGy`
-  - SELL $1,570 (63× медианы ленты, 0.0ч назад) кошелёк `5cR4YqCv`
+  - BUY $4,733 (144× медианы ленты, 0.0ч назад) кошелёк `CHubsXab`
+  - SELL $2,569 (78× медианы ленты, 0.0ч назад) кошелёк `2Fast4uU`
+  - BUY $1,339 (41× медианы ленты, 0.3ч назад) кошелёк `AwPxt43H`
+  - SELL $1,208 (37× медианы ленты, 0.1ч назад) кошелёк `Fpm3MhDZ`
+  - SELL $1,186 (36× медианы ленты, 0.3ч назад) кошелёк `EebmqKXk`
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов JEANPHIL?
-По ончейн-данным пула JEANPHIL / SOL на DEX pumpswap (Solana), цена JEANPHIL составляет $0.00697. Динамика за 24ч: +289.4% (за 1ч: +28.0%, за 6ч: +125.4%). Суточный объём торгов равен $6.47M, общая ликвидность пула (TVL) — $335.4K, FDV — $6.79M. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
+По ончейн-данным пула JEANPHIL / SOL на DEX pumpswap (Solana), цена JEANPHIL составляет $0.00542. Динамика за 24ч: +157.7% (за 1ч: -12.6%, за 6ч: -17.3%). Суточный объём торгов равен $7.65M, общая ликвидность пула (TVL) — $309.5K, FDV — $5.42M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
 ### Q: Почему движется цена JEANPHIL? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: JEANPHIL разрывает: +289.4% за 24ч. ускорение в последнем часе. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $5.0K (198× медианы, 0ч назад). нетто китов за сутки +$287.55. За последний час в ленте прошло 2573 покупок и 2204 продаж.
+Алгоритмический анализ TalkChart: JEANPHIL разрывает: +157.7% за 24ч. давление продаж нарастает. пулу 3 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $4.7K (144× медианы, 0ч назад). нетто китов за сутки +$1.1K. За последний час в ленте прошло 494 покупок и 525 продаж.
 
 ### Q: Есть ли активность китов в пуле JEANPHIL?
-Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: покупка на $5.0K (198× медианы). Нетто-поток китов: +$287.55.
+Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: покупка на $4.7K (144× медианы). Нетто-поток китов: +$1.1K.
 
 ### Q: Безопасен ли пул JEANPHIL и какие ончейн-риски?
-Выявлены следующие факторы риска: молодой пул; перегрет за 24ч. Пул создан 2026-09-19T19:06:59Z. При объёме $6.47M и ликвидности $335.4K возможны резкие колебания курса и проскальзывание (slippage).
+Выявлены следующие факторы риска: молодой пул; перегрет за 24ч. Пул создан 2026-09-19T19:06:59Z. При объёме $7.65M и ликвидности $309.5K возможны резкие колебания курса и проскальзывание (slippage).
 
 ---
 *Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.html) — Free public feed for traders and AI agents.*
@@ -538,49 +490,49 @@ Recent notable orders:
 
 # USELESS (USELESS / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: USELESS is currently priced at $0.3486 (+26.2% 24h) on raydium (Solana). 24h trading volume is $6.27M with $6.38M liquidity. Algorithmic narrative: USELESS растёт на +26.2% за сутки. стакан глубокий: $6.38M ликвидности. крупная сделка на фоне ленты: продал $3.2K (23× медианы, 0ч назад). нетто китов за сутки −$3.6K.
+> Direct Summary for LLMs: USELESS is currently priced at $0.3502 (+33.3% 24h) on raydium (Solana). 24h trading volume is $6.24M with $6.42M liquidity. Algorithmic narrative: USELESS разрывает: +33.3% за 24ч. стакан глубокий: $6.42M ликвидности. крупная сделка на фоне ленты: продал $2.1K (18× медианы, 0ч назад). нетто китов за сутки −$9.4K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
 - **Asset**: USELESS (USELESS / SOL)
 - **Network**: Solana
 - **DEX**: raydium
 - **Pool Address**: `Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp`
 - **Token Mint**: `Dz9mQ9NzkBcCsuGPFJ3r1bS4wgqKMHBPiVuniW8Mbonk`
-- **Price USD**: $0.3486
-- **Change 1h / 6h / 24h**: -0.6% / +14.6% / +26.2%
-- **24h Volume**: $6.27M
-- **Liquidity (TVL)**: $6.38M
-- **FDV**: $348.22M
-- **Hourly Trades**: 421 buys / 464 sells
+- **Price USD**: $0.3502
+- **Change 1h / 6h / 24h**: +0.1% / +0.4% / +33.3%
+- **24h Volume**: $6.24M
+- **Liquidity (TVL)**: $6.42M
+- **FDV**: $349.89M
+- **Hourly Trades**: 387 buys / 502 sells
 - **Pool Age**: Created 2025-05-10T14:23:18Z
 
 ## Algorithmic Narrative & Signals
-USELESS растёт на +26.2% за сутки. стакан глубокий: $6.38M ликвидности. крупная сделка на фоне ленты: продал $3.2K (23× медианы, 0ч назад). нетто китов за сутки −$3.6K.
+USELESS разрывает: +33.3% за 24ч. стакан глубокий: $6.42M ликвидности. крупная сделка на фоне ленты: продал $2.1K (18× медианы, 0ч назад). нетто китов за сутки −$9.4K.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
 
 ## Whale Activity (Relative Tape Filter)
-Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: продажа на $3.2K (23× медианы). Нетто-поток китов: $-3.6K.
+Зафиксировано крупных сделок: 5 (0 покупок, 5 продаж). Крупнейшая: продажа на $2.1K (18× медианы). Нетто-поток китов: $-9.4K.
 Recent notable orders:
-  - SELL $3,163 (23× медианы ленты, 0.3ч назад) кошелёк `FkaLnX17`
-  - SELL $1,745 (13× медианы ленты, 0.3ч назад) кошелёк `2MxsByU3`
-  - SELL $1,667 (12× медианы ленты, 0.0ч назад) кошелёк `FkaLnX17`
-  - BUY $1,550 (11× медианы ленты, 0.4ч назад) кошелёк `FkaLnX17`
-  - BUY $1,471 (11× медианы ленты, 0.1ч назад) кошелёк `FkaLnX17`
+  - SELL $2,112 (18× медианы ленты, 0.3ч назад) кошелёк `4A4ZyG7j`
+  - SELL $1,938 (17× медианы ленты, 0.3ч назад) кошелёк `MfDuWeqS`
+  - SELL $1,923 (17× медианы ленты, 0.0ч назад) кошелёк `FkaLnX17`
+  - SELL $1,872 (16× медианы ленты, 0.2ч назад) кошелёк `4A4ZyG7j`
+  - SELL $1,527 (13× медианы ленты, 0.1ч назад) кошелёк `FkaLnX17`
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов USELESS?
-По ончейн-данным пула USELESS / SOL на DEX raydium (Solana), цена USELESS составляет $0.3486. Динамика за 24ч: +26.2% (за 1ч: -0.6%, за 6ч: +14.6%). Суточный объём торгов равен $6.27M, общая ликвидность пула (TVL) — $6.38M, FDV — $348.22M. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
+По ончейн-данным пула USELESS / SOL на DEX raydium (Solana), цена USELESS составляет $0.3502. Динамика за 24ч: +33.3% (за 1ч: +0.1%, за 6ч: +0.4%). Суточный объём торгов равен $6.24M, общая ликвидность пула (TVL) — $6.42M, FDV — $349.89M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
 ### Q: Почему движется цена USELESS? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: USELESS растёт на +26.2% за сутки. стакан глубокий: $6.38M ликвидности. крупная сделка на фоне ленты: продал $3.2K (23× медианы, 0ч назад). нетто китов за сутки −$3.6K. За последний час в ленте прошло 421 покупок и 464 продаж.
+Алгоритмический анализ TalkChart: USELESS разрывает: +33.3% за 24ч. стакан глубокий: $6.42M ликвидности. крупная сделка на фоне ленты: продал $2.1K (18× медианы, 0ч назад). нетто китов за сутки −$9.4K. За последний час в ленте прошло 387 покупок и 502 продаж.
 
 ### Q: Есть ли активность китов в пуле USELESS?
-Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: продажа на $3.2K (23× медианы). Нетто-поток китов: $-3.6K.
+Зафиксировано крупных сделок: 5 (0 покупок, 5 продаж). Крупнейшая: продажа на $2.1K (18× медианы). Нетто-поток китов: $-9.4K.
 
 ### Q: Безопасен ли пул USELESS и какие ончейн-риски?
-Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул USELESS / SOL на raydium создан 2025-05-10T14:23:18Z, ликвидность $6.38M при суточном объёме $6.27M.
+Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул USELESS / SOL на raydium создан 2025-05-10T14:23:18Z, ликвидность $6.42M при суточном объёме $6.24M.
 
 ---
 *Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp.html) — Free public feed for traders and AI agents.*
@@ -590,7 +542,7 @@ Recent notable orders:
 
 # FAMILY (FAMILY / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: FAMILY is currently priced at $0.000146 (-93.9% 24h) on pumpswap (Solana). 24h trading volume is $5.08M with $38.7K liquidity. Algorithmic narrative: FAMILY в обвале: -93.9% за 24ч. объём $5.08M больше капы в 34.7× — бумага в огне. ликвидность тонкая ($38.7K) — движения будут резкими. пулу 1 дн. — чистая рулетка.
+> Direct Summary for LLMs: FAMILY is currently priced at $0.000146 (-93.9% 24h) on pumpswap (Solana). 24h trading volume is $5.08M with $38.7K liquidity. Algorithmic narrative: FAMILY в обвале: -93.9% за 24ч. объём $5.08M больше капы в 34.7× — бумага в огне. ликвидность тонкая ($38.7K) — движения будут резкими. пулу 2 дн. — чистая рулетка.
 
 ## Core On-Chain Metrics (Snapshot: 2026-09-22T13:30:00+00:00)
 - **Asset**: FAMILY (FAMILY / SOL)
@@ -607,7 +559,7 @@ Recent notable orders:
 - **Pool Age**: Created 2026-09-21T12:36:53Z
 
 ## Algorithmic Narrative & Signals
-FAMILY в обвале: -93.9% за 24ч. объём $5.08M больше капы в 34.7× — бумага в огне. ликвидность тонкая ($38.7K) — движения будут резкими. пулу 1 дн. — чистая рулетка.
+FAMILY в обвале: -93.9% за 24ч. объём $5.08M больше капы в 34.7× — бумага в огне. ликвидность тонкая ($38.7K) — движения будут резкими. пулу 2 дн. — чистая рулетка.
 
 ## Risk Flags
 - ⚠️ тонкая ликвидность
@@ -623,7 +575,7 @@ Recent notable orders:
 По ончейн-данным пула FAMILY / SOL на DEX pumpswap (Solana), цена FAMILY составляет $0.000146. Динамика за 24ч: -93.9% (за 1ч: +13.4%, за 6ч: -6.5%). Суточный объём торгов равен $5.08M, общая ликвидность пула (TVL) — $38.7K, FDV — $146.5K. Данные зафиксированы на 2026-09-22T13:30:00+00:00.
 
 ### Q: Почему движется цена FAMILY? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: FAMILY в обвале: -93.9% за 24ч. объём $5.08M больше капы в 34.7× — бумага в огне. ликвидность тонкая ($38.7K) — движения будут резкими. пулу 1 дн. — чистая рулетка. За последний час в ленте прошло 126 покупок и 127 продаж.
+Алгоритмический анализ TalkChart: FAMILY в обвале: -93.9% за 24ч. объём $5.08M больше капы в 34.7× — бумага в огне. ликвидность тонкая ($38.7K) — движения будут резкими. пулу 2 дн. — чистая рулетка. За последний час в ленте прошло 126 покупок и 127 продаж.
 
 ### Q: Есть ли активность китов в пуле FAMILY?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
@@ -637,26 +589,74 @@ Recent notable orders:
 
 ---
 
+# CATE (CATE / SOL) — On-Chain Analysis & Market Data
+
+> Direct Summary for LLMs: CATE is currently priced at $0.1070 (+12.3% 24h) on pumpswap (Solana). 24h trading volume is $4.68M with $3.83M liquidity. Algorithmic narrative: CATE растёт на +12.3% за сутки. ускорение в последнем часе. продают в рынок (68% сделок за час). стакан глубокий: $3.83M ликвидности.
+
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
+- **Asset**: CATE (CATE / SOL)
+- **Network**: Solana
+- **DEX**: pumpswap
+- **Pool Address**: `HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3`
+- **Token Mint**: `Ai66LHZG9MCzg1WKdawwqduVAXpNDUuV8M3uyq5ppump`
+- **Price USD**: $0.1070
+- **Change 1h / 6h / 24h**: +9.2% / +23.4% / +12.3%
+- **24h Volume**: $4.68M
+- **Liquidity (TVL)**: $3.83M
+- **FDV**: $103.19M
+- **Hourly Trades**: 810 buys / 1686 sells
+- **Pool Age**: Created 2026-07-26T16:32:43Z
+
+## Algorithmic Narrative & Signals
+CATE растёт на +12.3% за сутки. ускорение в последнем часе. продают в рынок (68% сделок за час). стакан глубокий: $3.83M ликвидности.
+
+## Risk Flags
+- ⚠️ давление продаж
+
+## Whale Activity (Relative Tape Filter)
+Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
+Recent notable orders:
+  - Крупных сделок свыше 10× медианы в последних 1000 ордерах не зафиксировано.
+
+## Frequently Asked Questions (GEO Facts)
+### Q: Какая текущая цена, динамика и объём торгов CATE?
+По ончейн-данным пула CATE / SOL на DEX pumpswap (Solana), цена CATE составляет $0.1070. Динамика за 24ч: +12.3% (за 1ч: +9.2%, за 6ч: +23.4%). Суточный объём торгов равен $4.68M, общая ликвидность пула (TVL) — $3.83M, FDV — $103.19M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
+
+### Q: Почему движется цена CATE? Ончейн-анализ графика.
+Алгоритмический анализ TalkChart: CATE растёт на +12.3% за сутки. ускорение в последнем часе. продают в рынок (68% сделок за час). стакан глубокий: $3.83M ликвидности. За последний час в ленте прошло 810 покупок и 1686 продаж.
+
+### Q: Есть ли активность китов в пуле CATE?
+Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
+
+### Q: Безопасен ли пул CATE и какие ончейн-риски?
+Выявлены следующие факторы риска: давление продаж. Пул создан 2026-07-26T16:32:43Z. При объёме $4.68M и ликвидности $3.83M возможны резкие колебания курса и проскальзывание (slippage).
+
+---
+*Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/HMzvsEEmtzHhvZNw9uwbaG85HCTmFnkbhzUx16cy7ca3.html) — Free public feed for traders and AI agents.*
+
+
+---
+
 # PAID (PAID / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: PAID is currently priced at $0.0116 (-14.4% 24h) on pumpswap (Solana). 24h trading volume is $4.91M with $613.0K liquidity. Algorithmic narrative: PAID теряет -14.4% за сутки. давление продаж нарастает. пулу 7 дн., история короткая. крупная сделка на фоне ленты: продал $6.2K (287× медианы, 0ч назад). нетто китов за сутки −$12.8K.
+> Direct Summary for LLMs: PAID is currently priced at $0.0128 (-22.5% 24h) on pumpswap (Solana). 24h trading volume is $4.59M with $656.3K liquidity. Algorithmic narrative: PAID теряет -22.5% за сутки. пулу 7 дн., история короткая. крупная сделка на фоне ленты: продал $6.2K (287× медианы, 0ч назад). нетто китов за сутки −$12.8K.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-22T23:02:08+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
 - **Asset**: PAID (PAID / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
 - **Pool Address**: `6e3jZLtf4tQbWZm3f7A66jF8tfZn6MRQVrbDFgcNWarA`
 - **Token Mint**: `98kfF7rmsg1QDUEoCqNE7g7M1FdrTt92TEp2CLzypump`
-- **Price USD**: $0.0116
-- **Change 1h / 6h / 24h**: -7.3% / -6.3% / -14.4%
-- **24h Volume**: $4.91M
-- **Liquidity (TVL)**: $613.0K
-- **FDV**: $11.49M
-- **Hourly Trades**: 627 buys / 739 sells
+- **Price USD**: $0.0128
+- **Change 1h / 6h / 24h**: +1.8% / +2.7% / -22.5%
+- **24h Volume**: $4.59M
+- **Liquidity (TVL)**: $656.3K
+- **FDV**: $12.72M
+- **Hourly Trades**: 480 buys / 514 sells
 - **Pool Age**: Created 2026-09-15T19:22:24Z
 
 ## Algorithmic Narrative & Signals
-PAID теряет -14.4% за сутки. давление продаж нарастает. пулу 7 дн., история короткая. крупная сделка на фоне ленты: продал $6.2K (287× медианы, 0ч назад). нетто китов за сутки −$12.8K.
+PAID теряет -22.5% за сутки. пулу 7 дн., история короткая. крупная сделка на фоне ленты: продал $6.2K (287× медианы, 0ч назад). нетто китов за сутки −$12.8K.
 
 ## Risk Flags
 - ⚠️ молодой пул
@@ -672,16 +672,16 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов PAID?
-По ончейн-данным пула PAID / SOL на DEX pumpswap (Solana), цена PAID составляет $0.0116. Динамика за 24ч: -14.4% (за 1ч: -7.3%, за 6ч: -6.3%). Суточный объём торгов равен $4.91M, общая ликвидность пула (TVL) — $613.0K, FDV — $11.49M. Данные зафиксированы на 2026-09-22T23:02:08+00:00.
+По ончейн-данным пула PAID / SOL на DEX pumpswap (Solana), цена PAID составляет $0.0128. Динамика за 24ч: -22.5% (за 1ч: +1.8%, за 6ч: +2.7%). Суточный объём торгов равен $4.59M, общая ликвидность пула (TVL) — $656.3K, FDV — $12.72M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
 ### Q: Почему движется цена PAID? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: PAID теряет -14.4% за сутки. давление продаж нарастает. пулу 7 дн., история короткая. крупная сделка на фоне ленты: продал $6.2K (287× медианы, 0ч назад). нетто китов за сутки −$12.8K. За последний час в ленте прошло 627 покупок и 739 продаж.
+Алгоритмический анализ TalkChart: PAID теряет -22.5% за сутки. пулу 7 дн., история короткая. крупная сделка на фоне ленты: продал $6.2K (287× медианы, 0ч назад). нетто китов за сутки −$12.8K. За последний час в ленте прошло 480 покупок и 514 продаж.
 
 ### Q: Есть ли активность китов в пуле PAID?
 Зафиксировано крупных сделок: 5 (1 покупок, 4 продаж). Крупнейшая: продажа на $6.2K (287× медианы). Нетто-поток китов: $-12.8K.
 
 ### Q: Безопасен ли пул PAID и какие ончейн-риски?
-Выявлены следующие факторы риска: молодой пул. Пул создан 2026-09-15T19:22:24Z. При объёме $4.91M и ликвидности $613.0K возможны резкие колебания курса и проскальзывание (slippage).
+Выявлены следующие факторы риска: молодой пул. Пул создан 2026-09-15T19:22:24Z. При объёме $4.59M и ликвидности $656.3K возможны резкие колебания курса и проскальзывание (slippage).
 
 ---
 *Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/6e3jZLtf4tQbWZm3f7A66jF8tfZn6MRQVrbDFgcNWarA.html) — Free public feed for traders and AI agents.*
@@ -737,31 +737,29 @@ Recent notable orders:
 
 ---
 
-# CATEWALK (CATEWALK / SOL) — On-Chain Analysis & Market Data
+# Fartcoin (Fartcoin / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: CATEWALK is currently priced at $0.000844 (+158.3% 24h) on pumpswap (Solana). 24h trading volume is $4.07M with $90.7K liquidity. Algorithmic narrative: CATEWALK разрывает: +158.3% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $4.07M больше капы в 4.8× — бумага в огне. ликвидность тонкая ($90.7K) — движения будут резкими. пулу 1 дн. — чистая рулетка.
+> Direct Summary for LLMs: Fartcoin is currently priced at $0.2141 (+5.1% 24h) on raydium (Solana). 24h trading volume is $4.42M with $9.69M liquidity. Algorithmic narrative: Fartcoin в боковике: +5.1% за сутки. стакан глубокий: $9.69M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-22T19:48:51+00:00)
-- **Asset**: CATEWALK (CATEWALK / SOL)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
+- **Asset**: Fartcoin (Fartcoin / SOL)
 - **Network**: Solana
-- **DEX**: pumpswap
-- **Pool Address**: `HdiUXnAwQkLBwdFpSh3gUKM1cM5QAC1G39nM1RGVwGrn`
-- **Token Mint**: `BLSuVTxKYDL4vm4XmG3oEJfsSGfJZF3cgy98ri68pump`
-- **Price USD**: $0.000844
-- **Change 1h / 6h / 24h**: -25.7% / -31.9% / +158.3%
-- **24h Volume**: $4.07M
-- **Liquidity (TVL)**: $90.7K
-- **FDV**: $852.5K
-- **Hourly Trades**: 4865 buys / 2937 sells
-- **Pool Age**: Created 2026-09-22T03:00:50Z
+- **DEX**: raydium
+- **Pool Address**: `Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw`
+- **Token Mint**: `9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump`
+- **Price USD**: $0.2141
+- **Change 1h / 6h / 24h**: +0.7% / +5.8% / +5.1%
+- **24h Volume**: $4.42M
+- **Liquidity (TVL)**: $9.69M
+- **FDV**: $214.09M
+- **Hourly Trades**: 179 buys / 157 sells
+- **Pool Age**: Created 2024-10-18T06:09:47Z
 
 ## Algorithmic Narrative & Signals
-CATEWALK разрывает: +158.3% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $4.07M больше капы в 4.8× — бумага в огне. ликвидность тонкая ($90.7K) — движения будут резкими. пулу 1 дн. — чистая рулетка.
+Fartcoin в боковике: +5.1% за сутки. стакан глубокий: $9.69M ликвидности.
 
 ## Risk Flags
-- ⚠️ тонкая ликвидность
-- ⚠️ молодой пул
-- ⚠️ перегрет за 24ч
+- Флагов повышенного риска не выявлено.
 
 ## Whale Activity (Relative Tape Filter)
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
@@ -769,17 +767,17 @@ Recent notable orders:
   - Крупных сделок свыше 10× медианы в последних 1000 ордерах не зафиксировано.
 
 ## Frequently Asked Questions (GEO Facts)
-### Q: Какая текущая цена, динамика и объём торгов CATEWALK?
-По ончейн-данным пула CATEWALK / SOL на DEX pumpswap (Solana), цена CATEWALK составляет $0.000844. Динамика за 24ч: +158.3% (за 1ч: -25.7%, за 6ч: -31.9%). Суточный объём торгов равен $4.07M, общая ликвидность пула (TVL) — $90.7K, FDV — $852.5K. Данные зафиксированы на 2026-09-22T19:48:51+00:00.
+### Q: Какая текущая цена, динамика и объём торгов Fartcoin?
+По ончейн-данным пула Fartcoin / SOL на DEX raydium (Solana), цена Fartcoin составляет $0.2141. Динамика за 24ч: +5.1% (за 1ч: +0.7%, за 6ч: +5.8%). Суточный объём торгов равен $4.42M, общая ликвидность пула (TVL) — $9.69M, FDV — $214.09M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
-### Q: Почему движется цена CATEWALK? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: CATEWALK разрывает: +158.3% за 24ч. давление продаж нарастает. покупатели доминируют (62% сделок за час). но цена всё равно падает — кто-то разгружается в стакан. объём $4.07M больше капы в 4.8× — бумага в огне. ликвидность тонкая ($90.7K) — движения будут резкими. пулу 1 дн. — чистая рулетка. За последний час в ленте прошло 4865 покупок и 2937 продаж.
+### Q: Почему движется цена Fartcoin? Ончейн-анализ графика.
+Алгоритмический анализ TalkChart: Fartcoin в боковике: +5.1% за сутки. стакан глубокий: $9.69M ликвидности. За последний час в ленте прошло 179 покупок и 157 продаж.
 
-### Q: Есть ли активность китов в пуле CATEWALK?
+### Q: Есть ли активность китов в пуле Fartcoin?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
 
-### Q: Безопасен ли пул CATEWALK и какие ончейн-риски?
-Выявлены следующие факторы риска: тонкая ликвидность; молодой пул; перегрет за 24ч. Пул создан 2026-09-22T03:00:50Z. При объёме $4.07M и ликвидности $90.7K возможны резкие колебания курса и проскальзывание (slippage).
+### Q: Безопасен ли пул Fartcoin и какие ончейн-риски?
+Критических технических аномалий ликвидности алгоритм не зафиксировал. Пул Fartcoin / SOL на raydium создан 2024-10-18T06:09:47Z, ликвидность $9.69M при суточном объёме $4.42M.
 
 ---
-*Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/HdiUXnAwQkLBwdFpSh3gUKM1cM5QAC1G39nM1RGVwGrn.html) — Free public feed for traders and AI agents.*
+*Generated by TalkChart On-Chain Engine (https://leo88q.github.io/content-/site/pools/Bzc9NZfMqkXR6fz1DBph7BDf9BroyEf6pnzESP7v5iiw.html) — Free public feed for traders and AI agents.*

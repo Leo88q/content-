@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/OTC_+118.png",
+  "title": "TalkChart: OTC (+118.5%) — Solana On-Chain Radar",
+  "description": "OTC разрывает: +118.5% за 24ч.\n\nОбъём: $3.48M · Ликвидность: $632.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп OTC (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-MukLDtJ8Cx9DxLbeyLRSWPSposTMWuwHANbuaudpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

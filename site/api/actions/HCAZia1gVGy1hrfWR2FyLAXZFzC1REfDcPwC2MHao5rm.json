@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/PEPARK_+1.png",
+  "title": "TalkChart: PEPARK (+1.2%) — Solana On-Chain Radar",
+  "description": "PEPARK в боковике: +1.2% за сутки. покупатели доминируют (67% сделок за час). ликвидность тонкая ($72.5K) — движения будут резкими.\n\nОбъём: $4.8K · Ликвидность: $72.5K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп PEPARK (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-6x4G1SqbPTWkqmZ4VAWVgoZ1jmA7TqJUSHnKyqsHpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=HCAZia1gVGy1hrfWR2FyLAXZFzC1REfDcPwC2MHao5rm"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

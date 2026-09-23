@@ -1,17 +1,17 @@
 {
-  "slug": "jeanphil-vs-si",
+  "slug": "kcat-vs-jeanphil",
   "token1": {
-    "symbol": "JEANPHIL",
-    "change_24h": 289.379,
-    "address": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-    "volume": 6472108.80745443
+    "symbol": "KCAT",
+    "change_24h": 304.636,
+    "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
+    "volume": 2704001.3330733
   },
   "token2": {
-    "symbol": "SI",
-    "change_24h": 231.364,
-    "address": "B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD",
-    "volume": 9675028.10453889
+    "symbol": "JEANPHIL",
+    "change_24h": 157.719,
+    "address": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
+    "volume": 7652491.75507009
   },
-  "verdict": "По ончейн-метрикам TalkChart: JEANPHIL опережает по ценовому импульсу (+289.4% против +231.4%). Краткосрочный фаворит по совокупности факторов: JEANPHIL.",
-  "updated_at": "2026-09-22 23:02 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: KCAT опережает по ценовому импульсу (+304.6% против +157.7%). Кроме того, у JEANPHIL более надёжная ликвидность ($309.5K против $41.2K). Краткосрочный фаворит по совокупности факторов: JEANPHIL.",
+  "updated_at": "2026-09-23 04:53 UTC"
 }

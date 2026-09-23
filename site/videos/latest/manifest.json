@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-09-22T23:02:17+00:00",
+ "generated_at": "2026-09-23T04:53:14+00:00",
  "videos": [
   {
-   "file": "videos/2026-09-22/JEANPHIL.mp4",
+   "file": "videos/2026-09-23/KCAT.mp4",
+   "latest_file": "videos/latest/KCAT.mp4",
+   "symbol": "KCAT",
+   "chg_h24": 304.636
+  },
+  {
+   "file": "videos/2026-09-23/JEANPHIL.mp4",
    "latest_file": "videos/latest/JEANPHIL.mp4",
    "symbol": "JEANPHIL",
-   "chg_h24": 289.379
+   "chg_h24": 157.719
   },
   {
-   "file": "videos/2026-09-22/SI.mp4",
-   "latest_file": "videos/latest/SI.mp4",
-   "symbol": "SI",
-   "chg_h24": 231.364
-  },
-  {
-   "file": "videos/2026-09-22/biketyson.mp4",
-   "latest_file": "videos/latest/biketyson.mp4",
-   "symbol": "biketyson",
-   "chg_h24": 123.728
+   "file": "videos/2026-09-23/OTC.mp4",
+   "latest_file": "videos/latest/OTC.mp4",
+   "symbol": "OTC",
+   "chg_h24": 118.484
   }
  ]
 }

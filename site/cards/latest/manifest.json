@@ -1,64 +1,64 @@
 {
- "generated_at": "2026-09-22T23:02:09+00:00",
+ "generated_at": "2026-09-23T04:53:05+00:00",
  "cards": [
   {
-   "file": "cards/2026-09-22/JEANPHIL_+289.png",
+   "file": "cards/2026-09-23/KCAT_+304.png",
+   "symbol": "KCAT",
+   "chg_h24": 304.636,
+   "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG.html",
+   "latest_file": "cards/latest/KCAT_+304.png"
+  },
+  {
+   "file": "cards/2026-09-23/JEANPHIL_+157.png",
    "symbol": "JEANPHIL",
-   "chg_h24": 289.379,
+   "chg_h24": 157.719,
    "address": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
    "pool_url": "https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.html",
-   "latest_file": "cards/latest/JEANPHIL_+289.png"
+   "latest_file": "cards/latest/JEANPHIL_+157.png"
   },
   {
-   "file": "cards/2026-09-22/SI_+231.png",
-   "symbol": "SI",
-   "chg_h24": 231.364,
-   "address": "B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD.html",
-   "latest_file": "cards/latest/SI_+231.png"
+   "file": "cards/2026-09-23/OTC_+118.png",
+   "symbol": "OTC",
+   "chg_h24": 118.484,
+   "address": "DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/DA4pM4xSDY4M9V4CgAKKBVH1pw1yscTQQa5nEkGHuKpt.html",
+   "latest_file": "cards/latest/OTC_+118.png"
   },
   {
-   "file": "cards/2026-09-22/biketyson_+123.png",
+   "file": "cards/2026-09-23/biketyson_+85.png",
    "symbol": "biketyson",
-   "chg_h24": 123.728,
+   "chg_h24": 85.712,
    "address": "41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx.html",
-   "latest_file": "cards/latest/biketyson_+123.png"
+   "pool_url": "https://leo88q.github.io/content-/site/pools/41rzTMB7JHPTyMXzrYwdqnBecJRhkb8KHYAjrQ9cYxJx.html"
   },
   {
-   "file": "cards/2026-09-22/KCAT_+121.png",
-   "symbol": "KCAT",
-   "chg_h24": 121.104,
-   "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG.html"
-  },
-  {
-   "file": "cards/2026-09-22/ANTFUN_+105.png",
-   "symbol": "ANTFUN",
-   "chg_h24": 105.876,
-   "address": "54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/54Vp27uLaw4wNLo5n7r4fcC6zLamoQc28xBARjss4EUJ.html"
-  },
-  {
-   "file": "cards/2026-09-22/CLIP_-53.png",
-   "symbol": "CLIP",
-   "chg_h24": -53.952,
-   "address": "7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/7LkLGUUwAASDy85V3YEogtkwdzDKEYFhADp41MXr6wZ.html"
-  },
-  {
-   "file": "cards/2026-09-22/EMBER_+35.png",
+   "file": "cards/2026-09-23/EMBER_+44.png",
    "symbol": "EMBER",
-   "chg_h24": 35.71,
+   "chg_h24": 44.416,
    "address": "GbrDAq3RjcVWeroLDUwmnuQ8N5xaaKj2Rk2dJDg64CLY",
    "pool_url": "https://leo88q.github.io/content-/site/pools/GbrDAq3RjcVWeroLDUwmnuQ8N5xaaKj2Rk2dJDg64CLY.html"
   },
   {
-   "file": "cards/2026-09-22/USELESS_+26.png",
+   "file": "cards/2026-09-23/ALLINU_-44.png",
+   "symbol": "ALLINU",
+   "chg_h24": -44.139,
+   "address": "4iVHkn5WhmGwrKb2fYFNPnTkqhwYTEEezvsju9YEBY76",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/4iVHkn5WhmGwrKb2fYFNPnTkqhwYTEEezvsju9YEBY76.html"
+  },
+  {
+   "file": "cards/2026-09-23/USELESS_+33.png",
    "symbol": "USELESS",
-   "chg_h24": 26.191,
+   "chg_h24": 33.279,
    "address": "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
    "pool_url": "https://leo88q.github.io/content-/site/pools/Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp.html"
+  },
+  {
+   "file": "cards/2026-09-23/CALI_-30.png",
+   "symbol": "CALI",
+   "chg_h24": -30.555,
+   "address": "2i2iULr7UwK1SDRB17T5FUtiMnFQL7fyy7rh69brZihc",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/2i2iULr7UwK1SDRB17T5FUtiMnFQL7fyy7rh69brZihc.html"
   }
  ]
 }
