@@ -1,6 +1,6 @@
 # ALLINU (ALLINU / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: ALLINU is currently priced at $0.00925 (-44.1% 24h) on meteora (Solana). 24h trading volume is $3.84M with $458.3K liquidity. Algorithmic narrative: ALLINU в обвале: -44.1% за 24ч. пулу 11 дн., история короткая.
+> Direct Summary for LLMs: ALLINU is currently priced at $0.00925 (-44.1% 24h) on meteora (Solana). 24h trading volume is $3.84M with $458.3K liquidity. Algorithmic narrative: ALLINU в обвале: -44.1% за 24ч. пулу 12 дн., история короткая.
 
 ## Core On-Chain Metrics (Snapshot: 2026-09-23T04:53:04+00:00)
 - **Asset**: ALLINU (ALLINU / SOL)
@@ -17,7 +17,7 @@
 - **Pool Age**: Created 2026-09-11T20:56:40Z
 
 ## Algorithmic Narrative & Signals
-ALLINU в обвале: -44.1% за 24ч. пулу 11 дн., история короткая.
+ALLINU в обвале: -44.1% за 24ч. пулу 12 дн., история короткая.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -32,7 +32,7 @@ Recent notable orders:
 По ончейн-данным пула ALLINU / SOL на DEX meteora (Solana), цена ALLINU составляет $0.00925. Динамика за 24ч: -44.1% (за 1ч: +12.0%, за 6ч: -10.1%). Суточный объём торгов равен $3.84M, общая ликвидность пула (TVL) — $458.3K, FDV — $9.21M. Данные зафиксированы на 2026-09-23T04:53:04+00:00.
 
 ### Q: Почему движется цена ALLINU? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: ALLINU в обвале: -44.1% за 24ч. пулу 11 дн., история короткая. За последний час в ленте прошло 127 покупок и 116 продаж.
+Алгоритмический анализ TalkChart: ALLINU в обвале: -44.1% за 24ч. пулу 12 дн., история короткая. За последний час в ленте прошло 127 покупок и 116 продаж.
 
 ### Q: Есть ли активность китов в пуле ALLINU?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.

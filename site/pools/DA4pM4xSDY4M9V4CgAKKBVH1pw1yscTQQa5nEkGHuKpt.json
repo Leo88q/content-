@@ -6,19 +6,19 @@
     "base_name": "OTC",
     "base_address": "MukLDtJ8Cx9DxLbeyLRSWPSposTMWuwHANbuaudpump",
     "dex": "pumpswap",
-    "price_usd": 0.011466200058072872,
+    "price_usd": 0.01116900241306139,
     "created_at": "2026-08-28T13:33:11Z",
-    "fdv_usd": 7943976.7111272,
-    "reserve_usd": 632056.9766,
-    "volume_h24": 3480145.5957745,
+    "fdv_usd": 7730899.72150034,
+    "reserve_usd": 616320.5553,
+    "volume_h24": 3718217.48160149,
     "change": {
-      "h1": 1.786,
-      "h6": -1.923,
-      "h24": 118.484
+      "h1": 8.801,
+      "h6": 1.416,
+      "h24": 86.962
     },
     "tx_h1": {
-      "buys": 152,
-      "sells": 190
+      "buys": 430,
+      "sells": 460
     },
     "ohlcv_h1": [
       [
@@ -407,12 +407,54 @@
       ]
     ],
     "first_seen": "2026-09-23T04:53:04+00:00",
-    "last_seen": "2026-09-23T04:53:04+00:00"
+    "last_seen": "2026-09-23T13:44:16+00:00",
+    "whales": [
+      {
+        "kind": "buy",
+        "usd": 2400.08,
+        "mult": 693.5,
+        "whale": false,
+        "hours_ago": 0.3,
+        "addr8": "2k5hrzuy"
+      },
+      {
+        "kind": "buy",
+        "usd": 2308.12,
+        "mult": 666.9,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "DgyKfPKr"
+      },
+      {
+        "kind": "buy",
+        "usd": 2301.38,
+        "mult": 665.0,
+        "whale": false,
+        "hours_ago": 0.2,
+        "addr8": "DgyKfPKr"
+      },
+      {
+        "kind": "buy",
+        "usd": 1085.89,
+        "mult": 313.8,
+        "whale": false,
+        "hours_ago": 0.2,
+        "addr8": "6EMp9xVM"
+      },
+      {
+        "kind": "buy",
+        "usd": 1060.81,
+        "mult": 306.5,
+        "whale": false,
+        "hours_ago": 0.3,
+        "addr8": "2k5hrzuy"
+      }
+    ]
   },
-  "narrative": "OTC разрывает: +118.5% за 24ч.",
+  "narrative": "OTC разрывает: +87.0% за 24ч. крупная сделка на фоне ленты: купил $2.4K (694× медианы, 0ч назад). нетто китов за сутки +$9.2K.",
   "flags": [
     "перегрет за 24ч"
   ],
-  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
-  "updated_at": "2026-09-23T04:53:04Z"
+  "whale_summary": "Зафиксировано крупных сделок: 5 (5 покупок, 0 продаж). Крупнейшая: покупка на $2.4K (694× медианы). Нетто-поток китов: +$9.2K.",
+  "updated_at": "2026-09-23T13:44:16Z"
 }

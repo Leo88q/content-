@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/based_+200.png",
+  "title": "TalkChart: based (+199.5%) — Solana On-Chain Radar",
+  "description": "based разрывает: +199.5% за 24ч. давление продаж нарастает. объём $3.68M больше капы в 25.6× — бумага в огне. ликвидность тонкая ($38.5K) — движения будут резкими. пулу 1 дн. — чистая рулетка.\n\nОбъём: $3.68M · Ликвидность: $38.5K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп based (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-4wYd4vPhzaUQs5vqUrEJ7CPtKg1qzXHhauERuh4MiNMB"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=FDfmFmtyvRhLsD1gFDZzFSnouSXZyDSki8GJtJvLER5y"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

@@ -1,17 +1,17 @@
 {
-  "slug": "kcat-vs-jeanphil",
+  "slug": "sweep-vs-jeanphil",
   "token1": {
-    "symbol": "KCAT",
-    "change_24h": 304.636,
-    "address": "4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG",
-    "volume": 2704001.3330733
+    "symbol": "SWEEP",
+    "change_24h": 343.648,
+    "address": "EzN9f2oGkMzkEJxdJtySURqvBd6Y8Ah2EoEXsbgutbc1",
+    "volume": 3800128.94777361
   },
   "token2": {
     "symbol": "JEANPHIL",
-    "change_24h": 157.719,
+    "change_24h": 219.109,
     "address": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-    "volume": 7652491.75507009
+    "volume": 8726011.99917624
   },
-  "verdict": "По ончейн-метрикам TalkChart: KCAT опережает по ценовому импульсу (+304.6% против +157.7%). Кроме того, у JEANPHIL более надёжная ликвидность ($309.5K против $41.2K). Краткосрочный фаворит по совокупности факторов: JEANPHIL.",
-  "updated_at": "2026-09-23 04:53 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: SWEEP опережает по ценовому импульсу (+343.6% против +219.1%). Кроме того, у JEANPHIL более надёжная ликвидность ($352.6K против $45.6K). Краткосрочный фаворит по совокупности факторов: JEANPHIL.",
+  "updated_at": "2026-09-23 13:44 UTC"
 }

@@ -1,10 +1,10 @@
 Solana · история дня · 2026-09-23
-1. KCAT +304.6% — KCAT разрывает: +304.6% за 24ч. объём $2.70M больше капы в 15.3× — бумага в огне
-2. JEANPHIL +157.7% — JEANPHIL разрывает: +157.7% за 24ч. давление продаж нарастает
-3. OTC +118.5% — OTC разрывает: +118.5% за 24ч.
-4. biketyson +85.7% — biketyson разрывает: +85.7% за 24ч. ликвидность тонкая ($226.4K) — движения будут резкими.
-5. EMBER +44.4% — EMBER разрывает: +44.4% за 24ч. покупатели доминируют (83% сделок за час)
+1. SWEEP +343.6% — SWEEP разрывает: +343.6% за 24ч. ускорение в последнем часе
+2. JEANPHIL +219.1% — JEANPHIL разрывает: +219.1% за 24ч. пулу 4 дн., история короткая
+3. based +199.5% — based разрывает: +199.5% за 24ч. давление продаж нарастает
+4. CATEWALK -99.5% — CATEWALK в обвале: -99.5% за 24ч. ускорение в последнем часе
+5. OTC +87.0% — OTC разрывает: +87.0% за 24ч. крупная сделка на фоне ленты: купил $2.4K (694× медианы, 0ч назад)
 
-⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/4kJEwCpiGtvFRxm1RKYExsFCm1CsB8RwnUQv3LCQs5YG.json
+⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/EzN9f2oGkMzkEJxdJtySURqvBd6Y8Ah2EoEXsbgutbc1.json
 Графики, которые разговаривают ↓
 https://leo88q.github.io/content-/site
