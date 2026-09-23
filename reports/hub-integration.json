@@ -1,0 +1,279 @@
+{
+  "generatedAt": "2026-09-23T18:22:23.235Z",
+  "hub": {
+    "path": "/tmp/watchtower-hub",
+    "readOnly": true
+  },
+  "app": {
+    "baseUrl": "http://127.0.0.1:8000"
+  },
+  "checks": [
+    {
+      "name": "hub: /watchtower/health через адаптер -> ok:true",
+      "ok": true,
+      "details": {
+        "provider": "trafficgen",
+        "mode": "trafficgen",
+        "configured": true,
+        "writes": false,
+        "data": {
+          "ok": true,
+          "status": "ok",
+          "app": "trafficgen",
+          "version": "trafficgen-v1",
+          "uptimeSeconds": 393,
+          "timestamp": "2026-09-23T18:22:23.269Z"
+        },
+        "generatedAt": "2026-09-23T18:22:23.270Z",
+        "period": "live",
+        "source": "trafficgen-exporter",
+        "dataQuality": "complete",
+        "confidence": 1,
+        "parserVersion": "trafficgen-v1"
+      }
+    },
+    {
+      "name": "hub: backfill вернул события",
+      "ok": true,
+      "details": {
+        "count": 100
+      }
+    },
+    {
+      "name": "hub: все события прошли валидацию",
+      "ok": true,
+      "details": []
+    },
+    {
+      "name": "hub: повторный приём тех же событий -> дубли, а не новые записи",
+      "ok": true,
+      "details": {
+        "events": 100,
+        "acceptedFirst": 100,
+        "acceptedSecond": 0
+      }
+    },
+    {
+      "name": "каталог: расхождение с адаптером хаба зафиксировано явно",
+      "ok": true,
+      "details": {
+        "hubUnavailable": [
+          "LandingReached",
+          "SessionAbandoned",
+          "NavigationCompleted",
+          "DeliveryFailed",
+          "RetryScheduled",
+          "TrafficError",
+          "ExporterHealth",
+          "BotFlagged",
+          "AnomalyDetected",
+          "AbuseBlocked",
+          "ConfigUpdated",
+          "EmergencyPause"
+        ],
+        "drift": 8,
+        "hubImplementedCount": 17,
+        "appImplementedCount": 25
+      }
+    },
+    {
+      "name": "хаб-аналитика: LandingReached помечен stageUnavailable",
+      "ok": true,
+      "details": {
+        "step": "LandingReached",
+        "count": 0,
+        "conversionFromPrevious": 0,
+        "stageUnavailable": true
+      }
+    },
+    {
+      "name": "хаб-аналитика: при нулевом знаменателе конверсия null",
+      "ok": true,
+      "details": [
+        {
+          "step": "CampaignStarted",
+          "count": 5,
+          "conversionFromPrevious": null,
+          "stageUnavailable": false
+        },
+        {
+          "step": "SessionStarted",
+          "count": 0,
+          "conversionFromPrevious": 0,
+          "stageUnavailable": false
+        },
+        {
+          "step": "PageView",
+          "count": 5,
+          "conversionFromPrevious": null,
+          "stageUnavailable": false
+        },
+        {
+          "step": "CTAClicked",
+          "count": 1,
+          "conversionFromPrevious": 0.2,
+          "stageUnavailable": false
+        },
+        {
+          "step": "LandingReached",
+          "count": 0,
+          "conversionFromPrevious": 0,
+          "stageUnavailable": true
+        }
+      ]
+    }
+  ],
+  "catalogDrift": [
+    {
+      "eventType": "SessionAbandoned",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "NavigationCompleted",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "TrafficError",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "ExporterHealth",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "BotFlagged",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "AnomalyDetected",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "AbuseBlocked",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    },
+    {
+      "eventType": "EmergencyPause",
+      "app": "implemented",
+      "hub": "unavailable",
+      "action": "нужен отдельный PR в Games-watchtower (хаб read-only для этого контура)"
+    }
+  ],
+  "ok": true,
+  "inbox": {
+    "events": 100,
+    "duplicates": 100,
+    "rejected": 0,
+    "storage": "memory-fixture",
+    "immutable": true,
+    "identity": "cluster:slot:signature:instructionIndex:innerIndex",
+    "acceptedFirst": 100,
+    "acceptedSecond": 0
+  },
+  "catalog": {
+    "appImplemented": 25,
+    "appUnavailable": 4,
+    "hubImplemented": 17,
+    "hubUnavailable": [
+      "LandingReached",
+      "SessionAbandoned",
+      "NavigationCompleted",
+      "DeliveryFailed",
+      "RetryScheduled",
+      "TrafficError",
+      "ExporterHealth",
+      "BotFlagged",
+      "AnomalyDetected",
+      "AbuseBlocked",
+      "ConfigUpdated",
+      "EmergencyPause"
+    ]
+  },
+  "hubSideCaveats": [
+    {
+      "metric": "totals.p50/p95/avg",
+      "hub": 0,
+      "expected": null,
+      "note": "хаб отдаёт 0 вместо null, когда завершённых сессий нет: ноль неотличим от реального нулевого значения. Правится в хабе (этот репозиторий read-only для данного контура)."
+    },
+    {
+      "metric": "unavailableMetrics[process-global error counters]",
+      "hub": "заявлено как недоступное",
+      "expected": "снять: счётчики в приложении стали per-day",
+      "note": "статическая запись в хабе устарела после W2."
+    }
+  ],
+  "hubAnalytics": {
+    "dataQuality": "partial",
+    "confidence": 0.65,
+    "totals": {
+      "events": 65,
+      "pageViews": 5,
+      "sessions": 0,
+      "ctaClicks": 1,
+      "landingReached": 0,
+      "clicks": 0,
+      "sessionEnded": 0,
+      "errors": 23,
+      "dataGaps": 1,
+      "dataGapsHealed": 0,
+      "rateLimited": 22,
+      "botEvents": 59,
+      "realEvents": 6,
+      "hybridEvents": 0,
+      "duplicates": 0,
+      "rejected": 0,
+      "uniquePseudoVisitors": 29,
+      "avg": 0,
+      "p50": 0,
+      "p95": 0,
+      "syntheticExcluded": 35
+    },
+    "funnel": [
+      {
+        "step": "CampaignStarted",
+        "count": 5,
+        "conversionFromPrevious": null,
+        "stageUnavailable": false
+      },
+      {
+        "step": "SessionStarted",
+        "count": 0,
+        "conversionFromPrevious": 0,
+        "stageUnavailable": false
+      },
+      {
+        "step": "PageView",
+        "count": 5,
+        "conversionFromPrevious": null,
+        "stageUnavailable": false
+      },
+      {
+        "step": "CTAClicked",
+        "count": 1,
+        "conversionFromPrevious": 0.2,
+        "stageUnavailable": false
+      },
+      {
+        "step": "LandingReached",
+        "count": 0,
+        "conversionFromPrevious": 0,
+        "stageUnavailable": true
+      }
+    ]
+  }
+}

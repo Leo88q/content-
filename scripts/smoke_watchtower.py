@@ -18,12 +18,15 @@ Smoke test (end-to-end) for the Games Watchtower Integration Adapter.
 import base64
 import json
 import os
+import shutil
 import socket
 import sys
+import tempfile
 import threading
 import time
 import urllib.error
 import urllib.request
+from datetime import datetime, timedelta, timezone
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO_ROOT, "site", "factory"))
@@ -31,6 +34,7 @@ sys.path.insert(0, os.path.join(REPO_ROOT, "site", "factory"))
 from http.server import ThreadingHTTPServer
 import watchtower_exporter as we
 from watchtower_exporter import WatchtowerHandler, STORE
+from watchtower_control import ControlStore
 
 ENVELOPE_KEYS = ("data", "generatedAt", "period", "source",
                  "dataQuality", "confidence", "parserVersion")
@@ -61,6 +65,14 @@ def request(url, method="GET", data=None, headers=None):
 
 
 def run_smoke_tests():
+    # Эфемерная БД: иначе identity предыдущего прогона превращает первое же
+    # событие в duplicate и смоук перестаёт быть воспроизводимым.
+    tmp_dir = tempfile.mkdtemp(prefix="tc-smoke-")
+    db_path = os.path.join(tmp_dir, "smoke_watchtower.db")
+    old_store, old_control = we.STORE, we.CONTROL
+    we.STORE = we.EventStore(db_path=db_path)
+    we.CONTROL = ControlStore(db_path=db_path)
+
     port = get_free_port()
     server = ThreadingHTTPServer(("127.0.0.1", port), WatchtowerHandler)
     t = threading.Thread(target=server.serve_forever, daemon=True)
@@ -262,6 +274,144 @@ def run_smoke_tests():
           any(l.startswith("trafficgen_rate_limited_total ") and not l.endswith(" 0")
               for l in body.splitlines()))
 
+    # -- 10b. Новые read-only эндпоинты (W2/W3) ------------------------------------------------------
+    for p in ("/watchtower/proposals", "/watchtower/audit", "/watchtower/blocks",
+              "/watchtower/consent", "/watchtower/identity", "/watchtower/forensics",
+              "/watchtower/severity", "/watchtower/detectors", "/watchtower/quality"):
+        status, body, _ = request(f"{base}{p}")
+        try:
+            env = json.loads(body)
+            missing = [k for k in ENVELOPE_KEYS if k not in env]
+        except Exception:
+            env, missing = {}, list(ENVELOPE_KEYS)
+        check(f"GET {p} -> 200 + конверт", status == 200 and not missing,
+              f"status={status} missing={missing}")
+
+    _, body, _ = request(f"{base}/watchtower/audit")
+    chain = json.loads(body)["data"]["chain"]
+    check("audit: хеш-цепочка цела", chain.get("valid") is True, str(chain))
+
+    _, body, _ = request(f"{base}/watchtower/severity")
+    sev = json.loads(body)["data"]["dictionary"]
+    check("severity: p1/p2/p3 с временем реакции",
+          all(k in sev and sev[k]["responseMinutes"] > 0 for k in ("p1", "p2", "p3")))
+
+    # -- 10c. Эмиттеры, которых раньше не было -------------------------------------------------------
+    import watchtower_detectors as det
+    det.HealthProbe(we.STORE, snapshot_path=we.config.SNAPSHOT).run()
+    _, body, _ = request(f"{base}/watchtower/events?eventType=ExporterHealth&limit=5")
+    check("ExporterHealth записан как событие",
+          len(json.loads(body)["data"]["events"]) >= 1)
+
+    old_ts = (datetime.now(timezone.utc) - timedelta(hours=6)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    request(f"{base}/api/track", method="POST", data={
+        "eventType": "PageView", "sessionId": "smoke_idle_sess", "seq": 1,
+        "campaignId": "talkchart_seo", "pageId": "target_terminal",
+        "sourceId": "direct_web", "timestamp": old_ts})
+    det.SessionSweeper(we.STORE, we.CONTROL).run()
+    _, body, _ = request(f"{base}/watchtower/events?eventType=SessionAbandoned&limit=5")
+    check("SessionAbandoned записан планировщиком таймаутов",
+          len(json.loads(body)["data"]["events"]) >= 1)
+
+    status, body, _ = request(f"{base}/api/track", method="POST", data={
+        "eventType": "TrafficError", "sessionId": "sess_system_factory", "seq": 1,
+        "campaignId": "system", "pageId": "target_terminal",
+        "sourceId": "factory_pipeline", "sourceType": "bot",
+        "payload": {"stage": "fetch_data", "message": "smoke"}})
+    check("TrafficError принимается как событие каталога",
+          status == 200 and json.loads(body).get("accepted") == 1, f"status={status}")
+
+    # -- 10d. Контроль-плейн: без настроенных пользователей недоступен --------------------------------
+    os.environ.pop("TRAFFICGEN_CONTROL_USERS", None)
+    status, body, _ = request(f"{base}/api/control/proposals", method="POST",
+                              data={"kind": "emergency_pause", "payload": {"campaignId": "x"}})
+    check("control без TRAFFICGEN_CONTROL_USERS -> 503 unavailable",
+          status == 503 and json.loads(body)["data"].get("code") == "control_unavailable",
+          f"status={status}")
+
+    # -- 10e. Proposal-flow: два подтверждения, 2FA, эффект, откат -----------------------------------
+    from watchtower_control import totp_code
+    SECRET_A, SECRET_B = "JBSWY3DPEHPK3PXP", "KRSXG5BAMFRGGZDF"
+    os.environ["TRAFFICGEN_CONTROL_USERS"] = json.dumps({
+        "proposer": {"token": "tok-proposer", "role": "proposer", "secret": SECRET_A},
+        "approver1": {"token": "tok-a1", "role": "approver", "secret": SECRET_B},
+        "approver2": {"token": "tok-a2", "role": "approver", "secret": SECRET_A},
+    })
+    hdr_prop = {"Authorization": "Bearer tok-proposer"}
+    hdr_a1 = {"Authorization": "Bearer tok-a1"}
+    hdr_a2 = {"Authorization": "Bearer tok-a2"}
+
+    status, _, _ = request(f"{base}/api/control/proposals", method="POST",
+                           data={"kind": "emergency_pause",
+                                 "payload": {"campaignId": "talkchart_smoke_pause",
+                                             "reason": "smoke-test"},
+                                 "reason": "smoke"})
+    check("control: запрос без токена -> 401", status == 401, f"status={status}")
+
+    status, body, _ = request(f"{base}/api/control/proposals", method="POST", headers=hdr_prop,
+                              data={"kind": "emergency_pause",
+                                    "payload": {"campaignId": "talkchart_smoke_pause",
+                                                "reason": "smoke-test"}})
+    prop = json.loads(body).get("data") or {}
+    pid = prop.get("id")
+    check("control: предложение создано -> 201", status == 201 and bool(pid), f"status={status}")
+
+    status, body, _ = request(f"{base}/api/control/proposals/{pid}/approve", method="POST",
+                              headers=hdr_a1, data={"totp": "000000"})
+    check("control: неверный TOTP -> 401 invalid_2fa",
+          status == 401 and json.loads(body)["data"].get("code") == "invalid_2fa",
+          f"status={status}")
+
+    status, body, _ = request(f"{base}/api/control/proposals/{pid}/approve", method="POST",
+                              headers=hdr_a1, data={"totp": totp_code(SECRET_B)})
+    check("control: первое подтверждение -> approved",
+          status == 200 and json.loads(body)["data"].get("status") == "approved", f"status={status}")
+
+    status, body, _ = request(f"{base}/api/control/proposals/{pid}/confirm", method="POST",
+                              headers=hdr_a1, data={"totp": totp_code(SECRET_B)})
+    check("control: two-person rule — тем же человеком нельзя",
+          status == 409 and json.loads(body)["data"].get("code") == "two_person_rule",
+          f"status={status}")
+
+    status, body, _ = request(f"{base}/api/control/proposals/{pid}/confirm", method="POST",
+                              headers=hdr_a2, data={"totp": totp_code(SECRET_A)})
+    check("control: второе подтверждение -> applied",
+          status == 200 and json.loads(body)["data"].get("status") == "applied", f"status={status}")
+
+    status, body, _ = request(f"{base}/api/track", method="POST", data={
+        "eventType": "PageView", "sessionId": "smoke_paused_sess", "seq": 1,
+        "campaignId": "talkchart_smoke_pause", "pageId": "target_terminal"})
+    check("пауза кампании: событие не принято, помечено paused",
+          json.loads(body).get("paused") == 1, f"body={body[:200]}")
+
+    status, body, _ = request(f"{base}/api/control/proposals/{pid}/rollback", method="POST",
+                              headers=hdr_a1, data={"totp": totp_code(SECRET_B)})
+    check("control: откат -> rolled_back",
+          status == 200 and json.loads(body)["data"].get("status") == "rolled_back",
+          f"status={status}")
+
+    status, body, _ = request(f"{base}/api/track", method="POST", data={
+        "eventType": "PageView", "sessionId": "smoke_paused_sess_2", "seq": 1,
+        "campaignId": "talkchart_smoke_pause", "pageId": "target_terminal"})
+    check("после отката события снова принимаются",
+          json.loads(body).get("accepted") == 1, f"body={body[:200]}")
+
+    _, body, _ = request(f"{base}/watchtower/blocks")
+    blocks = json.loads(body)["data"]
+    check("/watchtower/blocks отдаёт активные блокировки и паузы",
+          isinstance(blocks.get("active"), list) and isinstance(blocks.get("pausedCampaigns"), dict))
+
+    _, body, _ = request(f"{base}/watchtower/proposals")
+    props = json.loads(body)["data"]["proposals"]
+    check("/watchtower/proposals показывает применённое предложение",
+          any(p["id"] == pid for p in props))
+
+    # -- 10f. Новые эндпоинты тоже read-only ----------------------------------------------------------
+    for p in ("/watchtower/proposals", "/watchtower/audit", "/watchtower/blocks"):
+        status, _, hdrs = request(f"{base}{p}", method="POST", data={"x": 1})
+        check(f"POST {p} -> 405 + Allow", status == 405 and hdrs.get("Allow") == "GET, OPTIONS",
+              f"status={status} allow={hdrs.get('Allow')}")
+
     # -- 11. Strict read-only ------------------------------------------------------------------------------
     for p in ("/watchtower/events", "/watchtower/campaigns", "/watchtower/config",
               "/watchtower/health", "/watchtower/funnels", "/watchtower/forecast"):
@@ -280,6 +430,8 @@ def run_smoke_tests():
 
     server.shutdown()
     print("[SMOKE] Server shut down.")
+    we.STORE, we.CONTROL = old_store, old_control
+    shutil.rmtree(tmp_dir, ignore_errors=True)
     failed = [n for n, ok in results if not ok]
     if failed:
         print(f"\n[SMOKE] FAILED {len(failed)}/{len(results)} checks:")

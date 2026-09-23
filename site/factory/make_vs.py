@@ -25,11 +25,42 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
 from narrative import fmt_pct, fmt_usd, headline, narrative
 
+# Пиксель-оформление страниц баттлов: токены из style.css (тема: data-theme).
+VS_CSS = """
+body{background:var(--bg);background-image:repeating-conic-gradient(var(--bg2) 0% 25%,transparent 0% 50%) 0 0/8px 8px;color:var(--tx);font-family:var(--font-body);margin:0 auto;padding:40px 20px;max-width:840px;line-height:1.8;font-size:14px}
+h1{font-family:var(--font-pixel);font-size:18px;line-height:1.5;margin:12px 0}
+h2{font-family:var(--font-pixel);font-size:13px;line-height:1.6;margin:28px 0 12px}
+h3{font-family:var(--font-pixel);font-size:11px;line-height:1.6}
+.mut{color:var(--mut);font-size:12px}
+a{color:var(--acc)}
+code{background:var(--panel2);border:2px solid var(--line);padding:2px 6px;font-size:12px}
+hr{border:none;border-top:3px solid var(--line);margin:30px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.box{background:var(--panel);border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);padding:18px}
+.box.token1{border-top:8px solid var(--green)} .box.token2{border-top:8px solid var(--info,#3dd9f0)}
+.verdict{background:var(--panel);border:3px solid var(--line);border-left:8px solid var(--warn,#fba43a);box-shadow:4px 4px 0 0 var(--shadow-color);padding:16px;margin:20px 0}
+.verdict h3{color:var(--warn,#fba43a)}
+table{width:100%;border-collapse:collapse;margin:20px 0}
+td,th{border:2px solid var(--line);padding:10px 14px;text-align:left;font-size:13px}
+th{font-family:var(--font-pixel);font-size:8px;line-height:1.8;background:var(--panel2);color:var(--mut)}
+a.cta{display:inline-block;background:var(--acc);color:#07110a;font-family:var(--font-pixel);font-size:9px;line-height:1.6;padding:12px 16px;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);text-decoration:none;margin:8px 8px 8px 0;transition:transform 120ms steps(3,end)}
+a.cta:hover{transform:translate(-2px,-2px)}
+img.card{width:100%;max-width:700px;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);display:block;margin:20px 0}
+.px-toggle{font-family:var(--font-pixel);font-size:8px;line-height:1.6;background:var(--panel2);color:var(--tx);border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);padding:8px 10px;cursor:pointer}
+.px-toggle:hover{transform:translate(-2px,-2px);border-color:var(--acc)}
+@media (prefers-reduced-motion: reduce){a.cta:hover,.px-toggle:hover{transform:none}}
+"""
+
 try:
     from PIL import Image, ImageDraw, ImageFont
     HAS_PILLOW = True
 except ImportError:
     HAS_PILLOW = False
+if HAS_PILLOW:
+    from pixelart import (ACC as ACC_VS, AMBER as AMBER_VS, BG as BG_VS,
+                          CYAN as CYAN_VS, GREEN as GREEN_VS, INK as INK_VS,
+                          MUT as MUT_VS, PANEL as PANEL_VS, RED as RED_VS,
+                          WHITE as WHITE_VS, dither_bg, pixelate)
 
 
 def load_font(size, bold=False):
@@ -43,59 +74,66 @@ def load_font(size, bold=False):
         return ImageFont.load_default()
 
 
+CARD_W, CARD_H = 1200, 630
+
+
 def render_vs_card(slug, p1, p2, out_path):
-    """Рендер 1200x630 баттл-карточки (Pillow)."""
+    """Пиксель-рендер баттл-карточки: низкое разрешение → NEAREST → палитра."""
     if not HAS_PILLOW:
         return None
-    W, H = 1200, 630
-    img = Image.new("RGB", (W, H), "#0a0e14")
+    W, H = CARD_W, CARD_H
+    ps = 5
+    sw, sh = W // ps, H // ps              # 240 × 126
+    img = Image.new("RGB", (sw, sh), BG_VS)
     draw = ImageDraw.Draw(img)
+    dither_bg(draw, 0, 0, sw, sh, PANEL_VS, 4)
 
-    # Разделитель и акценты
-    draw.rectangle([8, 8, W - 9, H - 9], outline="#1c2530", width=2)
-    # Левая колонка (Token 1)
-    draw.rectangle([20, 20, W // 2 - 20, H - 70], fill="#0f1912", outline="#26d07c", width=2)
-    # Правая колонка (Token 2)
-    draw.rectangle([W // 2 + 20, 20, W - 20, H - 70], fill="#141924", outline="#3dd9f0", width=2)
-
-    f_sym = load_font(52, bold=True)
-    f_pct = load_font(44, bold=True)
-    f_sub = load_font(20, bold=False)
-    f_vs = load_font(54, bold=True)
-    f_mark = load_font(18, bold=False)
+    f_sym = load_font(13, bold=True)
+    f_pct = load_font(11, bold=True)
+    f_sub = load_font(6, bold=False)
+    f_vs = load_font(7, bold=True)
+    f_mark = load_font(6, bold=False)
 
     s1, s2 = p1.get("base_symbol", "?"), p2.get("base_symbol", "?")
     c1 = (p1.get("change") or {}).get("h24") or 0
     c2 = (p2.get("change") or {}).get("h24") or 0
+    col1 = GREEN_VS if c1 >= 0 else RED_VS
+    col2 = GREEN_VS if c2 >= 0 else RED_VS
 
-    # Левый токен (x=50)
-    draw.text((50, 50), s1, fill="#ffffff", font=f_sym)
-    draw.text((50, 120), fmt_pct(c1) + " (24ч)", fill="#26d07c" if c1 >= 0 else "#ff4d6a", font=f_pct)
-    draw.text((50, 195), f"Объём: {fmt_usd(p1.get('volume_h24'))}", fill="#e8edf2", font=f_sub)
-    draw.text((50, 235), f"Ликвидность: {fmt_usd(p1.get('reserve_usd'))}", fill="#e8edf2", font=f_sub)
-    draw.text((50, 275), f"DEX: {p1.get('dex', '?')}", fill="#8b98a5", font=f_sub)
-    draw.text((50, 315), f"FDV: {fmt_usd(p1.get('fdv_usd'))}", fill="#8b98a5", font=f_sub)
+    draw.rectangle([0, 0, sw - 1, sh - 1], outline=ACC_VS)          # рамка
+    draw.rectangle([4, 10, sw // 2 - 4, sh - 18], outline=col1)     # левый токен
+    draw.rectangle([sw // 2 + 4, 10, sw - 5, sh - 18], outline=col2)  # правый токен
+    draw.rectangle([4, 4, 44, 6], fill=ACC_VS)                      # «ушко» HUD
 
-    # Правый токен (x=730 — свободный отступ от центрального круга)
-    r_x = W // 2 + 130
-    draw.text((r_x, 50), s2, fill="#ffffff", font=f_sym)
-    draw.text((r_x, 120), fmt_pct(c2) + " (24ч)", fill="#26d07c" if c2 >= 0 else "#ff4d6a", font=f_pct)
-    draw.text((r_x, 195), f"Объём: {fmt_usd(p2.get('volume_h24'))}", fill="#e8edf2", font=f_sub)
-    draw.text((r_x, 235), f"Ликвидность: {fmt_usd(p2.get('reserve_usd'))}", fill="#e8edf2", font=f_sub)
-    draw.text((r_x, 275), f"DEX: {p2.get('dex', '?')}", fill="#8b98a5", font=f_sub)
-    draw.text((r_x, 315), f"FDV: {fmt_usd(p2.get('fdv_usd'))}", fill="#8b98a5", font=f_sub)
+    # центральная плашка VS — прямоугольная, углы прямые
+    bx0, bx1 = sw // 2 - 13, sw // 2 + 13
+    draw.rectangle([bx0, 12, bx1, 24], fill=AMBER_VS)
+    draw.text((bx0 + 4, 13), "VS", fill=INK_VS, font=f_vs)
 
-    # Круг VS по центру
-    cx, cy, r = W // 2, 230, 48
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#fba43a", outline="#ffffff", width=3)
-    draw.text((cx - 34, cy - 30), "VS", fill="#000000", font=f_vs)
+    def column(x, token, p, chg, col):
+        draw.text((x, 30), str(token)[:9], fill=WHITE_VS, font=f_sym)
+        draw.text((x, 46), fmt_pct(chg), fill=col, font=f_pct)
+        rows = [
+            f"VOL {fmt_usd(p.get('volume_h24'))}",
+            f"LIQ {fmt_usd(p.get('reserve_usd'))}",
+            f"DEX {str(p.get('dex', '?'))[:12]}",
+            f"FDV {fmt_usd(p.get('fdv_usd'))}",
+        ]
+        y = 62
+        for r in rows:
+            draw.text((x, y), r, fill=WHITE_VS if y < 78 else MUT_VS, font=f_sub)
+            y += 8
 
-    # Водяной знак
-    draw.text((30, H - 42), config.CARD_MARK, fill="#7cf03d", font=f_mark)
-    draw.text((W - 380, H - 42), config.SITE_URL.replace("https://", ""), fill="#8b98a5", font=f_mark)
+    column(10, s1, p1, c1, col1)
+    column(sw // 2 + 10, s2, p2, c2, col2)
+
+    draw.text((10, sh - 12), str(config.CARD_MARK)[:40], fill=ACC_VS, font=f_mark)
+    host = config.SITE_URL.replace("https://", "")[:22]
+    draw.text((sw - 10 - int(draw.textlength(host, font=f_mark)), sh - 12), host,
+              fill=MUT_VS, font=f_mark)
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    img.save(out_path, format="PNG", optimize=True)
+    pixelate(img, (W, H)).save(out_path, format="PNG", optimize=True)
     return out_path
 
 
@@ -209,7 +247,7 @@ def main():
             ]
         }, ensure_ascii=False)
 
-        faq_items_html = "".join(f'<div style="margin:16px 0"><b>{item["q"]}</b><p style="color:#b0bcc8;margin:6px 0">{item["a"]}</p></div>' for item in faq_data)
+        faq_items_html = "".join(f'<div class="faq-item"><h3>{item["q"]}</h3><p style="color:var(--mut);margin:6px 0">{item["a"]}</p></div>' for item in faq_data)
         faq_items_md = "\n\n".join(f"### Q: {item['q']}\n{item['a']}" for item in faq_data)
 
         html = f"""<!doctype html>
@@ -224,20 +262,12 @@ def main():
 <script type="application/ld+json">
 {schema_json}
 </script>
-<style>
-body{{background:#0a0e14;color:#e8edf2;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0;padding:40px 20px;max-width:840px;margin:auto;line-height:1.7}}
-h1{{font-size:26px}} .mut{{color:#8b98a5;font-size:13px}}
-.grid{{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}}
-.box{{background:#121820;border:1px solid #1c2530;border-radius:10px;padding:18px}}
-.box.token1{{border-top:4px solid #26d07c}} .box.token2{{border-top:4px solid #3dd9f0}}
-.verdict{{background:#141a24;border:1px solid #253347;border-left:4px solid #fba43a;border-radius:8px;padding:16px;margin:20px 0}}
-table{{width:100%;border-collapse:collapse;margin:20px 0}}td,th{{border:1px solid #1c2530;padding:10px 14px;text-align:left}}
-a.cta{{display:inline-block;background:#7cf03d;color:#000;font-weight:bold;padding:12px 22px;border-radius:8px;text-decoration:none;margin:8px 8px 8px 0}}
-a{{color:#7cf03d}}
-img.card{{width:100%;max-width:700px;border-radius:10px;border:1px solid #1c2530;display:block;margin:20px 0}}
-</style>
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+<style>{VS_CSS}</style>
 </head>
 <body>
+<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="px-toggle" data-theme-toggle title="Светлая тема" aria-label="Светлая тема" aria-pressed="false">☀️ ДЕНЬ</button></div>
 <p class="mut"><a href="../index.html">📈 TalkChart</a> · <a href="index.html">каталог баттлов</a> · <a href="{canonical_md}">[md для AI]</a></p>
 <h1>⚔️ {s1} vs {s2} — ончейн-сравнение ({cat_title})</h1>
 <p class="mut">Срез данных: {now_str} · сеть Solana DEX</p>
@@ -251,7 +281,7 @@ img.card{{width:100%;max-width:700px;border-radius:10px;border:1px solid #1c2530
 
 <table>
 <tr><th>Параметр</th><th>{s1}</th><th>{s2}</th><th>Лидер</th></tr>
-<tr><td>Суточный рост (24ч)</td><td><b style="color:{'#26d07c' if c1 >= 0 else '#ff4d6a'}">{fmt_pct(c1)}</b></td><td><b style="color:{'#26d07c' if c2 >= 0 else '#ff4d6a'}">{fmt_pct(c2)}</b></td><td>{s1 if c1 > c2 else s2}</td></tr>
+<tr><td>Суточный рост (24ч)</td><td><b style="color:{'var(--green)' if c1 >= 0 else 'var(--red)'}">{fmt_pct(c1)}</b></td><td><b style="color:{'var(--green)' if c2 >= 0 else 'var(--red)'}">{fmt_pct(c2)}</b></td><td>{s1 if c1 > c2 else s2}</td></tr>
 <tr><td>Объём 24ч</td><td>{fmt_usd(p1.get('volume_h24'))}</td><td>{fmt_usd(p2.get('volume_h24'))}</td><td>{s1 if (p1.get('volume_h24') or 0) > (p2.get('volume_h24') or 0) else s2}</td></tr>
 <tr><td>Глубина пула (TVL)</td><td>{fmt_usd(p1.get('reserve_usd'))}</td><td>{fmt_usd(p2.get('reserve_usd'))}</td><td>{s1 if (p1.get('reserve_usd') or 0) > (p2.get('reserve_usd') or 0) else s2}</td></tr>
 <tr><td>Отношение Объём / TVL</td><td>{((p1.get('volume_h24') or 0) / max(1, p1.get('reserve_usd') or 1)):.1f}×</td><td>{((p2.get('volume_h24') or 0) / max(1, p2.get('reserve_usd') or 1)):.1f}×</td><td>—</td></tr>
@@ -264,11 +294,11 @@ img.card{{width:100%;max-width:700px;border-radius:10px;border:1px solid #1c2530
 
 <div style="margin-top:24px">
 <a class="cta" href="../index.html#pool={p1['address']}">Открыть чарт {s1} →</a>
-<a class="cta" href="../index.html#pool={p2['address']}" style="background:#3dd9f0">Открыть чарт {s2} →</a>
-<a class="cta" href="../index.html#games" style="background:#fba43a">🎁 Забрать TipLink бонус в игры →</a>
+<a class="cta" href="../index.html#pool={p2['address']}" style="background:#3dd9f0;color:#04222b">Открыть чарт {s2} →</a>
+<a class="cta" href="../index.html#games" style="background:#fba43a;color:#1a1400">🎁 Забрать TipLink бонус в игры →</a>
 </div>
 
-<hr style="border-color:#1c2530;margin:30px 0">
+<hr>
 <p class="mut">Сгенерировано фабрикой контента TalkChart. Обновляется каждые 4 часа. Не является финансовой рекомендацией.</p>
 </body>
 </html>"""
@@ -312,19 +342,23 @@ img.card{{width:100%;max-width:700px;border-radius:10px;border:1px solid #1c2530
     # Каталог site/vs/index.html
     items_html = "\n".join(
         f'<li><a href="{slug}.html"><b>{s1} ({fmt_pct(c1)}) vs {s2} ({fmt_pct(c2)})</b></a> — {title} '
-        f'<small><a href="{slug}.md" style="color:#8b98a5">[md]</a></small></li>'
+        f'<small><a href="{slug}.md" style="color:var(--mut)">[md]</a></small></li>'
         for slug, s1, s2, c1, c2, title in battle_links
     )
     catalog_html = f"""<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Баттлы токенов Solana — сравнение пар активов | TalkChart</title>
 <link rel="canonical" href="{config.SITE_URL}/vs/index.html">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+<style>{VS_CSS}</style>
 </head>
-<body style="background:#0a0e14;color:#e8edf2;font-family:monospace;max-width:820px;margin:auto;padding:40px 20px;line-height:2">
-<p><a href="../index.html" style="color:#7cf03d">📈 TalkChart</a> / ончейн-баттлы токенов</p>
-<h1>Ончейн-баттлы токенов Solana (Сравнение активов)</h1>
+<body>
+<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="px-toggle" data-theme-toggle title="Светлая тема" aria-label="Светлая тема" aria-pressed="false">☀️ ДЕНЬ</button></div>
+<p class="mut"><a href="../index.html">📈 TalkChart</a> / ончейн-баттлы токенов</p>
+<h1>Ончейн-баттлы токенов Solana</h1>
 <ul>{items_html}</ul>
-<p style="color:#8b98a5">Обновляется автоматически каждые 4 часа через GeckoTerminal DEX tape.</p>
+<p class="mut">Обновляется автоматически каждые 4 часа через GeckoTerminal DEX tape.</p>
 </body></html>"""
 
     with open(os.path.join(vs_dir, "index.html"), "w", encoding="utf-8") as f:

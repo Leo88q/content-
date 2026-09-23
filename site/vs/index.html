@@ -2,12 +2,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Баттлы токенов Solana — сравнение пар активов | TalkChart</title>
 <link rel="canonical" href="https://leo88q.github.io/content-/site/vs/index.html">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+<style>
+body{background:var(--bg);background-image:repeating-conic-gradient(var(--bg2) 0% 25%,transparent 0% 50%) 0 0/8px 8px;color:var(--tx);font-family:var(--font-body);margin:0 auto;padding:40px 20px;max-width:840px;line-height:1.8;font-size:14px}
+h1{font-family:var(--font-pixel);font-size:18px;line-height:1.5;margin:12px 0}
+h2{font-family:var(--font-pixel);font-size:13px;line-height:1.6;margin:28px 0 12px}
+h3{font-family:var(--font-pixel);font-size:11px;line-height:1.6}
+.mut{color:var(--mut);font-size:12px}
+a{color:var(--acc)}
+code{background:var(--panel2);border:2px solid var(--line);padding:2px 6px;font-size:12px}
+hr{border:none;border-top:3px solid var(--line);margin:30px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.box{background:var(--panel);border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);padding:18px}
+.box.token1{border-top:8px solid var(--green)} .box.token2{border-top:8px solid var(--info,#3dd9f0)}
+.verdict{background:var(--panel);border:3px solid var(--line);border-left:8px solid var(--warn,#fba43a);box-shadow:4px 4px 0 0 var(--shadow-color);padding:16px;margin:20px 0}
+.verdict h3{color:var(--warn,#fba43a)}
+table{width:100%;border-collapse:collapse;margin:20px 0}
+td,th{border:2px solid var(--line);padding:10px 14px;text-align:left;font-size:13px}
+th{font-family:var(--font-pixel);font-size:8px;line-height:1.8;background:var(--panel2);color:var(--mut)}
+a.cta{display:inline-block;background:var(--acc);color:#07110a;font-family:var(--font-pixel);font-size:9px;line-height:1.6;padding:12px 16px;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);text-decoration:none;margin:8px 8px 8px 0;transition:transform 120ms steps(3,end)}
+a.cta:hover{transform:translate(-2px,-2px)}
+img.card{width:100%;max-width:700px;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);display:block;margin:20px 0}
+.px-toggle{font-family:var(--font-pixel);font-size:8px;line-height:1.6;background:var(--panel2);color:var(--tx);border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);padding:8px 10px;cursor:pointer}
+.px-toggle:hover{transform:translate(-2px,-2px);border-color:var(--acc)}
+@media (prefers-reduced-motion: reduce){a.cta:hover,.px-toggle:hover{transform:none}}
+</style>
 </head>
-<body style="background:#0a0e14;color:#e8edf2;font-family:monospace;max-width:820px;margin:auto;padding:40px 20px;line-height:2">
-<p><a href="../index.html" style="color:#7cf03d">📈 TalkChart</a> / ончейн-баттлы токенов</p>
-<h1>Ончейн-баттлы токенов Solana (Сравнение активов)</h1>
-<ul><li><a href="archibrown-vs-pumpcat.html"><b>ARCHIBROWN (+575.3%) vs PUMPCAT (+153.3%)</b></a> — Битва лидеров суток Solana <small><a href="archibrown-vs-pumpcat.md" style="color:#8b98a5">[md]</a></small></li>
-<li><a href="archibrown-vs-sweep.html"><b>ARCHIBROWN (+575.3%) vs SWEEP (+135.3%)</b></a> — Столкновение мем-хайпа <small><a href="archibrown-vs-sweep.md" style="color:#8b98a5">[md]</a></small></li>
-<li><a href="archibrown-vs-zec.html"><b>ARCHIBROWN (+575.3%) vs ZEC (-0.1%)</b></a> — Взрывной памп против гиганта объёма <small><a href="archibrown-vs-zec.md" style="color:#8b98a5">[md]</a></small></li></ul>
-<p style="color:#8b98a5">Обновляется автоматически каждые 4 часа через GeckoTerminal DEX tape.</p>
+<body>
+<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="px-toggle" data-theme-toggle title="Светлая тема" aria-label="Светлая тема" aria-pressed="false">☀️ ДЕНЬ</button></div>
+<p class="mut"><a href="../index.html">📈 TalkChart</a> / ончейн-баттлы токенов</p>
+<h1>Ончейн-баттлы токенов Solana</h1>
+<ul><li><a href="bluf-vs-archibrown.html"><b>BLUF (+766.9%) vs ARCHIBROWN (+744.2%)</b></a> — Битва лидеров суток Solana <small><a href="bluf-vs-archibrown.md" style="color:var(--mut)">[md]</a></small></li>
+<li><a href="bluf-vs-gp.html"><b>BLUF (+766.9%) vs GP (+184.7%)</b></a> — Столкновение мем-хайпа <small><a href="bluf-vs-gp.md" style="color:var(--mut)">[md]</a></small></li>
+<li><a href="bluf-vs-zec.html"><b>BLUF (+766.9%) vs ZEC (+0.8%)</b></a> — Взрывной памп против гиганта объёма <small><a href="bluf-vs-zec.md" style="color:var(--mut)">[md]</a></small></li></ul>
+<p class="mut">Обновляется автоматически каждые 4 часа через GeckoTerminal DEX tape.</p>
 </body></html>

@@ -7,7 +7,7 @@ import os
 import sys
 import types
 
-calls = {"text": 0, "draw": 0, "save": 0}
+calls = {"text": 0, "draw": 0, "save": 0, "resize": 0}
 
 # --- стаб PIL ---
 class FakeFont:
@@ -21,12 +21,20 @@ class FakeDraw:
     def rectangle(self, *a, **k): calls["draw"] += 1
     def rounded_rectangle(self, *a, **k): calls["draw"] += 1
     def ellipse(self, *a, **k): calls["draw"] += 1
+    def point(self, *a, **k): calls["draw"] += 1
     def line(self, pts, **k):
         assert len(pts) >= 2, "спарклайн без точек"
         calls["draw"] += 1
 
 class FakeImage:
-    def __init__(self): self.size = (1200, 630)
+    """Мини-эмуляция PIL.Image для пиксель-конвейера (resize/quantize/convert)."""
+    def __init__(self, size=(1200, 630)): self.size = size
+    def resize(self, size, resample=None):
+        calls["resize"] += 1
+        return FakeImage(tuple(size))
+    def putpalette(self, data, rawmode=None): self._palette = data
+    def quantize(self, **k): return self
+    def convert(self, mode=None, **k): return self
     def save(self, path, fmt=None, **k):
         assert path.endswith(".png")
         calls["save"] += 1
@@ -36,6 +44,16 @@ class FakeImage:
 pil = types.ModuleType("PIL")
 pil_image = types.ModuleType("PIL.Image")
 pil_image.new = lambda *a, **k: FakeImage()
+pil_image.NEAREST = 0        # константы ресемплинга: в стабе они не важны,
+pil_image.LANCZOS = 1        # важен сам факт вызова resize()
+
+
+class _Dither:                # режимы дизеринга (для quantize(dither=...))
+    NONE = 0
+    FLOYDSTEINBERG = 1
+
+
+pil_image.Dither = _Dither
 pil_draw = types.ModuleType("PIL.ImageDraw")
 pil_draw.Draw = lambda img: FakeDraw()
 pil_font = types.ModuleType("PIL.ImageFont")

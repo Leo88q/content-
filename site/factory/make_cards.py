@@ -21,96 +21,67 @@ try:
 except ImportError:
     print("Pillow не установлен: pip install pillow", file=sys.stderr)
     sys.exit(1)
+from pixelart import (ACC, AMBER, BG, CYAN, GREEN, INK, MUT, PANEL, RED, WHITE,
+                      dither_bg, pixel_bars, pixelate, wrap)
 
 W, H = 1200, 630
-BG = (10, 14, 20)
-ACC = (124, 240, 61)
-GREEN = (38, 208, 124)
-RED = (255, 77, 106)
-MUT = (139, 152, 165)
-WHITE = (232, 237, 242)
+# Пиксель-рендер: рисуем в 1/PS размера, затем NEAREST-апскейл и приведение
+# к палитре (pixelart.pixelate) — полутона антиалиасинга исчезают полностью.
+PS = 5
+SW, SH = W // PS, H // PS          # 240 × 126
 
 FONT = os.path.join(config.FONTS_DIR, "DejaVuSans.ttf")
 FONT_B = os.path.join(config.FONTS_DIR, "DejaVuSans-Bold.ttf")
 
 
-def wrap(draw, text, font, max_w):
-    words, lines, line = text.split(), [], ""
-    for w_ in words:
-        t = (line + " " + w_).strip()
-        if draw.textlength(t, font=font) <= max_w:
-            line = t
-        else:
-            if line:
-                lines.append(line)
-            line = w_
-    if line:
-        lines.append(line)
-    return lines
-
-
-def sparkline(draw, closes, x0, y0, x1, y1, color, width=5):
-    if len(closes) < 2:
-        return
-    hi, lo = max(closes), min(closes)
-    span = hi - lo or hi * 0.01 or 1
-    pts = []
-    for i, c in enumerate(closes):
-        x = x0 + (i / (len(closes) - 1)) * (x1 - x0)
-        y = y1 - ((c - lo) / span) * (y1 - y0)
-        pts.append((x, y))
-    draw.line(pts, fill=color, width=width, joint="curve")
-
-
 def make_card(p, out_path, fonts):
-    img = Image.new("RGB", (W, H), BG)
+    img = Image.new("RGB", (SW, SH), BG)
     d = ImageDraw.Draw(img)
-    d.rectangle([8, 8, W - 9, H - 9], outline=ACC, width=3)
-
     f_sym, f_big, f_mid, f_small = fonts
     c24 = (p.get("change") or {}).get("h24") or 0
     up = c24 >= 0
     col = GREEN if up else RED
 
-    d.text((60, 44), p.get("base_symbol", "?"), font=f_sym, fill=WHITE)
-    d.text((60, 128), fmt_pct(c24), font=f_big, fill=col)
-    meta = f'{p.get("name", "")} · {p.get("dex", "")} · Vol {fmt_usd(p.get("volume_h24"))} · Liq {fmt_usd(p.get("reserve_usd"))}'
-    d.text((60, 212), meta, font=f_small, fill=MUT)
+    dither_bg(d, 0, 0, SW, SH, PANEL, 4)                 # фон «в клетку»
+    d.rectangle([0, 0, SW - 1, SH - 1], outline=col)     # рамка цветом тренда
+    d.rectangle([2, 2, SW - 3, SH - 3], outline=PANEL)
+    d.rectangle([4, 4, 44, 6], fill=ACC)                 # «ушко» HUD, а не полоса во всю ширину
 
-    def pill(x, yy, label, color):
-        tw = d.textlength(label, font=f_small) + 24
-        d.rounded_rectangle([x, yy + 6, x + tw, yy + 36], radius=14, outline=color, width=1)
-        d.text((x + 12, yy + 12), label, font=f_small, fill=color)
-        return x + tw + 10
+    d.text((10, 12), str(p.get("base_symbol", "?")).upper()[:12], font=f_sym, fill=WHITE)
+    d.text((10, 28), fmt_pct(c24), font=f_big, fill=col)
+    d.text((10, 44), f'{p.get("dex", "")} · VOL {fmt_usd(p.get("volume_h24"))}'[:34],
+           font=f_small, fill=MUT)
+
+    # График: либо реальные столбики, либо честная заглушка. Дорисовывать
+    # линию по отсутствующим данным — значит выдавать выдумку за чарт.
+    closes = [c[4] for c in (p.get("ohlcv_h1") or [])]
+    closes.reverse()                                     # API отдаёт новые -> старые
+    chart_x0, chart_y0, chart_x1, chart_y1 = 10, 58, SW - 10, 88
+    if len(closes) >= 2:
+        pixel_bars(d, closes[-48:], chart_x0, chart_y0, chart_x1, chart_y1, col, up)
+    else:
+        dither_bg(d, chart_x0, chart_y0 + 10, chart_x1, chart_y0 + 12, MUT, 2)
+        d.text((chart_x0, chart_y0 + 14), "НЕТ ДАННЫХ ГРАФИКА", font=f_small, fill=MUT)
 
     text, flags = narrative(p)
-    lines = wrap(d, text, f_mid, W - 120)[:3]
-    y = 262
-    for ln in lines:
-        d.text((60, y), ln, font=f_mid, fill=WHITE)
-        y += 36
-    fx = 60
-    for fl in flags[:3]:
-        fx = pill(fx, y, fl, RED)
-    whales = (p.get("whales") or [])[:2]
-    if whales:
-        y += 40
-        fx = 60
-        for w in whales:
-            tag = "WHALE" if w.get("whale") else "BIG"
-            label = f"{tag} {('BUY' if w.get('kind') == 'buy' else 'SELL')} {fmt_usd(w.get('usd'))}"
-            fx = pill(fx, y, label, GREEN if w.get("kind") == "buy" else RED)
+    y = 94
+    for ln in wrap(d, text, f_mid, SW - 20)[:2]:
+        d.text((10, y), ln, font=f_mid, fill=WHITE)
+        y += 9
+    if flags:
+        label = flags[0][:26]
+        tw = int(d.textlength(label, font=f_small))
+        d.rectangle([10, 108, 10 + tw + 8, 118], outline=RED)
+        d.text((14, 109), label, font=f_small, fill=RED)
 
-    closes = [c[4] for c in (p.get("ohlcv_h1") or [])]
-    closes.reverse()  # API отдаёт новые -> старые
-    sparkline(d, closes, 60, 460, W - 60, 545, col)
-
-    d.text((60, H - 56), config.CARD_MARK, font=f_small, fill=ACC)
-    d.text((W - 60 - d.textlength(config.SITE_URL.split("//")[-1], font=f_small), H - 56),
-           config.SITE_URL.split("//")[-1], font=f_small, fill=MUT)
+    mark = str(config.CARD_MARK)[:44]
+    d.text((10, SH - 9), mark, font=f_small, fill=ACC)
+    host = config.SITE_URL.split("//")[-1][:24]
+    d.text((SW - 10 - int(d.textlength(host, font=f_small)), SH - 9), host,
+           font=f_small, fill=MUT)
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    img.save(out_path, "PNG", optimize=True)
+    pixelate(img, (W, H)).save(out_path, "PNG", optimize=True)
 
 
 def main():
@@ -121,11 +92,13 @@ def main():
         print("snapshot пуст", file=sys.stderr)
         sys.exit(1)
 
+    # Размеры — под низкое разрешение (SW × SH): после апскейла ×5 это
+    # 70 / 60 / 35 / 30 px на итоговой карточке.
     fonts = (
-        ImageFont.truetype(FONT_B, 68),
-        ImageFont.truetype(FONT_B, 62),
-        ImageFont.truetype(FONT, 27),
-        ImageFont.truetype(FONT, 24),
+        ImageFont.truetype(FONT_B, 14),
+        ImageFont.truetype(FONT_B, 12),
+        ImageFont.truetype(FONT, 7),
+        ImageFont.truetype(FONT, 6),
     )
 
     ranked = sorted(pools, key=lambda p: abs((p.get("change") or {}).get("h24") or 0), reverse=True)

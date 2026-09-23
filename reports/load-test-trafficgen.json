@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-09-23T18:16:47.868Z",
+  "target": "http://127.0.0.1:8000",
+  "params": {
+    "events": 400,
+    "concurrency": 8,
+    "rateLimitRps": null
+  },
+  "elapsedSeconds": 1.88,
+  "throughputRps": 212.71,
+  "requests": {
+    "total": 400,
+    "byStatus": {
+      "200": 85,
+      "429": 309,
+      "0": 6
+    },
+    "rateLimited": 309
+  },
+  "events": {
+    "accepted": 85,
+    "duplicates": 0,
+    "rejected": 0,
+    "paused": 0,
+    "blocked": 0,
+    "throttledByRateLimit": 309,
+    "networkErrors": 6,
+    "networkErrorSamples": [
+      "Remote end closed connection without response",
+      "Remote end closed connection without response",
+      "Remote end closed connection without response"
+    ],
+    "lost": 0
+  },
+  "latencyMs": {
+    "p50": 35.42,
+    "p95": 58.24,
+    "p99": 78.09,
+    "max": 98.66,
+    "avg": 37.19
+  },
+  "deadLetter": {
+    "before": 2,
+    "after": 2
+  },
+  "verdict": {
+    "noSilentLoss": true,
+    "throttled": true,
+    "note": "События помечены payload.synthetic=true и исключены из продуктовых агрегатов. 429 с Retry-After — штатный backpressure, а не потеря."
+  }
+}

@@ -35,6 +35,79 @@ const fmtUsd = (n) => {
 const fmtPct = (n) => (n > 0 ? "+" : "") + Number(n).toFixed(1) + "%";
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+
+/* ============================================================
+   ПИКСЕЛЬ-РЕНДЕР
+   ------------------------------------------------------------
+   Канвас рисуется в уменьшенном разрешении (PS пикселей на «жирную» точку)
+   и растягивается CSS'ом с image-rendering: pixelated. Отсюда правила:
+   - все координаты квантуются по сетке PS;
+   - сглаживание выключено, линии — целочисленные прямоугольники;
+   - цвета берутся из CSS-переменных темы, поэтому чарт перекрашивается
+     вместе со светлой/тёмной темой.
+   ============================================================ */
+const PIXEL_FONT = '"Press Start 2P", ui-monospace, "Courier New", monospace';
+const PS = 2;                       // «жирный» пиксель: 2 CSS-px
+
+function cssVar(name, fallback) {
+  try {
+    if (typeof getComputedStyle !== "function" || !document.documentElement) return fallback;
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name);
+    return (v && v.trim()) || fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function themeColors() {
+  return {
+    up: cssVar("--green", "#3ddc84"),
+    down: cssVar("--red", "#ff4d6a"),
+    acc: cssVar("--acc", "#7cf03d"),
+    acc2: cssVar("--acc2", "#ffd23f"),
+    grid: cssVar("--line", "#2b394d"),
+    mut: cssVar("--mut", "#8b98a5"),
+    tx: cssVar("--tx", "#e8edf2"),
+    bg: cssVar("--bg", "#0b0f18"),
+    panel: cssVar("--panel", "#131a26"),
+  };
+}
+
+/* Готовит канвас: backing store = CSS-размер / PS, система координат — CSS-px. */
+function pixelCanvas(cv, wCss, hCss, ps) {
+  const scale = ps || PS;
+  const w = Math.max(80, Math.round(wCss / scale));
+  const h = Math.max(60, Math.round(hCss / scale));
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+  const ctx = cv.getContext("2d");
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(1 / scale, 1 / scale);
+  ctx.imageSmoothingEnabled = false;
+  return { ctx: ctx, q: (v) => Math.round(v / scale) * scale, scale: scale };
+}
+
+/* Пунктир «в клетку»: ручная штриховка вместо setLineDash — так она остаётся
+   пиксельной и одинаковой при любом DPR. */
+function pixelDashedH(ctx, x0, x1, y, step, color, thickness) {
+  ctx.fillStyle = color;
+  const t = thickness || 2;
+  for (let x = x0; x < x1; x += step * 2) {
+    ctx.fillRect(Math.round(x), Math.round(y), Math.min(step, x1 - x), t);
+  }
+}
+
+/* Шахматный «полутон» — ретро-заливка без градиентов. */
+function ditherRect(ctx, x, y, w, h, color, cell) {
+  const c = cell || 4;
+  ctx.fillStyle = color;
+  for (let yy = Math.round(y); yy < y + h; yy += c) {
+    const shift = (Math.round((yy - y) / c) % 2) ? c : 0;
+    for (let xx = Math.round(x) + shift; xx < x + w; xx += c * 2) {
+      ctx.fillRect(xx, yy, Math.min(c, x + w - xx), Math.min(c, y + h - yy));
+    }
+  }
+}
+
 /* ---------- данные ---------- */
 async function fetchJson(url) {
   const r = await fetch(url, { headers: { Accept: "application/json" } });
@@ -191,6 +264,7 @@ function selectPool(addr) {
   if (!p || (state.selected && p.address === state.selected.address)) return;
   state.selected = p;
   state.switches++;
+  markNavStep("pool_selected");
   renderList();
   renderHeader();
   loadOhlcv(p);
@@ -229,60 +303,77 @@ function renderNarrative() {
 /* ---------- чарт (canvas, без библиотек) ---------- */
 function drawChart() {
   const cv = $("#chart");
-  const dpr = window.devicePixelRatio || 1;
+  if (!cv) return;
   const W = cv.clientWidth, H = cv.clientHeight;
-  cv.width = W * dpr; cv.height = H * dpr;
-  const ctx = cv.getContext("2d");
-  ctx.scale(dpr, dpr);
+  if (!W || !H) return;
+  const pc = pixelCanvas(cv, W, H, PS);
+  const ctx = pc.ctx, q = pc.q;
+  const C = themeColors();
   ctx.clearRect(0, 0, W, H);
   const data = state.ohlcv;
   if (!data || data.length < 2) return;
 
-  const pad = { t: 10, r: 60, b: 24, l: 8 };
+  const pad = { t: 12, r: 64, b: 28, l: 8 };
   const cw = W - pad.l - pad.r, chh = (H - pad.t - pad.b) * 0.74, vh = (H - pad.t - pad.b) * 0.2;
-  const hi = Math.max(...data.map((d) => d[2]));
-  const lo = Math.min(...data.map((d) => d[3]));
+  const hi = Math.max.apply(null, data.map((d) => d[2]));
+  const lo = Math.min.apply(null, data.map((d) => d[3]));
   const span = hi - lo || hi * 0.01 || 1;
-  const y = (price) => pad.t + chh - ((price - lo) / span) * chh;
+  const y = (price) => q(pad.t + chh - ((price - lo) / span) * chh);
   const bw = cw / data.length;
 
-  // сетка
-  ctx.strokeStyle = "rgba(255,255,255,0.06)";
-  ctx.fillStyle = "rgba(255,255,255,0.45)";
-  ctx.font = "10px monospace";
+  // сетка — пунктир из точек, а не линия
+  ctx.font = "9px " + PIXEL_FONT;
+  ctx.textBaseline = "middle";
   for (let i = 0; i <= 4; i++) {
     const price = lo + (span * i) / 4;
     const yy = y(price);
-    ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(pad.l + cw, yy); ctx.stroke();
-    ctx.fillText(fmtUsd(price), pad.l + cw + 6, yy + 3);
+    for (let x = pad.l; x < pad.l + cw; x += 8) {
+      ctx.fillStyle = C.grid;
+      ctx.fillRect(q(x), yy, 2, 2);
+    }
+    ctx.fillStyle = C.mut;
+    ctx.fillText(fmtUsd(price), pad.l + cw + 8, yy);
   }
 
-  // свечи
-  const maxV = Math.max(...data.map((d) => d[5])) || 1;
+  // свечи: тело целочисленной ширины, «чернильная» подложка под телом
+  const maxV = Math.max.apply(null, data.map((d) => d[5])) || 1;
+  const bodyW = Math.max(PS * 2, q(bw * 0.64));
   data.forEach((d, i) => {
-    const [, o, h, l, c, v] = d;
-    const x = pad.l + i * bw + bw / 2;
+    const o = d[1], h = d[2], l = d[3], c = d[4], v = d[5];
+    const x = q(pad.l + i * bw + bw / 2);
     const up = c >= o;
-    ctx.strokeStyle = ctx.fillStyle = up ? "#26d07c" : "#ff4d6a";
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(x, y(h)); ctx.lineTo(x, y(l)); ctx.stroke();
+    const col = up ? C.up : C.down;
+
+    ctx.fillStyle = col;                                  // фитиль
+    ctx.fillRect(x - PS, y(h), PS * 2, Math.max(PS, y(l) - y(h)));
     const top = y(Math.max(o, c)), bot = y(Math.min(o, c));
-    ctx.fillRect(x - bw * 0.32, top, bw * 0.64, Math.max(1, bot - top));
-    // объём
-    ctx.globalAlpha = 0.35;
-    const vhh = (v / maxV) * vh;
-    ctx.fillRect(x - bw * 0.32, pad.t + chh + 8 + (vh - vhh), bw * 0.64, vhh);
+    const bh = Math.max(PS * 2, bot - top);
+    ctx.fillRect(x - bodyW / 2, top, bodyW, bh);          // тело
+    ctx.fillStyle = C.tx;                                 // блик одной полосой
+    ctx.globalAlpha = 0.18;
+    ctx.fillRect(x - bodyW / 2, top, PS, bh);
     ctx.globalAlpha = 1;
+
+    const vhh = (v / maxV) * vh;                          // объём полутоном
+    ditherRect(ctx, x - bodyW / 2, pad.t + chh + 10 + (vh - vhh), bodyW, vhh, col, PS * 2);
   });
 
-  // линия последней цены
+  // линия последней цены + «табличка» с ценой
   const last = data[data.length - 1][4];
-  ctx.strokeStyle = "rgba(124,240,61,0.5)";
-  ctx.setLineDash([4, 4]);
-  ctx.beginPath(); ctx.moveTo(pad.l, y(last)); ctx.lineTo(pad.l + cw, y(last)); ctx.stroke();
-  ctx.setLineDash([]);
+  const ly = y(last);
+  pixelDashedH(ctx, pad.l, pad.l + cw, ly, PS * 3, C.acc, PS);
+  const label = fmtUsd(last);
+  const tw = ctx.measureText(label).width + 10;
+  ctx.fillStyle = C.acc;
+  ctx.fillRect(pad.l + cw + 4, ly - 8, tw, 16);
+  ctx.fillStyle = C.bg;
+  ctx.fillText(label, pad.l + cw + 9, ly);
+
+  // рамка кадра, как у игрового HUD
+  ctx.fillStyle = C.grid;
+  ctx.fillRect(pad.l, q(pad.t), cw, PS);
+  ctx.fillRect(pad.l, q(pad.t + chh), cw, PS);
 }
-window.addEventListener("resize", drawChart);
 
 /* ---------- алерты ---------- */
 function checkAlerts(p) {
@@ -320,45 +411,58 @@ function shareCard() {
   const cv = document.createElement("canvas");
   cv.width = W; cv.height = H;
   const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#0a0e14"; ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = "#7cf03d"; ctx.lineWidth = 3; ctx.strokeRect(8, 8, W - 16, H - 16);
+  ctx.imageSmoothingEnabled = false;
+  const C = themeColors();
+  const up = (p.change.h24 || 0) >= 0;
+  const col = up ? C.up : C.down;
+  const font = (size) => size + "px " + PIXEL_FONT;
 
-  ctx.fillStyle = "#fff"; ctx.font = "bold 72px sans-serif";
-  ctx.fillText(p.base_symbol, 60, 110);
-  ctx.fillStyle = p.change.h24 >= 0 ? "#26d07c" : "#ff4d6a";
-  ctx.font = "bold 64px sans-serif";
-  ctx.fillText(fmtPct(p.change.h24), 60, 190);
-  ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.font = "28px sans-serif";
-  ctx.fillText(`${p.name} · ${p.dex} · Vol ${fmtUsd(p.volume_h24)}`, 60, 240);
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  ditherRect(ctx, 0, 0, W, H, C.grid, 16);                 // фон «в клетку»
+  ctx.fillStyle = C.panel; ctx.fillRect(16, 16, W - 32, H - 32);
+  ctx.fillStyle = col;                                       // двойная рамка
+  ctx.fillRect(16, 16, W - 32, 8);
+  ctx.fillRect(16, H - 24, W - 32, 8);
+  ctx.fillRect(16, 16, 8, H - 32);
+  ctx.fillRect(W - 24, 16, 8, H - 32);
+  ctx.fillStyle = C.acc;
+  ctx.fillRect(32, 32, W - 64, 6);
 
-  // мини-график
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = C.tx; ctx.font = font(56);
+  ctx.fillText(String(p.base_symbol).toUpperCase(), 56, 140);
+  ctx.fillStyle = col; ctx.font = font(48);
+  ctx.fillText(fmtPct(p.change.h24), 56, 216);
+  ctx.fillStyle = C.mut; ctx.font = font(18);
+  ctx.fillText(`${p.name} · ${p.dex} · VOL ${fmtUsd(p.volume_h24)}`, 56, 262);
+
+  // блочный спарклайн: столбики, а не сглаженная линия
   const data = state.ohlcv.slice(-48);
   if (data.length > 1) {
     const closes = data.map((d) => d[4]);
-    const hi = Math.max(...closes), lo = Math.min(...closes), span = hi - lo || 1;
-    ctx.strokeStyle = closes[closes.length - 1] >= closes[0] ? "#26d07c" : "#ff4d6a";
-    ctx.lineWidth = 5; ctx.beginPath();
+    const hi = Math.max.apply(null, closes), lo = Math.min.apply(null, closes), span = hi - lo || 1;
+    const x0 = 56, y0 = 320, w = W - 112, h = 150;
+    const step = Math.max(4, Math.floor(w / closes.length));
     closes.forEach((c, i) => {
-      const x = 60 + (i / (closes.length - 1)) * (W - 120);
-      const y = 500 - ((c - lo) / span) * 190;
-      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      const bh = Math.max(4, Math.round(((c - lo) / span) * h));
+      ctx.fillStyle = closes[closes.length - 1] >= closes[0] ? C.up : C.down;
+      ctx.fillRect(x0 + i * step, y0 + (h - bh), step - 2, bh);
     });
-    ctx.stroke();
   }
 
   const { text } = narrative(p, state.lang);
-  ctx.fillStyle = "#fff"; ctx.font = "30px sans-serif";
-  wrapText(ctx, text.slice(0, 150), 60, 300, W - 120, 40);
+  ctx.fillStyle = C.tx; ctx.font = font(18);
+  wrapText(ctx, text.slice(0, 150), 56, 520, W - 112, 30);
 
-  // водяной знак
-  ctx.fillStyle = "#7cf03d"; ctx.font = "bold 30px sans-serif";
-  ctx.fillText("📈 talkchart — графики, которые разговаривают", 60, H - 40);
+  ctx.fillStyle = C.acc; ctx.font = font(20);
+  ctx.fillText("TALKCHART — ГРАФИКИ, КОТОРЫЕ РАЗГОВАРИВАЮТ", 56, H - 56);
 
   const a = document.createElement("a");
   a.download = `${p.base_symbol}-talkchart.png`;
   a.href = cv.toDataURL("image/png");
   a.click();
   track("share_card", p.address);
+  markNavStep("card_shared");
 }
 
 /* ---------- Solana-нативные интеграции: Jupiter Swap + Solana Blinks ---------- */
@@ -376,6 +480,7 @@ function openJupiterSwap() {
         },
       });
       track("open_jupiter_modal", p.address);
+      markNavStep("swap_opened");
       return;
     } catch (e) {
       console.warn("Jupiter Terminal init fallback:", e);
@@ -451,36 +556,77 @@ function showInterstitial() {
   $("#ist-cta").textContent = `${game.cta} в ${game.name} →`;
   $("#ist-cta").onclick = () => track("interstitial_cta", game.id);
   ov.classList.add("show");
+
   const cv = $("#ist-canvas");
-  cv.width = 320; cv.height = 240;
-  const ctx = cv.getContext("2d");
+  const GW = 320, GH = 240;
+  const pc = pixelCanvas(cv, GW, GH, 3);        // «жирный» пиксель ×3 — аркаднее
+  const ctx = pc.ctx, q = pc.q;
+  const C = themeColors();
   let score = 0, t0 = Date.now(), candles = [], done = false;
-  const spawn = () => candles.push({ x: 20 + Math.random() * 280, y: -20, v: 1.5 + Math.random() * 2.5, green: Math.random() < 0.4 });
+
+  const spawn = () => candles.push({
+    x: q(24 + Math.random() * (GW - 48)), y: -24,
+    v: 1.6 + Math.random() * 2.4, green: Math.random() < 0.4,
+  });
+
+  /* Свеча — спрайт 12×28 с обводкой: пиксели, а не «фигура из прямоугольников». */
+  function drawCandle(x, y, green) {
+    const w = 12, h = 28, body = 14;
+    const cx = q(x) - w / 2, cy = q(y) - h / 2;
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(cx - 3, cy - 6, w + 6, h + 12);            // «чернильная» подложка
+    ctx.fillStyle = green ? C.up : C.down;
+    ctx.fillRect(cx + 3, cy - 6, 6, 6);                      // верхний фитиль
+    ctx.fillRect(cx + 3, cy + h - 0, 6, 6);                  // нижний фитиль
+    ctx.fillRect(cx, cy, w, body);                           // тело
+    ctx.fillStyle = C.tx;                                    // блик
+    ctx.globalAlpha = 0.25;
+    ctx.fillRect(cx, cy, 3, body);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = C.bg;                                    // «глаза» — пиксель-душа
+    ctx.fillRect(cx + 3, cy + 4, 3, 3);
+    ctx.fillRect(cx + 6, cy + 4, 3, 3);
+  }
+
   cv.onclick = (e) => {
     const r = cv.getBoundingClientRect();
-    const mx = (e.clientX - r.left) * (cv.width / r.width), my = (e.clientY - r.top) * (cv.height / r.height);
+    const mx = (e.clientX - r.left) * (GW / r.width), my = (e.clientY - r.top) * (GH / r.height);
     candles.forEach((c, i) => {
-      if (Math.abs(c.x - mx) < 16 && Math.abs(c.y - my) < 24) {
-        if (c.green) { score += 10; candles.splice(i, 1); }
-        else { score = Math.max(0, score - 5); candles.splice(i, 1); }
+      if (Math.abs(c.x - mx) < 18 && Math.abs(c.y - my) < 26) {
+        score += c.green ? 10 : -5;
+        if (score < 0) score = 0;
+        candles.splice(i, 1);
       }
     });
   };
+
   const loop = () => {
     const el = (Date.now() - t0) / 1000;
-    if (el > 6 && !done) { done = true; $("#ist-score").textContent = `Счёт: ${score}. `; }
-    if (done) { ctx.clearRect(0, 0, 320, 240); return; }
+    if (el > 6 && !done) { done = true; $("#ist-score").textContent = `СЧЁТ: ${score}`; }
+    if (done) { ctx.clearRect(0, 0, GW, GH); return; }
     if (Math.random() < 0.08) spawn();
-    ctx.clearRect(0, 0, 320, 240);
+
+    ctx.clearRect(0, 0, GW, GH);
+    ditherRect(ctx, 0, 0, GW, GH, C.grid, 12);               // фон «в клетку»
     candles.forEach((c, i) => {
       c.y += c.v;
-      ctx.fillStyle = c.green ? "#26d07c" : "#ff4d6a";
-      ctx.fillRect(c.x - 4, c.y - 18, 8, 36);
-      ctx.fillRect(c.x - 9, c.y - 8, 18, 16);
-      if (c.y > 260) candles.splice(i, 1);
+      drawCandle(c.x, c.y, c.green);
+      if (c.y > GH + 30) candles.splice(i, 1);
     });
-    ctx.fillStyle = "#fff"; ctx.font = "bold 16px sans-serif";
-    ctx.fillText(`ЛОВИ ЗЕЛЁНЫЕ СВЕЧИ · ${Math.max(0, 6 - Math.floor(el))}с · счёт ${score}`, 14, 24);
+
+    // HUD: полоса времени + счёт пиксельным шрифтом
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0, 0, GW, 24);
+    ctx.fillStyle = C.grid;
+    ctx.fillRect(0, 22, GW, 2);
+    const left = Math.max(0, 6 - Math.floor(el));
+    const wpx = Math.round((Math.max(0, 6 - el) / 6) * (GW - 24));
+    ctx.fillStyle = left > 1 ? C.acc : C.down;
+    ctx.fillRect(12, 8, wpx, 8);
+    ctx.fillStyle = C.tx;
+    ctx.font = "8px " + PIXEL_FONT;
+    ctx.textBaseline = "middle";
+    ctx.fillText(`СЧЁТ ${score}  ${left}C`, 12, 40);
     requestAnimationFrame(loop);
   };
   loop();
@@ -602,6 +748,53 @@ window.addEventListener("pagehide", () => {
   } catch (e) {}
 });
 
+/* ---------- NavigationCompleted: однозначный маппинг навигации ----------
+   Шаги терминала фиксируются в sessionStorage; событие уходит один раз на путь,
+   когда все шаги пройдены в объявленном порядке. Никаких «похоже, дошёл»:
+   либо путь пройден целиком, либо события нет.                              */
+const NAV_PATHS = [
+  { id: "terminal_core", steps: ["pool_selected", "call_placed", "call_resolved"] },
+  { id: "share_flow", steps: ["pool_selected", "card_shared"] },
+  { id: "swap_flow", steps: ["pool_selected", "swap_opened"] },
+];
+
+function navSteps() {
+  try { return JSON.parse(sessionStorage.getItem("tc_nav_steps") || "[]"); } catch (e) { return []; }
+}
+
+function markNavStep(step) {
+  try {
+    if (trackingOptOut()) return;
+    const steps = navSteps();
+    if (steps.some((s) => s.step === step)) return; // шаг уже отмечен
+    steps.push({ step: step, ts: Date.now() });
+    sessionStorage.setItem("tc_nav_steps", JSON.stringify(steps));
+    checkNavPaths(steps);
+  } catch (e) {}
+}
+
+function checkNavPaths(steps) {
+  for (const path of NAV_PATHS) {
+    let done = false;
+    try { done = sessionStorage.getItem("tc_nav_done_" + path.id) === "1"; } catch (e) {}
+    if (done) continue;
+    let cursor = 0;
+    const passed = [];
+    for (const s of steps) {
+      const at = path.steps.indexOf(s.step, cursor);
+      if (at >= 0) { passed.push(s); cursor = at + 1; }
+    }
+    if (passed.length !== path.steps.length) continue;
+    try { sessionStorage.setItem("tc_nav_done_" + path.id, "1"); } catch (e) {}
+    sendWatchtowerEvent("NavigationCompleted", {
+      path: path.id,
+      steps: path.steps,
+      completedSteps: passed.length,
+      durationMs: passed[passed.length - 1].ts - passed[0].ts,
+    });
+  }
+}
+
 function track(evt, id) {
   const rec = { evt, id, ts: Date.now(), pool: state.selected?.address };
   window.__SLOT_CLICKS__.push(rec);
@@ -628,7 +821,10 @@ function track(evt, id) {
   } else if (evt === "page_view") {
     wtType = "PageView";
   } else if (evt === "call_resolved") {
-    wtType = "NavigationCompleted";
+    // Раньше это событие отправлялось как NavigationCompleted напрямую — это
+    // был не маппинг, а подмена: разрешение прогноза不等于 завершённой
+    // навигации. Теперь это шаг пути, а событие шлёт checkNavPaths().
+    markNavStep("call_resolved");
   }
   sendWatchtowerEvent(wtType, payload);
 }
@@ -704,6 +900,7 @@ function placeCall(dir) {
   c.pending.push({ addr: p.address, sym: p.base_symbol, dir, entry: p.price_usd, ts: Date.now() });
   saveCalls(c);
   track("call_placed", p.address + ":" + dir);
+  markNavStep("call_placed");
   banner(`Прогноз принят: ${p.base_symbol} ${dir === "up" ? "ВВЕРХ" : "ВНИЗ"} на час. Разрешится по живой цене, пока терминал открыт.`);
   renderCallUI();
 }
@@ -758,21 +955,41 @@ function shareCallCard() {
   const cv = document.createElement("canvas");
   cv.width = W; cv.height = H;
   const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#0a0e14"; ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = "#7cf03d"; ctx.lineWidth = 3; ctx.strokeRect(8, 8, W - 16, H - 16);
-  ctx.fillStyle = "#fff"; ctx.font = "bold 64px sans-serif";
-  ctx.fillText("Мои прогнозы на TalkChart", 60, 130);
-  ctx.fillStyle = "#7cf03d"; ctx.font = "bold 120px sans-serif";
-  ctx.fillText(`${Math.round((st.wins / st.n) * 100)}%`, 60, 300);
-  ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.font = "34px sans-serif";
-  ctx.fillText(`угаданных свечей: ${st.wins} из ${st.n} · лучшая серия: ${st.best}`, 60, 370);
-  ctx.fillText("бумажные прогнозы, часовой таймфрейм, без денег — только скилл", 60, 420);
+  ctx.imageSmoothingEnabled = false;
+  const C = themeColors();
+  const font = (size) => size + "px " + PIXEL_FONT;
+
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  ditherRect(ctx, 0, 0, W, H, C.grid, 16);
+  ctx.fillStyle = C.panel; ctx.fillRect(16, 16, W - 32, H - 32);
+  ctx.fillStyle = C.acc;
+  ctx.fillRect(16, 16, W - 32, 8); ctx.fillRect(16, H - 24, W - 32, 8);
+  ctx.fillRect(16, 16, 8, H - 32); ctx.fillRect(W - 24, 16, 8, H - 32);
+
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = C.tx; ctx.font = font(40);
+  ctx.fillText("МОИ ПРОГНОЗЫ", 56, 140);
+  ctx.fillStyle = C.acc2; ctx.font = font(96);
+  ctx.fillText(`${Math.round((st.wins / st.n) * 100)}%`, 56, 280);
+  ctx.fillStyle = C.mut; ctx.font = font(18);
+  ctx.fillText(`УГАДАНО ${st.wins} ИЗ ${st.n} · СЕРИЯ ${st.best}`, 56, 330);
+  ctx.fillText("БУМАЖНЫЕ ПРОГНОЗЫ · ЧАСОВОЙ ТАЙМФРЕЙМ", 56, 370);
   if (st.best >= 3) {
-    ctx.fillStyle = "#fba43a"; ctx.font = "bold 30px sans-serif";
-    ctx.fillText("🎁 Разблокирован TipLink-бонус к играм студии", 60, 480);
+    ctx.fillStyle = C.acc2; ctx.font = font(20);
+    ctx.fillText("* РАЗБЛОКИРОВАН БОНУС К ИГРАМ СТУДИИ", 56, 430);
   }
-  ctx.fillStyle = "#7cf03d"; ctx.font = "bold 30px sans-serif";
-  ctx.fillText("📈 talkchart — графики, которые разговаривают", 60, H - 40);
+  // «пиксельные сердечки» — прогресс вместо текста
+  const hearts = Math.min(5, Math.max(1, Math.round((st.wins / st.n) * 5)));
+  for (let i = 0; i < 5; i++) {
+    ctx.fillStyle = i < hearts ? C.acc : C.grid;
+    const hx = 56 + i * 56;
+    ctx.fillRect(hx, 480, 12, 12); ctx.fillRect(hx + 24, 480, 12, 12);
+    ctx.fillRect(hx + 12, 492, 12, 12); ctx.fillRect(hx + 6, 504, 24, 12);
+    ctx.fillRect(hx + 12, 516, 12, 12);
+  }
+  ctx.fillStyle = C.acc; ctx.font = font(20);
+  ctx.fillText("TALKCHART — ГРАФИКИ, КОТОРЫЕ РАЗГОВАРИВАЮТ", 56, H - 56);
+
   const a = document.createElement("a");
   a.download = "talkchart-my-calls.png";
   a.href = cv.toDataURL("image/png");
@@ -870,6 +1087,15 @@ async function init() {
   $("#alert-btn").addEventListener("click", addAlert);
   $("#ist-close").addEventListener("click", hideInterstitial);
   $("#ist-skip").addEventListener("click", hideInterstitial);
+  // Переключение темы перекрашивает чарт: цвета он берёт из CSS-переменных,
+  // поэтому достаточно перерисовать после смены атрибута data-theme.
+  try {
+    const themeBtn = document.getElementById("theme-btn");
+    if (themeBtn && themeBtn.addEventListener) {
+      themeBtn.addEventListener("click", () => setTimeout(drawChart, 0));
+    }
+  } catch (e) {}
+
   try {
     if (!sessionStorage.getItem("tc_session_started")) {
       sessionStorage.setItem("tc_session_started", "1");

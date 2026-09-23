@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-09-23T18:22:23.040Z",
+  "db": "/home/user/talkchart-traffic-generator/site/data/watchtower.db",
+  "backupDir": "/home/user/talkchart-traffic-generator/site/data/backups",
+  "backup": {
+    "ok": true,
+    "file": "/home/user/talkchart-traffic-generator/site/data/backups/watchtower-20260923T182223Z.db",
+    "bytes": 905216,
+    "seconds": 0.006,
+    "createdAt": "2026-09-23T18:22:23.047Z",
+    "sourceBytes": 905216
+  },
+  "verify": {
+    "ok": true,
+    "backup": "/home/user/talkchart-traffic-generator/site/data/backups/watchtower-20260923T182223Z.db",
+    "restoreSeconds": 0.045,
+    "integrityCheck": "ok",
+    "restoredEvents": 920,
+    "tablesCompared": 23,
+    "mismatches": [],
+    "rpoSeconds": 0.0,
+    "verifiedAt": "2026-09-23T18:22:23.097Z"
+  },
+  "ok": true
+}

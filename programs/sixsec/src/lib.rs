@@ -537,10 +537,22 @@ pub mod sixsec {
             ctx.accounts.reward_mint.decimals,
         )?;
 
-        pool_state.withdrawn_this_epoch = pool_state
+        let after = pool_state
             .withdrawn_this_epoch
             .checked_add(amount)
             .ok_or(SixsecError::ReserveOverflow)?;
+        pool_state.withdrawn_this_epoch = after;
+
+        // Хаб видит движение казначейства только через события: без emit!
+        // вывод из пула был бы виден лишь как изменение баланса токен-аккаунта,
+        // без привязки к эпохе и лимиту.
+        emit!(PoolWithdrawal {
+            mint: mint_key,
+            destination: ctx.accounts.destination.key(),
+            amount,
+            epoch,
+            withdrawn_this_epoch: after,
+        });
         Ok(())
     }
 }
@@ -688,6 +700,11 @@ pub struct Payout<'info> {
         constraint = submission.moderation_status == ModStatus::Approved
     )]
     pub submission: Account<'info, SubmissionAccount>,
+    /// SW010: канонический `token::authority` требует целью аккаунт, а не
+    /// Pubkey-поле, поэтому воркер передан отдельным аккаунтом и пришпилен
+    /// к `submission.worker` — иначе подстановка чужого ATA уводила бы выплату.
+    #[account(constraint = worker.key() == submission.worker @ SixsecError::ProfileWorkerMismatch)]
+    pub worker: SystemAccount<'info>,
     #[account(mut, seeds = [RESERVE_SEED, reward_mint.key().as_ref()], bump)]
     pub mint_reserve: Account<'info, MintReserve>,
     pub reward_mint: InterfaceAccount<'info, Mint>,
@@ -703,8 +720,8 @@ pub struct Payout<'info> {
     pub prize_pool: InterfaceAccount<'info, TokenAccount>,
     #[account(
         mut,
-        constraint = worker_ata.owner == submission.worker,
-        token::mint = reward_mint
+        token::mint = reward_mint,
+        token::authority = worker
     )]
     pub worker_ata: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Interface<'info, TokenInterface>,
@@ -720,6 +737,10 @@ pub struct PayoutRankBonus<'info> {
     pub submission: Account<'info, SubmissionAccount>,
     #[account(seeds = [PROFILE_SEED, submission.worker.as_ref()], bump)]
     pub worker_profile: Account<'info, WorkerProfile>,
+    /// SW010: тот же принцип, что и в `Payout` — воркер как аккаунт, чтобы
+    /// authority SKR-выплаты проверялся констрейнтом, а не сравнением в теле.
+    #[account(constraint = worker.key() == submission.worker @ SixsecError::ProfileWorkerMismatch)]
+    pub worker: SystemAccount<'info>,
     pub skr_mint: InterfaceAccount<'info, Mint>,
     /// SW009/SW010: SKR-пул пришпилен к своему mint и self-authority PDA.
     #[account(
@@ -732,8 +753,8 @@ pub struct PayoutRankBonus<'info> {
     pub skr_pool: InterfaceAccount<'info, TokenAccount>,
     #[account(
         mut,
-        constraint = worker_skr_ata.owner == submission.worker,
-        token::mint = skr_mint
+        token::mint = skr_mint,
+        token::authority = worker
     )]
     pub worker_skr_ata: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Interface<'info, TokenInterface>,
@@ -768,10 +789,12 @@ pub struct WithdrawFromPool<'info> {
         token::authority = prize_pool
     )]
     pub prize_pool: InterfaceAccount<'info, TokenAccount>,
+    /// SW010: получатель вывода — токен-аккаунт самого админа, а не произвольный;
+    /// канонический констрейнт вместо сравнения `destination.owner` в теле.
     #[account(
         mut,
-        constraint = destination.owner == admin.key(),
-        token::mint = reward_mint
+        token::mint = reward_mint,
+        token::authority = admin
     )]
     pub destination: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Interface<'info, TokenInterface>,
@@ -837,4 +860,17 @@ pub struct RankBonusPaid {
 pub struct ReserveReleased {
     pub task: Pubkey,
     pub released: u64,
+}
+
+/// Вывод из пула призов админом (ADR-0009/ADR-0016).
+///
+/// `epoch` и `withdrawn_this_epoch` обязательны: без них наблюдатель не
+/// отличит вывод в пределах лимита от вывода, который лимит уже нарушил.
+#[event]
+pub struct PoolWithdrawal {
+    pub mint: Pubkey,
+    pub destination: Pubkey,
+    pub amount: u64,
+    pub epoch: u64,
+    pub withdrawn_this_epoch: u64,
 }

@@ -38,6 +38,11 @@ from urllib.parse import parse_qs, urlparse
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import config
+from watchtower_control import (  # контроль-плейн: proposal → 2 подтверждения → apply
+    CONTROL, SEVERITY_DICTIONARY, EVENT_SEVERITY, authenticate, control_enabled,
+    totp_code, PROPOSAL_TTL_SECONDS,
+)
+import watchtower_detectors as detectors
 
 DB_PATH = os.path.join(config.DATA_DIR, "watchtower.db")
 PARSER_VERSION = "trafficgen-v1"
@@ -59,46 +64,41 @@ READ_METHODS = "GET, OPTIONS"
 EVENTS_CATALOG = [
     # (eventType, implemented, reason_if_unavailable)
     ("CampaignCreated", True, None),        # реконсилёрует config store при старте
-    ("CampaignStarted", True, None),        # реконсилёрует (status=active)
-    ("CampaignStopped", True, None),        # реконсилёрует (смена статуса / удаление из конфига)
-    ("CampaignUpdated", True, None),        # реконсилёрует (изменение определения кампании)
-    ("SourceConnected", True, None),        # реконсилёрует источники
-    ("SourceDisconnected", True, None),     # реконсилёрует источники
-    ("SourceHealthChanged", True, None),    # реконсилёрует (смена status)
-    ("PageAssigned", True, None),           # реконсилёрует страницы (включая games.js)
-    ("PageRemoved", True, None),            # реконсилёрует страницы
+    ("CampaignStarted", True, None),        # реконсилёр (status=active) + resume после паузы
+    ("CampaignStopped", True, None),        # реконсилёр (смена статуса / удаление из конфига)
+    ("CampaignUpdated", True, None),        # реконсилёр, proposal campaign_upsert, rollback паузы
+    ("SourceConnected", True, None),        # реконсилёр источников
+    ("SourceDisconnected", True, None),     # реконсилёр источников
+    ("SourceHealthChanged", True, None),    # реконсилёр (смена status)
+    ("PageAssigned", True, None),           # реконсилёр страниц (включая games.js)
+    ("PageRemoved", True, None),            # реконсилёр страниц
     ("SessionStarted", True, None),         # site/app.js при старте сессии
     ("PageView", True, None),               # site/app.js
     ("Click", True, None),                  # site/app.js (общие клики)
     ("CTAClicked", True, None),             # site/app.js (click_slot, promo)
     ("LandingReached", False,
-     "Нет подтверждения перехода: нужен redirect-proxy/beacon со стороны игры. Не выдумываем."),
+     "Нет подтверждённого перехода: нужен redirect-proxy/beacon со стороны игры. "
+     "Воронку не дорисовываем — нулевые знаменатели остаются null."),
     ("SessionEnded", True, None),           # site/app.js pagehide + sendBeacon
-    ("Abandoned", False,
-     "Нет фонового планировщика таймаутов в рантайме экспортёра."),
-    ("NavigationCompleted", False,
-     "Навигация терминала не мапируется однозначно на UI-события текущей версии."),
+    ("SessionAbandoned", True, None),       # планировщик таймаутов (watchtower_detectors.SessionSweeper)
+    ("NavigationCompleted", True, None),    # site/app.js: явный маппинг внутренней навигации терминала
     ("DeliveryFailed", False,
      "Приём синхронный (POST /api/track), очереди доставки нет — событие нечем эмитить."),
     ("RetryScheduled", False,
-     "Ретраев нет (синхронный приём)."),
+     "Ретраев нет (синхронный приём); ретраи появятся только вместе с очередью доставки."),
     ("RateLimited", True, None),            # экспортёр при 429 на /api/track
-    ("TrafficError", False,
-     "Конвейер фабрики (fetch_data.py и др.) не инструментирован эмиссией ошибок."),
-    ("ExporterHealth", False,
-     "Нет периодического self-check-планировщика; роль выполняют /watchtower/health|readyz."),
+    ("TrafficError", True, None),           # инструментированный конвейер фабрики (emit_traffic_error)
+    ("ExporterHealth", True, None),         # периодический self-check (HealthProbe), отдельно от health/readyz
     ("DataGapDetected", True, None),        # gap detector экспортёра
     ("DataGapHealed", True, None),          # закрытие разрыва реальным backfill'ом
-    ("BotFlagged", False,
-     "Нет классификатора ботов; маркировка статическая (factory_pipeline=bot)."),
-    ("AnomalyDetected", False,
-     "Нет статистического детектора аномалий."),
-    ("AbuseBlocked", False,
-     "Нет blocking-слоя модерации трафика."),
+    ("BotFlagged", True, None),             # классификатор BotClassifier (правила + порог + журнал решений)
+    ("AnomalyDetected", True, None),        # робастный z-score по часовым корзинам (AnomalyDetector)
+    ("AbuseBlocked", True, None),           # blocking-слой, включается ТОЛЬКО proposal с двумя подтверждениями
     ("ConfigUpdated", False,
-     "Покрывается гранулярными событиями реконсилёра; отдельного эмиттера нет."),
-    ("EmergencyPause", False,
-     "Механизма аварийной паузы генерации не существует."),
+     "Решение зафиксировано явно: изменения конфигурации покрываются гранулярными "
+     "событиями реконсилёра (Campaign*/Source*/Page*) и proposal-журналом, отдельного "
+     "эмиттера нет и не планируется."),
+    ("EmergencyPause", True, None),         # proposal emergency_pause (2 подтверждения + 2FA), не автоматика
 ]
 IMPLEMENTED_EVENTS = [e for e, impl, _ in EVENTS_CATALOG if impl]
 UNAVAILABLE_EVENTS = [{"eventType": e, "reason": r} for e, impl, r in EVENTS_CATALOG if not impl]
@@ -116,7 +116,15 @@ TARGET_PAGE_IDS = [
 ]
 # Легаси-алиасы pageId -> канонический pageId (нормализация новых событий, не перезапись истории)
 PAGE_ID_ALIASES = {"terminal": "target_terminal"}
+# Легаси-алиасы eventType: старые записи в БД и старые клиенты не переименовываются,
+# но в каталоге и в аналитике тип один — канонический.
+EVENT_TYPE_ALIASES = {"Abandoned": "SessionAbandoned"}
 VALID_SOURCE_TYPES = {"real", "bot", "hybrid"}
+REJECTED_REASON_KEYS = ("schema", "pii", "invalid_timestamp", "non_utc_timestamp",
+                        "unknown_type", "paused", "blocked")
+# Минимальный объём явных завершений сессий, при котором длительность перестаёт
+# быть оценкой (W2: убрать estimate:true, но только по факту, а не по желанию).
+MIN_SESSIONS_FOR_DURATION = int(os.environ.get("TRAFFICGEN_MIN_SESSIONS_FOR_DURATION", "30"))
 
 # ---------------------------------------------------------------------------
 # PII SCRUBBING
@@ -309,6 +317,7 @@ def canonicalize_event(raw):
         sid, sid_sanitized = f"sess_{uuid.uuid4().hex[:10]}", False
     seq = int(cleaned.get("seq") or 1)
     et = cleaned.get("eventType") or "PageView"
+    et = EVENT_TYPE_ALIASES.get(et, et)
     eid = cleaned.get("eventId") or f"ev_{uuid.uuid4().hex[:12]}"
     identity_raw = cleaned.get("identity")
     if identity_raw and not sid_sanitized:
@@ -577,6 +586,31 @@ class EventStore:
             conn.execute("CREATE TABLE IF NOT EXISTS aggregates_daily (date TEXT PRIMARY KEY, metrics TEXT, generated_at TEXT);")
             conn.execute("CREATE TABLE IF NOT EXISTS alerts (id TEXT PRIMARY KEY, alert_type TEXT, severity TEXT, status TEXT, data TEXT, created_at TEXT, resolved_at TEXT);")
             conn.execute("CREATE TABLE IF NOT EXISTS sync_cursors (source TEXT PRIMARY KEY, cursor TEXT, updated_at TEXT);")
+            # Счётчики по дням: заменяют процесс-глобальные (см. unavailableMetrics раньше).
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS counters_daily (
+                    date TEXT NOT NULL, key TEXT NOT NULL, value INTEGER NOT NULL DEFAULT 0,
+                    PRIMARY KEY (date, key)
+                );
+            """)
+            # DLQ: отклонённые события с причиной — их можно разобрать и, если причина
+            # устранена, переобработать. Хранится только PII-безопасный образец.
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS rejected_events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id TEXT, event_type TEXT, reason TEXT, message TEXT,
+                    campaign_id TEXT, session_id TEXT, source_id TEXT,
+                    sample TEXT, created_at TEXT, reprocessed INTEGER DEFAULT 0
+                );
+            """)
+            # Выборка задержек ответа для SLO (p95/p99 считаются по факту, а не «на глаз»).
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS latency_samples (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    route TEXT NOT NULL, ms REAL NOT NULL, status INTEGER, ts TEXT NOT NULL
+                );
+            """)
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_latency_route ON latency_samples(route, ts);")
 
     # --- метрики: производные из events + персистентные счётчики -------------
     def load_initial_metrics(self):
@@ -647,7 +681,10 @@ class EventStore:
             validate_raw_event(raw_pii)
         except EventRejected as e:
             reason = e.reason if e.reason in ("schema", "pii") else "schema"
-            self.bump_metric("events_rejected_total", reason)
+            key = e.reason if e.reason in REJECTED_REASON_KEYS else "schema"
+            self.bump_metric("events_rejected_total", key)
+            self.bump_daily_counter(f"rejected.{key}")
+            self.record_rejected(raw, key, str(e))
             return {"status": "rejected", "reason": e.reason, "message": str(e),
                     "eventId": raw.get("eventId") if isinstance(raw, dict) else None,
                     "identity": None, "id": None}
@@ -657,6 +694,7 @@ class EventStore:
         if unknown_type:
             self.bump_metric("events_rejected_total", "unknown_type")
             self.bump_unknown_type(ev["eventType"])
+            self.bump_daily_counter("rejected.unknown_type")
 
         is_synth = 1 if ev["payload"].get("synthetic") is True else 0
         payload_str = json.dumps(ev["payload"], ensure_ascii=False)
@@ -716,15 +754,21 @@ class EventStore:
         # --- транзакция закрыта; метрики обновляем только здесь ----------------
         if dup_row_id is not None:
             self.bump_metric("events_duplicate_total")
+            self.bump_daily_counter("duplicate")
             return {"status": "duplicate", "eventId": ev["eventId"],
                     "identity": ev["identity"], "id": dup_row_id}
 
         st = ev["sourceType"] if ev["sourceType"] in ("real", "bot", "hybrid") else "real"
         self.bump_metric("events_total", st)
+        self.bump_daily_counter(f"accepted.{st}")
         if gap_opened:
             self.bump_metric("data_gaps_total")
+            self.bump_daily_counter("gap.detected")
         if healed:
             self.bump_metric("data_gaps_healed_total", amount=healed)
+            self.bump_daily_counter("gap.healed", amount=healed)
+        # Позднее связывание идентичности (d-06): session → externalId/playerKey.
+        self.bind_from_event(ev)
 
         return {"status": "accepted", "eventId": ev["eventId"],
                 "identity": ev["identity"], "id": row_id}
@@ -789,6 +833,129 @@ class EventStore:
                          (now_utc_iso(), gap["id"]))
             healed += 1
         return healed
+
+    # --- счётчики по дням (per-day, а не процесс-глобальные) -------------------
+    def bump_daily_counter(self, key, amount=1, date=None):
+        """Инкремент суточного счётчика. Вызывать вне write-транзакций."""
+        day = date or now_utc_iso()[:10]
+        try:
+            with self.get_conn() as conn:
+                conn.execute("""
+                    INSERT INTO counters_daily (date, key, value) VALUES (?, ?, ?)
+                    ON CONFLICT(date, key) DO UPDATE SET value = value + excluded.value
+                """, (day, key, int(amount)))
+                conn.commit()
+        except Exception:
+            pass
+
+    def counters_for_day(self, day):
+        with self.get_conn() as conn:
+            rows = conn.execute(
+                "SELECT key, value FROM counters_daily WHERE date = ?", (day,)).fetchall()
+        return {r["key"]: r["value"] for r in rows}
+
+    def counters_range(self, days):
+        out = {}
+        for i in range(days):
+            d = (datetime.now(timezone.utc).date() - timedelta(days=i)).isoformat()
+            out[d] = self.counters_for_day(d)
+        return out
+
+    # --- DLQ: отклонённые события ----------------------------------------------
+    def record_rejected(self, raw, reason, message):
+        """Пишет отклонённое событие в dead-letter с PII-безопасным образцом."""
+        try:
+            raw = raw if isinstance(raw, dict) else {}
+            payload = raw.get("payload") if isinstance(raw.get("payload"), dict) else {}
+            sample = json.dumps(
+                {k: payload[k] for k in list(payload)[:5]}, ensure_ascii=False)[:500]
+            with self.get_conn() as conn:
+                conn.execute("""
+                    INSERT INTO rejected_events
+                    (event_id, event_type, reason, message, campaign_id, session_id,
+                     source_id, sample, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (raw.get("eventId"), raw.get("eventType"), reason, str(message)[:300],
+                      raw.get("campaignId"), raw.get("sessionId"), raw.get("sourceId"),
+                      sample, now_utc_iso()))
+                conn.commit()
+        except Exception:
+            pass
+
+    def rejected_stats(self, limit=50):
+        with self.get_conn() as conn:
+            by_reason = {r["reason"]: r["c"] for r in conn.execute(
+                "SELECT reason, COUNT(*) AS c FROM rejected_events GROUP BY reason").fetchall()}
+            total = conn.execute("SELECT COUNT(*) AS c FROM rejected_events").fetchone()["c"]
+            recent = [dict(r) for r in conn.execute(
+                "SELECT id, event_id, event_type, reason, message, created_at "
+                "FROM rejected_events ORDER BY id DESC LIMIT ?", (limit,)).fetchall()]
+        return {"total": total, "byReason": by_reason, "recent": recent}
+
+    # --- задержки ответа (SLO) --------------------------------------------------
+    def record_latency(self, route, ms, status=200, cap=5000):
+        try:
+            with self.get_conn() as conn:
+                conn.execute(
+                    "INSERT INTO latency_samples (route, ms, status, ts) VALUES (?, ?, ?, ?)",
+                    (route, round(float(ms), 2), int(status), now_utc_iso()))
+                conn.execute("""
+                    DELETE FROM latency_samples WHERE id NOT IN (
+                        SELECT id FROM latency_samples ORDER BY id DESC LIMIT ?
+                    )
+                """, (cap,))
+                conn.commit()
+        except Exception:
+            pass
+
+    def latency_percentiles(self, route=None, since=None):
+        query = ["SELECT route, ms FROM latency_samples WHERE 1 = 1"]
+        params = []
+        if route:
+            query.append("AND route = ?")
+            params.append(route)
+        if since:
+            query.append("AND ts >= ?")
+            params.append(since)
+        with self.get_conn() as conn:
+            rows = conn.execute(" ".join(query), params).fetchall()
+        values = sorted(r["ms"] for r in rows)
+        if not values:
+            return {"samples": 0, "p50": None, "p95": None, "p99": None, "max": None}
+        return {
+            "samples": len(values),
+            "p50": round(values[int(0.50 * (len(values) - 1))], 1),
+            "p95": round(values[int(0.95 * (len(values) - 1))], 1),
+            "p99": round(values[int(0.99 * (len(values) - 1))], 1),
+            "max": round(values[-1], 1),
+        }
+
+    # --- позднее связывание идентичности (d-06) ---------------------------------
+    def bind_from_event(self, ev):
+        """session → externalId/playerKey (хеш) → first_action.
+
+        Сырые значения не сохраняются: только sha256 с солью из ENV.
+        """
+        payload = ev.get("payload") or {}
+        ext = payload.get("externalId")
+        player = payload.get("playerKey")
+        if not ext and not player:
+            return None
+        salt = os.environ.get("TRAFFICGEN_IDENTITY_SALT", "trafficgen-default-salt")
+        def h(v):
+            return hashlib.sha256((salt + str(v)).encode("utf-8")).hexdigest()
+        try:
+            CONTROL.bind_identity(
+                ev.get("sessionId"),
+                external_id_hash=h(ext or player),
+                first_action_at=(ev.get("observedAt") if ev.get("eventType")
+                                 in ("Click", "CTAClicked", "PageView") else None),
+                campaign_id=ev.get("campaignId"),
+                page_id=ev.get("pageId"),
+            )
+            return True
+        except Exception:
+            return None
 
     # --- чтение ----------------------------------------------------------------
     def get_events(self, cursor=None, limit=50, filters=None):
@@ -1112,14 +1279,26 @@ def _percentile(sorted_vals, q):
     return round(sorted_vals[idx], 1)
 
 
+TERMINAL_EVENT_TYPES = ("SessionEnded", "SessionAbandoned")
+
+
 def _session_stats(rows):
-    """Статистика по выборке событий. Возвращает (stats, by_campaign, by_source, by_page)."""
+    """Статистика по выборке событий. Возвращает (stats, by_campaign, by_source, by_page).
+
+    Длительность сессии считается ТОЧНО только по явному завершению
+    (`SessionEnded`/`SessionAbandoned`, при наличии — по `payload.durationSeconds`).
+    Пока явных завершений меньше `MIN_SESSIONS_FOR_DURATION`, длительность
+    остаётся оценкой по первому и последнему событию и помечена `estimate: true`.
+    Сессии экспортёра/детекторов (`sess_system*`) в пользовательскую статистику
+    не входят — иначе «бот-трафик» и bounce-rate раздуваются системными событиями.
+    """
     sessions = {}
     campaigns = {}
     sources = {}
     pages = {}
     types = {"real": 0, "bot": 0, "hybrid": 0}
     page_views = cta_clicks = landing_reached = 0
+    system_events = 0
 
     for r in rows:
         sid = r["session_id"]
@@ -1128,6 +1307,10 @@ def _session_stats(rows):
         cid = r["campaign_id"] or "-"
         src = r["source_id"] or "-"
         pid = r["page_id"] or "-"
+
+        if isinstance(sid, str) and sid.startswith("sess_system"):
+            system_events += 1
+            continue
 
         types[st] += 1
         if et == "PageView":
@@ -1143,7 +1326,8 @@ def _session_stats(rows):
             landing_reached += 1
             campaigns.setdefault(cid, {"pageViews": 0, "sessions": set(), "ctaClicks": 0, "landingReached": 0})["landingReached"] += 1
 
-        sessions.setdefault(sid, {"count": 0, "start": r["timestamp"], "end": r["timestamp"], "types": set()})
+        sessions.setdefault(sid, {"count": 0, "start": r["timestamp"], "end": r["timestamp"],
+                                  "types": set(), "terminalAt": None, "reportedDuration": None})
         s = sessions[sid]
         s["count"] += 1
         s["types"].add(st)
@@ -1151,21 +1335,41 @@ def _session_stats(rows):
             s["start"] = r["timestamp"]
         if r["timestamp"] > s["end"]:
             s["end"] = r["timestamp"]
+        if et in TERMINAL_EVENT_TYPES:
+            s["terminalAt"] = r["timestamp"]
+            try:
+                payload = json.loads(r["payload"] or "{}")
+            except Exception:
+                payload = {}
+            if isinstance(payload.get("durationSeconds"), (int, float)):
+                s["reportedDuration"] = float(payload["durationSeconds"])
         campaigns.setdefault(cid, {"pageViews": 0, "sessions": set(), "ctaClicks": 0, "landingReached": 0})["sessions"].add(sid)
         sources.setdefault(src, {"pageViews": 0, "sessions": set(), "sourceType": st})["sessions"].add(sid)
 
-    durations, bounces = [], 0
+    exact_durations, span_durations, bounces = [], [], 0
     visitors_by_type = {"real": 0, "bot": 0, "hybrid": 0}
     for s in sessions.values():
         if s["count"] == 1:
             bounces += 1
         st = "bot" if "bot" in s["types"] else ("hybrid" if "hybrid" in s["types"] else "real")
         visitors_by_type[st] += 1
-        t0, t1 = _lenient_ts(s["start"]), _lenient_ts(s["end"])
+        if s["reportedDuration"] is not None:
+            exact_durations.append(max(0.0, s["reportedDuration"]))
+            continue
+        t0 = _lenient_ts(s["start"])
+        if s["terminalAt"]:
+            t1 = _lenient_ts(s["terminalAt"])
+            if t0 and t1:
+                exact_durations.append(max(0.0, (t1 - t0).total_seconds()))
+                continue
+        t1 = _lenient_ts(s["end"])
         if t0 and t1:
-            durations.append(max(0.0, (t1 - t0).total_seconds()))
-    durations.sort()
+            span_durations.append(max(0.0, (t1 - t0).total_seconds()))
+    exact_durations.sort()
+    span_durations.sort()
 
+    enough_exact = len(exact_durations) >= MIN_SESSIONS_FOR_DURATION
+    durations = exact_durations if enough_exact else (exact_durations + span_durations)
     n_sessions = len(sessions)
     stats = {
         "pageViews": page_views,
@@ -1176,12 +1380,16 @@ def _session_stats(rows):
             "avg": round(sum(durations) / len(durations), 1) if durations else 0.0,
             "p50": _percentile(durations, 50),
             "p95": _percentile(durations, 95),
-            "estimate": True,
+            "estimate": not enough_exact,
+            "sampleSize": len(durations),
+            "explicitCompletions": len(exact_durations),
+            "minSessionsForExact": MIN_SESSIONS_FOR_DURATION,
         },
         "bounceRate": round(bounces / n_sessions, 3) if n_sessions else 0.0,
         "ctaClickRate": round(cta_clicks / page_views, 3) if page_views else 0.0,
         "landingReachedRate": round(landing_reached / cta_clicks, 3) if cta_clicks else 0.0,
         "trafficType": types,
+        "systemEventsExcluded": system_events,
     }
     by_campaign = {k: {"pageViews": v["pageViews"], "sessions": len(v["sessions"]),
                        "ctaClicks": v["ctaClicks"], "landingReached": v["landingReached"]}
@@ -1212,10 +1420,13 @@ def compute_metrics(period_days=7, store=None):
     for r in rows:
         by_day.setdefault((r["timestamp"] or "")[:10], []).append(r)
 
+    counters = s.counters_range(period_days)
+
     days = []
     for i in range(period_days):
         d_iso = (day_from + timedelta(days=i)).isoformat()
         d_rows = by_day.get(d_iso, [])
+        day_counters = counters.get(d_iso, {})
         dstats, dc, ds_, dp = _session_stats(d_rows)
         days.append({
             "date": d_iso,
@@ -1226,13 +1437,22 @@ def compute_metrics(period_days=7, store=None):
                            for et in {r["event_type"] for r in d_rows}},
             },
             "errors": {
-                "deliveryFailures": 0,   # счётчик процесс-глобальный, см. totals.errors
-                "exporterErrors": 0,
+                # per-day счётчики (counters_daily), а не процесс-глобальные
+                "rejectedSchema": day_counters.get("rejected.schema", 0),
+                "rejectedPii": day_counters.get("rejected.pii", 0),
+                "rejectedUnknownType": day_counters.get("rejected.unknown_type", 0),
+                "rejectedTimestamp": day_counters.get("rejected.invalid_timestamp", 0)
+                + day_counters.get("rejected.non_utc_timestamp", 0),
+                "rateLimited": day_counters.get("rate_limited", 0),
+                "paused": day_counters.get("paused", 0),
+                "blocked": day_counters.get("blocked", 0),
                 "trafficErrors": sum(1 for r in d_rows if r["event_type"] == "TrafficError"),
             },
             "integrity": {
-                "duplicates": 0,         # процесс-глобальный счётчик, см. totals.integrity
-                "rejected": 0,
+                "duplicates": day_counters.get("duplicate", 0),
+                "rejected": sum(v for k, v in day_counters.items() if k.startswith("rejected.")),
+                "accepted": day_counters.get("accepted.real", 0) + day_counters.get("accepted.bot", 0)
+                + day_counters.get("accepted.hybrid", 0),
                 "dataGaps": sum(1 for r in d_rows if r["event_type"] == "DataGapDetected"),
                 "dataGapsHealed": sum(1 for r in d_rows if r["event_type"] == "DataGapHealed"),
             },
@@ -1262,17 +1482,32 @@ def compute_metrics(period_days=7, store=None):
         "gapsCount": s.metrics["data_gaps_total"],
     }
 
+    # Честный список недоступного: то, что закрыто (per-day счётчики), из списка
+    # удалено — оставлять запись о проблеме, которой нет, значит врать в обе стороны.
     unavailable = [
         {"metric": "forecast",
          "reason": "Модель прогнозирования трафика не развёрнута; прогнозы не выдумываются."},
-        {"metric": "sessionDurationSeconds",
-         "reason": "До накопления SessionEnded длительность — оценка по первому и последнему "
-                   "событию сессии, а не по явному завершению.",
-         "estimate": True},
-        {"metric": "days[].errors.deliveryFailures / days[].integrity.duplicates|rejected",
-         "reason": "Счётчики процесс-глобальные и не атрибутируются по дням; смотрите totals.errors/totals.integrity.",
-         "estimate": False},
     ]
+    if stats_total["sessionDurationSeconds"]["estimate"]:
+        unavailable.append({
+            "metric": "sessionDurationSeconds",
+            "reason": f"Явных завершений сессий {stats_total['sessionDurationSeconds']['explicitCompletions']} "
+                      f"— меньше порога {MIN_SESSIONS_FOR_DURATION}. Длительность — оценка по "
+                      "первому и последнему событию сессии, а не по SessionEnded/SessionAbandoned.",
+            "estimate": True,
+        })
+    unavailable.append({
+        "metric": "deliveryFailures / retryScheduled",
+        "reason": "Очереди доставки нет (приём синхронный) — события DeliveryFailed и "
+                  "RetryScheduled нечем эмитить; они остаются unavailable в каталоге.",
+        "estimate": False,
+    })
+    unavailable.append({
+        "metric": "landingReachedRate",
+        "reason": "LandingReached unavailable: нет подтверждённого перехода из игры. "
+                  "Знаменатель остаётся null, воронка не дорисовывается.",
+        "estimate": False,
+    })
 
     return {
         **totals,
@@ -1358,6 +1593,72 @@ def compute_funnel(store=None, period_days=7):
     }
 
 
+
+def compute_acquisition_funnel(store=None, period_days=7):
+    """Сквозная acquisition-воронка (контур i-09).
+
+    ad_click → visit → page_view → identity_bound → first_action → retained.
+
+    Честность прежде удобства: «ad_click» считается по PageView с атрибуцией
+    кампании (реального клика по объявлению мы не видим — смотри unavailable у
+    шага). Конверсия считается только от ненулевого знаменателя: иначе это не
+    конверсия, а число, нарисованное на пустом месте.
+    """
+    s = store or STORE
+    period_days = max(1, min(int(period_days), 90))
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=period_days)) \
+        .strftime("%Y-%m-%dT%H:%M:%SZ")
+    with s.get_conn() as conn:
+        visits = conn.execute(
+            "SELECT COUNT(DISTINCT session_id) AS c FROM events "
+            "WHERE timestamp >= ? AND is_synthetic = 0 AND event_type = 'SessionStarted' "
+            "AND session_id NOT LIKE 'sess_system%'", (cutoff,)).fetchone()["c"]
+        views = conn.execute(
+            "SELECT COUNT(DISTINCT session_id) AS c FROM events "
+            "WHERE timestamp >= ? AND is_synthetic = 0 AND event_type = 'PageView' "
+            "AND session_id NOT LIKE 'sess_system%'", (cutoff,)).fetchone()["c"]
+        actions = conn.execute(
+            "SELECT COUNT(DISTINCT session_id) AS c FROM events "
+            "WHERE timestamp >= ? AND is_synthetic = 0 AND event_type IN ('Click', 'CTAClicked') "
+            "AND session_id NOT LIKE 'sess_system%'", (cutoff,)).fetchone()["c"]
+        retained = conn.execute(
+            "SELECT COUNT(*) AS c FROM (SELECT session_id FROM events "
+            "WHERE timestamp >= ? AND is_synthetic = 0 "
+            "AND session_id NOT LIKE 'sess_system%' "
+            "GROUP BY session_id HAVING COUNT(DISTINCT substr(timestamp, 1, 10)) >= 2)",
+            (cutoff,)).fetchone()["c"]
+    bound = CONTROL.identity_stats()
+    bound_sessions = bound.get("boundToExternalId", 0)
+
+    raw_steps = [
+        ("ad_click", views, "PageView с атрибуцией кампании; реального клика по объявлению "
+                            "нет — шаг является верхней границей, а не фактом клика", False),
+        ("visit", visits, None, True),
+        ("page_view", views, None, True),
+        ("identity_bound", bound_sessions, None, True),
+        ("first_action", actions, None, True),
+        ("retained", retained, "сессии с активностью в ≥2 разных днях", True),
+    ]
+    steps = []
+    prev = None
+    for name, cnt, note, available in raw_steps:
+        conv = None if prev in (None, 0) else round(cnt / prev, 3)
+        step = {"stage": name, "count": cnt, "conversionFromPrev": conv,
+                "available": available}
+        if note:
+            step["note"] = note
+        steps.append(step)
+        if available:
+            prev = cnt
+    return {
+        "funnelId": "trafficgen_acquisition",
+        "window": {"period": f"{period_days}d UTC"},
+        "steps": steps,
+        "honestyNote": "identity_bound считается по сессиям, у которых есть externalId/playerKey; "
+                       "сырые идентификаторы не хранятся (sha256+salt).",
+    }
+
+
 # ---------------------------------------------------------------------------
 # PROMETHEUS
 # ---------------------------------------------------------------------------
@@ -1424,10 +1725,102 @@ def build_prometheus_metrics(store=None):
     return "\n".join(lines) + "\n"
 
 
+
+# ---------------------------------------------------------------------------
+# ЭМИССИЯ СОБЫТИЙ ИЗ КОНТРОЛЬ-ПЛЕЙНА
+# ---------------------------------------------------------------------------
+def emit_control_event(kind, payload, effect, proposal_id, actor):
+    """Превращает применённый proposal в событие каталога.
+
+    Никакой автоматики: сюда попадает только то, что подтвердили два человека
+    с 2FA. Откат тоже эмитит событие — иначе в истории останется «дырка».
+    """
+    ts = now_utc_iso()
+    effect = effect or {}
+    common = {"proposalId": proposal_id, "actor": actor, "effect": effect}
+
+    # Откат — отдельная запись в истории, а не «исчезновение» предыдущей.
+    if effect.get("rolledBack") is True:
+        if kind == "emergency_pause":
+            camp = payload.get("campaignId")
+            return detectors.emit_system_event(
+                STORE, "CampaignUpdated",
+                {**common, "campaignId": camp, "changedFields": ["status"],
+                 "status": "active", "resumed": True, "rolledBack": True},
+                session="sess_system_control", campaign_id=camp or "system",
+                identity=f"offchain:trafficgen:{camp or 'system'}:target_terminal:"
+                         f"sess_system_control:rollback:{proposal_id}")
+        if kind == "campaign_upsert":
+            camp = payload.get("campaign") or {}
+            cid = camp.get("id") or "unknown"
+            return detectors.emit_system_event(
+                STORE, "CampaignUpdated",
+                {**common, "campaignId": cid, "rolledBack": True,
+                 "changedFields": ["definition"]},
+                session="sess_system_control", campaign_id=cid,
+                identity=f"offchain:trafficgen:{cid}:target_terminal:"
+                         f"sess_system_control:rollback:{proposal_id}")
+        # Снятие блокировки (unblock) не имеет события в каноническом каталоге:
+        # AbuseBlocked означает «заблокировано», а не «изменили настройку».
+        # Факт остаётся в audit-журнале и в /watchtower/proposals.
+        return None
+
+    if kind == "emergency_pause":
+        camp = payload.get("campaignId")
+        return detectors.emit_system_event(
+            STORE, "EmergencyPause",
+            {**common, "campaignId": camp, "reason": payload.get("reason"),
+             "durationMinutes": payload.get("durationMinutes", 120),
+             "until": (effect or {}).get("until")},
+            session="sess_system_control", campaign_id=camp or "system",
+            identity=f"offchain:trafficgen:{camp or 'system'}:target_terminal:"
+                     f"sess_system_control:pause:{proposal_id}")
+    if kind == "resume_campaign":
+        camp = payload.get("campaignId")
+        return detectors.emit_system_event(
+            STORE, "CampaignUpdated",
+            {**common, "campaignId": camp, "changedFields": ["status"],
+             "status": "active", "resumed": True},
+            session="sess_system_control", campaign_id=camp or "system",
+            identity=f"offchain:trafficgen:{camp or 'system'}:target_terminal:"
+                     f"sess_system_control:resume:{proposal_id}")
+    if kind in ("block_source", "block_session"):
+        target = payload.get("sourceId") or payload.get("sessionId")
+        target_type = "source" if kind == "block_source" else "session"
+        return detectors.emit_system_event(
+            STORE, "AbuseBlocked",
+            {**common, "targetType": target_type, "targetRef": target,
+             "reason": payload.get("reason"),
+             "ttlMinutes": payload.get("ttlMinutes", 1440),
+             "expiresAt": (effect or {}).get("expiresAt")},
+            session="sess_system_control",
+            identity=f"offchain:trafficgen:system:target_terminal:"
+                     f"sess_system_control:block:{proposal_id}")
+    if kind == "campaign_upsert":
+        camp = payload.get("campaign") or {}
+        cid = camp.get("id") or "unknown"
+        created = (effect or {}).get("created") is True
+        return detectors.emit_system_event(
+            STORE, "CampaignCreated" if created else "CampaignUpdated",
+            {**common, "campaignId": cid, "name": camp.get("name"),
+             "segments": camp.get("segments"),
+             "frequencyCap": camp.get("frequencyCap"),
+             "budget": camp.get("budget"),
+             "attribution": camp.get("attribution"),
+             "source": "hub_proposal"},
+            session="sess_system_control", campaign_id=cid,
+            identity=f"offchain:trafficgen:{cid}:target_terminal:"
+                     f"sess_system_control:upsert:{proposal_id}")
+    return None
+
+
 # ---------------------------------------------------------------------------
 # HTTP HANDLER (Read-Only Watchtower API + статика + ingestion /api/track)
 # ---------------------------------------------------------------------------
 SERVER_START_TIME = time.time()
+# Планировщик детекторов: назначается в run_server(), читается маршрутом
+# /watchtower/detectors. None — значит детекторы выключены флагом.
+SCHEDULER = None
 
 
 def _watchtower_tokens():
@@ -1484,6 +1877,14 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
         return any(provided and hmac.compare_digest(provided, t) for t in tokens)
 
     def send_json(self, status, payload, extra_headers=None):
+        # Замер задержки ответа — основа SLO (p95/p99 считаются по факту).
+        label = getattr(self, "_route_label", None)
+        if label:
+            try:
+                STORE.record_latency(label, (time.monotonic() - self._t0) * 1000.0, status)
+            except Exception:
+                pass
+            self._route_label = None
         body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -1539,6 +1940,8 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
             return self.send_405()
 
         if parsed.path == "/api/track":
+            self._t0 = time.monotonic()
+            self._route_label = "track"
             # consent/opt-out (10.4): уважаем DNT и Sec-GPC — событие не принимается
             if self.headers.get("DNT") == "1" or self.headers.get("Sec-GPC") == "1":
                 return self.send_json(202, {"status": "opted_out", "processed": 0})
@@ -1546,6 +1949,7 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
             allowed, retry_after = _TRACK_LIMITER.allow()
             if not allowed:
                 STORE.bump_metric("rate_limited_total")
+                STORE.bump_daily_counter("rate_limited")
                 STORE.record_event({  # реальный системный сигнал RateLimited (6.5)
                     "eventType": "RateLimited",
                     "campaignId": "system",
@@ -1576,9 +1980,36 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
                 return self.send_json(400, {"status": "error", "error": f"Invalid telemetry payload: {e}"})
 
             events = payload if isinstance(payload, list) else [payload]
-            results = [STORE.record_event(ev) for ev in events]
-            accepted = sum(1 for r in results if r.get("status") == "accepted")
-            duplicates = sum(1 for r in results if r.get("status") == "duplicate")
+            results = []
+            accepted = duplicates = paused = blocked = 0
+            for ev in events:
+                if not isinstance(ev, dict):
+                    results.append({"status": "rejected", "reason": "schema",
+                                    "message": "event must be an object"})
+                    continue
+                camp = ev.get("campaignId") or "talkchart_interactive_radar"
+                sid = ev.get("sessionId")
+                src = ev.get("sourceId") or "direct_web"
+                # Пауза кампании и блокировки — только следствие подтверждённого
+                # proposal'а: автоматической блокировки здесь не существует.
+                if CONTROL.is_paused(camp):
+                    paused += 1
+                    STORE.bump_daily_counter("paused")
+                    results.append({"status": "paused",
+                                    "reason": f"campaign '{camp}' is paused by proposal"})
+                    continue
+                if CONTROL.is_blocked("session", sid) or CONTROL.is_blocked("source", src):
+                    blocked += 1
+                    STORE.bump_daily_counter("blocked")
+                    results.append({"status": "blocked",
+                                    "reason": "session or source blocked by proposal"})
+                    continue
+                res = STORE.record_event(ev)
+                results.append(res)
+                if res.get("status") == "accepted":
+                    accepted += 1
+                elif res.get("status") == "duplicate":
+                    duplicates += 1
             rejected = [r for r in results if r.get("status") == "rejected"]
             status_code = 200 if not (rejected and not (accepted or duplicates)) else 422
             return self.send_json(status_code, {
@@ -1587,10 +2018,108 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
                 "accepted": accepted,
                 "duplicates": duplicates,
                 "rejected": len(rejected),
+                "paused": paused,
+                "blocked": blocked,
                 "results": results,
             })
 
+        if parsed.path.startswith("/api/control/"):
+            return self.handle_control(parsed)
+
         return self.send_json(404, {"error": "Not Found"})
+
+
+    # --- контроль-плейн: proposal → 2 подтверждения → apply → rollback ---------
+    def _control_actor(self):
+        auth_hdr = self.headers.get("Authorization", "")
+        token = auth_hdr[7:] if auth_hdr.startswith("Bearer ") else ""
+        return authenticate(token)
+
+    def _control_unavailable(self):
+        return self.send_json(503, error_envelope(
+            "Контроль-плейн недоступен: не задан TRAFFICGEN_CONTROL_USERS "
+            "(JSON: пользователь -> {token, role, secret}). Без этого никто не имеет "
+            "права применять изменения, поэтому эндпоинт честно недоступен.",
+            "control_unavailable", period="live"))
+
+    def handle_control(self, parsed):
+        started = time.monotonic()
+        try:
+            if not control_enabled():
+                return self._control_unavailable()
+            actor_info = self._control_actor()
+            if actor_info is None:
+                return self.send_json(401, error_envelope(
+                    "Unauthorized. Нужен Bearer-токен из TRAFFICGEN_CONTROL_USERS.",
+                    "unauthorized", period="live"))
+            user, role, secret = actor_info
+
+            body = self._read_json_body(64 * 1024)
+            if body is None:
+                return self.send_json(400, error_envelope(
+                    "Тело запроса должно быть JSON-объектом", "bad_request", period="live"))
+
+            path = parsed.path
+            if path == "/api/control/proposals":
+                proposal, err = CONTROL.create_proposal(
+                    body.get("kind"), body.get("payload") or {}, user, role,
+                    reason=body.get("reason"), suggested_by=body.get("suggestedBy"))
+                if err:
+                    return self.send_json(422, error_envelope(
+                        err["message"], err["code"], period="live"))
+                return self.send_json(201, wrap_envelope(proposal, period="live"))
+
+            m = re.match(r"^/api/control/proposals/([A-Za-z0-9_]+)/(approve|confirm|rollback)$", path)
+            if m:
+                pid, action = m.group(1), m.group(2)
+                code = str(body.get("totp") or body.get("code") or "")
+                if action == "approve":
+                    proposal, err = CONTROL.approve(pid, user, role, code, secret)
+                elif action == "confirm":
+                    proposal, err = CONTROL.confirm(pid, user, role, code, secret,
+                                                    emit_fn=emit_control_event)
+                else:
+                    proposal, err = CONTROL.rollback(pid, user, role, code, secret,
+                                                     emit_fn=emit_control_event,
+                                                     reason=body.get("reason"))
+                if err:
+                    status = 409 if err["code"] in ("invalid_state", "self_approval_denied",
+                                                    "two_person_rule", "duplicate_approval",
+                                                    "totp_replay") else (
+                        403 if err["code"] == "forbidden" else (
+                            401 if err["code"] == "invalid_2fa" else 422))
+                    return self.send_json(status, error_envelope(
+                        err["message"], err["code"], period="live"))
+                return self.send_json(200, wrap_envelope(proposal, period="live"))
+
+            if path == "/api/control/consent":
+                subject = body.get("subjectHash") or body.get("subject")
+                decision = body.get("decision")
+                if not subject or decision not in ("granted", "denied", "opt_out"):
+                    return self.send_json(422, error_envelope(
+                        "Нужны subjectHash и decision (granted|denied|opt_out)",
+                        "bad_request", period="live"))
+                state = CONTROL.record_consent(
+                    subject, decision, source=body.get("source") or user,
+                    version=body.get("version") or "1", details=body.get("details"))
+                return self.send_json(200, wrap_envelope(state, period="live"))
+
+            return self.send_json(404, error_envelope("Unknown control endpoint", "not_found"))
+        finally:
+            STORE.record_latency("control", (time.monotonic() - started) * 1000.0)
+
+    def _read_json_body(self, limit):
+        try:
+            length = int(self.headers.get("Content-Length", 0) or 0)
+        except ValueError:
+            length = 0
+        if length <= 0 or length > limit:
+            return {} if length <= 0 else None
+        try:
+            payload = json.loads(self.rfile.read(length).decode("utf-8"))
+        except Exception:
+            return None
+        return payload if isinstance(payload, dict) else None
 
     # --- GET -------------------------------------------------------------------
     def do_GET(self):
@@ -1613,6 +2142,9 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
 
         if not path.startswith("/watchtower"):
             return super().do_GET()
+
+        self._t0 = time.monotonic()
+        self._route_label = path
 
         if not self.verify_auth():
             return self.send_json(401, error_envelope(
@@ -1699,8 +2231,10 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
             m_days = re.match(r"^(\d+)d?$", str(period))
             days = int(m_days.group(1)) if m_days else 7
             days = max(1, min(days, 90))
-            return self.send_json(200, wrap_envelope(
-                compute_funnel(STORE, period_days=days), period=f"{days}d UTC"))
+            return self.send_json(200, wrap_envelope({
+                **compute_funnel(STORE, period_days=days),
+                "acquisition": compute_acquisition_funnel(STORE, period_days=days),
+            }, period=f"{days}d UTC"))
 
         if path == "/watchtower/alerts":
             alerts = STORE.get_alerts()
@@ -1710,6 +2244,79 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
                 "activeCount": len(active),
                 "totalCount": len(alerts),
             }, period="7d UTC"))
+
+
+        if path == "/watchtower/proposals":
+            status = qs.get("status", [None])[0]
+            return self.send_json(200, wrap_envelope({
+                "enabled": control_enabled(),
+                "ttlSeconds": PROPOSAL_TTL_SECONDS,
+                "requiredApprovals": 2,
+                "twoFactor": "totp",
+                "proposals": CONTROL.list_proposals(status=status, limit=100),
+            }, period="7d UTC"))
+
+        if path == "/watchtower/audit":
+            chain = CONTROL.verify_audit_chain()
+            return self.send_json(200, wrap_envelope({
+                "chain": chain,
+                "entries": CONTROL.recent_audit(limit=200),
+            }, quality="complete" if chain["valid"] else "partial",
+               confidence=1.0 if chain["valid"] else 0.4, period="7d UTC"))
+
+        if path == "/watchtower/blocks":
+            return self.send_json(200, wrap_envelope({
+                "active": CONTROL.active_blocks(),
+                "pausedCampaigns": CONTROL.paused_campaigns(),
+                "note": "Блокировки и паузы создаются только подтверждённым proposal; "
+                        "автоматического применения нет.",
+            }, period="live"))
+
+        if path == "/watchtower/consent":
+            return self.send_json(200, wrap_envelope({
+                "model": "opt-out: DNT/GPC/параметр notrack останавливают приём до записи в БД",
+                "state": CONTROL.consent_state(),
+                "syncEndpoint": "/api/control/consent",
+            }, period="7d UTC"))
+
+        if path == "/watchtower/identity":
+            return self.send_json(200, wrap_envelope({
+                "binding": "session → externalId/playerKey (sha256+salt) → first_action",
+                "stats": CONTROL.identity_stats(),
+            }, period="7d UTC"))
+
+        if path == "/watchtower/forensics":
+            return self.send_json(200, wrap_envelope({
+                "detectors": CONTROL.detector_quality(),
+                "decisionsNote": "Метки-прокси (factory_pipeline → bot) помечаются явно; "
+                                 "человеческая разметка проставляется через labelDecision().",
+                "rejected": STORE.rejected_stats(limit=50),
+            }, period="7d UTC"))
+
+        if path == "/watchtower/severity":
+            return self.send_json(200, wrap_envelope({
+                "dictionary": SEVERITY_DICTIONARY,
+                "eventSeverity": EVENT_SEVERITY,
+                "runbook": "docs/SLO_TRAFFICGEN.md#runbook",
+            }, period="live"))
+
+        if path == "/watchtower/detectors":
+            return self.send_json(200, wrap_envelope(
+                SCHEDULER.status() if SCHEDULER is not None else
+                {"enabled": False, "reason": "планировщик не запущен (--no-detectors)"},
+                period="live"))
+
+        if path == "/watchtower/quality":
+            since = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            return self.send_json(200, wrap_envelope({
+                "latency": {
+                    "api": STORE.latency_percentiles(since=since),
+                    "track": STORE.latency_percentiles(route="track", since=since),
+                    "control": STORE.latency_percentiles(route="control", since=since),
+                },
+                "deadLetter": STORE.rejected_stats(limit=20),
+                "countersToday": STORE.counters_for_day(now_utc_iso()[:10]),
+            }, period="24h UTC"))
 
         if path == "/watchtower/forecast":
             return self.send_json(200, wrap_envelope(
@@ -1723,24 +2330,75 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
 # ---------------------------------------------------------------------------
 # ЗАПУСК
 # ---------------------------------------------------------------------------
-def run_server(port=8000, host="0.0.0.0"):
+def prune_once():
+    """Разовый проход ретеншена с отчётом. Вызывается из cron/CI, а не при старте.
+
+    Раньше прайнинг висел в run_server(): он съедал время старта, а отчёт о нём
+    терялся в логах. Теперь это отдельная команда с машиночитаемым отчётом.
+    """
     pruned = STORE.prune_retention()
-    if any(pruned.values()):
-        print(f"[retention] events: -{pruned['events']}, gaps: -{pruned['gaps']}, "
-              f"sessions: -{pruned['sessions']}, aggregates: -{pruned['aggregates']}")
+    report = {
+        "ranAt": now_utc_iso(),
+        "retentionDays": {"events": EVENT_RETENTION_DAYS, "aggregates": AGGREGATE_RETENTION_DAYS},
+        "removed": pruned,
+        "rejectedDlq": STORE.rejected_stats(limit=0)["total"],
+    }
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    report_path = os.path.join(config.DATA_DIR, "prune-report.json")
+    os.makedirs(config.DATA_DIR, exist_ok=True)
+    with open(report_path, "w", encoding="utf-8") as fh:
+        json.dump(report, fh, ensure_ascii=False, indent=2)
+    return report
+
+
+def run_server(port=8000, host="0.0.0.0", start_detectors=True, prune=False):
+    global SCHEDULER
+    if prune:
+        prune_once()
     emitted = reconcile_catalog(STORE)
     print(f"[reconcile] lifecycle-событий записано на этом запуске: {len(emitted)} "
           f"(идемпотентно: повторные запуски ничего не добавляют)")
+    if start_detectors:
+        SCHEDULER = detectors.DetectorScheduler(STORE, CONTROL, snapshot_path=config.SNAPSHOT)
+        started = SCHEDULER.start()
+        print(f"[detectors] запущены: {', '.join(started) if started else 'выключены (TRAFFICGEN_DETECTORS=0)'}")
     print(f"Запуск Watchtower Exporter & Web Server на {host}:{port}...")
     server = ThreadingHTTPServer((host, port), WatchtowerHandler)
-    server.serve_forever()
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if SCHEDULER:
+            SCHEDULER.stop()
+
+
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    port = 8000
+    start_detectors = True
+    prune = False
+    for arg in argv:
+        if arg == "--no-detectors":
+            start_detectors = False
+        elif arg == "--prune":
+            prune = True
+        elif arg.isdigit():
+            port = int(arg)
+        elif arg in ("-h", "--help"):
+            print(__doc__ or "")
+            print("Использование: python3 site/factory/watchtower_exporter.py "
+                  "[порт] [--no-detectors] [--prune]")
+            print("  --prune          разовый проход ретеншена с отчётом (для cron), без запуска сервера")
+            print("  --no-detectors   не запускать фоновые детекторы (например, в тестах)")
+            return 0
+    if prune and not start_detectors:
+        # `--prune` как отдельная команда: сервер не поднимаем.
+        prune_once()
+        return 0
+    run_server(port=port, start_detectors=start_detectors, prune=prune)
+    return 0
 
 
 if __name__ == "__main__":
-    p = 8000
-    if len(sys.argv) > 1:
-        try:
-            p = int(sys.argv[1])
-        except ValueError:
-            pass
-    run_server(port=p)
+    sys.exit(main())

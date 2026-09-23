@@ -78,3 +78,6 @@ backend/data/
 *.db-wal
 *.sqlite-shm
 *.sqlite-wal
+
+# отчёт разового прайнинга (генерируется cron'ом)
+site/data/prune-report.json

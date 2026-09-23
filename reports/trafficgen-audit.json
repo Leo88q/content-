@@ -1,0 +1,57 @@
+{
+  "schema": "trafficgen-audit/v2",
+  "generatedAt": "2026-09-23T18:11:18Z",
+  "tool": {
+    "name": "scripts/check_solana_constraints.py",
+    "kind": "targeted-rule-recheck",
+    "note": "Исходный сканер, создавший аудит 2026-09, не опубликован; здесь воспроизведены его правила по тексту findings. Строки могут отличаться от исходного отчёта — код правился."
+  },
+  "target": {
+    "path": "programs/sixsec/src/lib.rs",
+    "sourceSha256Prefix": "d8c018d1d2e90e37"
+  },
+  "summary": {
+    "open": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0,
+      "info": 0
+    },
+    "accepted": 1,
+    "total": 1
+  },
+  "findings": [],
+  "acceptedRisks": [
+    {
+      "rule_id": "SW016",
+      "severity": "high",
+      "message": "Account `mint_reserve` uses `init_if_needed`; review for re-initialization or state-reset risk.",
+      "location": {
+        "path": "programs/sixsec/src/lib.rs",
+        "line": 600,
+        "column": 1
+      },
+      "help": "Prefer #[account(init, ...)] when possible.",
+      "suppressed": false,
+      "acceptedRisk": {
+        "rule_id": "SW016",
+        "struct": "CreateTask",
+        "field": "mint_reserve",
+        "owner": "SixSec protocol lead",
+        "justification": "PDA [RESERVE_SEED, reward_mint]; адрес выводится из минта, а не из пользовательского ключа; аккаунт не хранит полномочий (только {mint, reserved}); повторный вызов не обнуляет `reserved`, потому что инструкция пишет reserved += worst_case_reserve, а не инициализирует его. Замена на `init` сломала бы повторное создание задания под уже зарезервированный минт (ADR-0015).",
+        "compensating_controls": [
+          "constraint mint_reserve.mint == reward_mint.key() || Pubkey::default() -> ReserveMintMismatch",
+          "seeds = [RESERVE_SEED, reward_mint.key()] + bump",
+          "тест constraints_guard::init_if_needed_only_inside_accepted_allowlist падает при появлении нового init_if_needed"
+        ],
+        "review_by": "2026-12-31",
+        "status": "accepted"
+      }
+    }
+  ],
+  "gate": {
+    "policy": "блокирует CI при открытых critical/high; medium блокирует только в --strict",
+    "passed": true
+  }
+}

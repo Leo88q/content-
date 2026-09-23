@@ -1,17 +1,17 @@
 {
-  "slug": "archibrown-vs-pumpcat",
+  "slug": "bluf-vs-archibrown",
   "token1": {
-    "symbol": "ARCHIBROWN",
-    "change_24h": 575.309,
-    "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
-    "volume": 2514827.60391634
+    "symbol": "BLUF",
+    "change_24h": 766.925,
+    "address": "BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y",
+    "volume": 4794131.55019908
   },
   "token2": {
-    "symbol": "PUMPCAT",
-    "change_24h": 153.252,
-    "address": "6HLorrkY3vqPsyTZDFvTGTnwnZsLM343Jxw6XvEPTKRt",
-    "volume": 749665.627027849
+    "symbol": "ARCHIBROWN",
+    "change_24h": 744.218,
+    "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
+    "volume": 2555623.78144338
   },
-  "verdict": "По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+575.3% против +153.3%). Краткосрочный фаворит по совокупности факторов: ARCHIBROWN.",
-  "updated_at": "2026-09-23 19:45 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: BLUF опережает по ценовому импульсу (+766.9% против +744.2%). Краткосрочный фаворит по совокупности факторов: BLUF.",
+  "updated_at": "2026-09-23 20:49 UTC"
 }

@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-09-23T18:22:23.178Z",
+  "windowDays": 1,
+  "mode": "online",
+  "target": "http://127.0.0.1:8000",
+  "slos": {
+    "availabilityPercent": {
+      "status": "ok",
+      "value": 100.0,
+      "target": 99.9
+    },
+    "freshnessSeconds": {
+      "status": "breach",
+      "value": 709.8,
+      "target": 300
+    },
+    "ingestP99Ms": {
+      "status": "ok",
+      "value": 1.0,
+      "target": 2000
+    },
+    "apiP95Ms": {
+      "status": "ok",
+      "value": 52.2,
+      "target": 300
+    },
+    "apiP99Ms": {
+      "status": "ok",
+      "value": 68.4,
+      "target": 1000
+    }
+  },
+  "sources": {
+    "availability": "9 событий ExporterHealth за окно",
+    "ingestSamples": 919,
+    "backfillSamples": 1,
+    "clockSkewSamples": 0,
+    "deadLetterTotal": 2,
+    "exporterUptimeSeconds": 392.9
+  },
+  "allGreen": false
+}

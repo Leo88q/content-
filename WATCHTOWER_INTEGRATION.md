@@ -173,7 +173,23 @@ GET /watchtower/funnels?period=Nd           воронка по реальным
 GET /watchtower/alerts                      разрывы active/resolved (legacy включены)
 GET /watchtower/forecast                    всегда dataQuality=unavailable, confidence 0.0, forecast/model=null
 GET /watchtower/metrics                     Prometheus text 0.0.4 (без JSON-конверта)
+GET /watchtower/proposals                   журнал proposal (контроль-плейн, read-only)
+GET /watchtower/audit                       хеш-цепочка аудита + последние записи
+GET /watchtower/blocks                      активные блокировки и паузы кампаний
+GET /watchtower/consent                     модель consent и состояние реестра
+GET /watchtower/identity                    связывание session → внешний идентификатор (статистика)
+GET /watchtower/forensics                   качество детекторов + DLQ отклонённых
+GET /watchtower/severity                    словарь p1/p2/p3 + severity событий
+GET /watchtower/detectors                   состояние фоновых детекторов
+GET /watchtower/quality                     задержки (p50/p95/p99), DLQ, счётчики за сутки
 POST|PUT|DELETE|PATCH /watchtower/*         -> 405 + Allow: GET, OPTIONS
+
+POST /api/track                             приём событий (batch или одиночное)
+POST /api/control/proposals                 создать предложение (нужен Bearer)
+POST /api/control/proposals/:id/approve     подтвердить (2FA, не автор)
+POST /api/control/proposals/:id/confirm     применить (второй человек, 2FA)
+POST /api/control/proposals/:id/rollback    откатить применённое
+POST /api/control/consent                   записать решение по consent/opt-out
 ```
 
 `/watchtower/events`: `limit` clamp 1..500 (default 50); сортировка строго по `id`;
@@ -241,32 +257,57 @@ POST|PUT|DELETE|PATCH /watchtower/*         -> 405 + Allow: GET, OPTIONS
 `implemented` = есть реальный эмиттер в коде + тест. Всё остальное — `unavailable`
 с причиной, без выдуманных эмиссий.
 
-### Implemented (17)
+### Implemented (25)
+
+`implemented` = есть реальный эмиттер в коде **и** тест на его работу.
 
 | Группа | События | Эмиттер |
 |---|---|---|
-| Кампании | `CampaignCreated`, `CampaignStarted`, `CampaignStopped`, `CampaignUpdated` | реконсилёр config store при старте (`catalog_state`, идемпотентно) |
+| Кампании | `CampaignCreated`, `CampaignStarted`, `CampaignStopped`, `CampaignUpdated` | реконсилёр config store при старте (`catalog_state`, идемпотентно) + предложение `campaign_upsert` |
 | Источники | `SourceConnected`, `SourceDisconnected`, `SourceHealthChanged` | реконсилёр |
 | Страницы | `PageAssigned`, `PageRemoved` | реконсилёр (вкл. games.js) |
 | Сессия/воронка | `SessionStarted`, `PageView`, `Click`, `CTAClicked`, `SessionEnded` | `site/app.js` (`pagehide` + `sendBeacon` для SessionEnded) |
+| Завершение без ухода | `SessionAbandoned` | `watchtower_detectors.SessionSweeper` (сессия не завершена, `idle > 1800 c`) |
+| Завершённая навигация | `NavigationCompleted` | `site/app.js`: прохождение пути `pool_selected → call_placed → call_resolved` (или `share_flow` / `swap_flow`), один раз на путь |
 | Надёжность | `RateLimited` | экспортёр при 429 на `/api/track` |
+| Ошибки конвейера | `TrafficError` | `site/factory/watchtower_client.emit_traffic_error` (инструментирован `fetch_data.py`) |
+| Здоровье | `ExporterHealth` | `watchtower_detectors.HealthProbe` (БД, снапшот, свежесть, разрывы) |
 | Целостность | `DataGapDetected`, `DataGapHealed` | gap detector + backfill |
+| Классификация ботов | `BotFlagged` | `watchtower_detectors.BotClassifier` (взвешенные правила, порог 0.6, журнал решений) |
+| Аномалии | `AnomalyDetected` | `watchtower_detectors.AnomalyDetector` (медиана/MAD, \|z\| ≥ 3.5, база ≥ 6 ч) |
+| Блокировка злоупотребления | `AbuseBlocked` | предложение `block_source` / `block_session` (два подтверждения + 2FA) |
+| Аварийная пауза | `EmergencyPause` | предложение `emergency_pause` (два подтверждения + 2FA) |
 
-### Unavailable (12) — причины
+### Unavailable (4) — причины
 
 | Событие | Причина |
 |---|---|
-| `LandingReached` | нет подтверждения перехода (нужен redirect-proxy/beacon игры) |
-| `Abandoned` | нет планировщика таймаутов сессий |
-| `NavigationCompleted` | внутр. навигация терминала не мапируется однозначно |
-| `DeliveryFailed` / `RetryScheduled` | синхронный приём, очереди доставки нет |
-| `TrafficError` | конвейер фабрики не инструментирован эмиссией ошибок |
-| `ExporterHealth` | нет периодического self-check; его роль выполняют health/readyz |
-| `BotFlagged` | нет классификатора (маркировка статическая: factory_pipeline=bot) |
-| `AnomalyDetected` | нет статистического детектора |
-| `AbuseBlocked` | нет blocking-слоя |
-| `ConfigUpdated` | покрывается гранулярными lifecycle событиями реконсилёра |
-| `EmergencyPause` | механизма аварийной паузы не существует |
+| `LandingReached` | нет подтверждения перехода (нужен redirect-proxy/beacon игры); знаменатель воронки остаётся `null` (ADR-0001) |
+| `DeliveryFailed` / `RetryScheduled` | приём синхронный, очереди доставки нет — нечем эмитить |
+| `ConfigUpdated` | осознанно не вводим: покрывается granular-событиями реконсилёра и журналом proposal (ADR-0003) |
+
+Исторические названия нормализуются: `Abandoned` → `SessionAbandoned`
+(`EVENT_TYPE_ALIASES`), `terminal` → `target_terminal` (`PAGE_ID_ALIASES`).
+
+### Контроль-плейн (никакой автоматики)
+
+Блокировка человека и пауза кампании — необратимые в пределах сессии решения,
+поэтому они проходят через proposal:
+
+```
+POST /api/control/proposals        (роль proposer)  → status: proposed
+POST …/approve                     (роль approver, не автор, TOTP)
+POST …/confirm                     (второй approver, TOTP) → status: applied
+POST …/rollback                    (любой approver, TOTP)  → status: rolled_back
+```
+
+Правила: two-person rule (автор не подтверждает, подтверждают двое разных),
+TOTP с защитой от повтора, TTL предложения, RBAC (`proposer`/`approver`/`admin`),
+хеш-цепочка аудита (`GET /watchtower/audit`, `verify_audit_chain()`),
+откат возвращает предыдущее состояние и пишет событие в историю.
+Без `TRAFFICGEN_CONTROL_USERS` все `/api/control/*` — честный `503`.
+
+---
 
 ---
 
@@ -284,8 +325,11 @@ POST|PUT|DELETE|PATCH /watchtower/*         -> 405 + Allow: GET, OPTIONS
 - **Replay**: base64-курсор `cursor:<lastId>`; чтение без курсора — с начала окна.
 - **Backfill**: оригинальный `timestamp` сохраняется, `observedAt` — текущее; события
   старше retention принимаются, но попадают под прайнинг.
-- **Retention**: события старше **30 дней** удаляются (`prune_retention()` при старте
-  сервера; повторяйте из CI/cron при необходимости); агрегаты держатся 180 дней.
+- **Retention**: события старше **30 дней** удаляются, агрегаты держатся 180 дней.
+  Прайнинг **не** выполняется при старте сервера (ADR-0005): отдельная команда
+  `python3 site/factory/watchtower_exporter.py --no-detectors --prune` пишет
+  машиночитаемый отчёт `site/data/prune-report.json` (в git не коммитится).
+  Регламент и остальные команды — в `docs/SLO_TRAFFICGEN.md` §5.
 
 ---
 
@@ -296,14 +340,21 @@ POST|PUT|DELETE|PATCH /watchtower/*         -> 405 + Allow: GET, OPTIONS
 Непрерывная серия дней (дни без трафика возвращаются с нулями) + `totals`:
 
 - `pageViews`, `sessions`, `uniquePseudoVisitors` (+ `visitorsByType real/bot/hybrid`),
-- `sessionDurationSeconds {avg, p50, p95, estimate: true}` — оценка first→last event,
-  пока не накопилось достаточно `SessionEnded` (честно помечено в `unavailableMetrics`),
+- `sessionDurationSeconds {avg, p50, p95, estimate, sampleSize, explicitCompletions,
+  minSessionsForExact}` — точная длительность берётся из `SessionEnded`/
+  `SessionAbandoned` (при наличии `payload.durationSeconds` — из него); пока
+  явных завершений меньше `MIN_SESSIONS_FOR_DURATION` (30), это оценка
+  first→last event и `estimate: true` (ADR-0004). Порог достигнут — флаг снимается
+  сам, вручную его не переключают;
 - `bounceRate` (сессии ровно с 1 событием), `ctaClickRate = CTA/PageView`,
-  `landingReachedRate = Landing/CTA`,
-- `events {total, byType}`, `errors {deliveryFailures, exporterErrors, trafficErrors}`,
-- `integrity {duplicates, rejected, dataGaps, dataGapsHealed}` — показатели на уровне
-  `totals` глобальны (счётчики процессные), в `days[]` они показывают только
-  событийно-выводимые значения (это явно помечено в `unavailableMetrics`),
+  `landingReachedRate = Landing/CTA` — `null`/0 при нулевом знаменателе,
+- `events {total, byType}`, `errors {rejectedSchema, rejectedPii, rejectedUnknownType,
+  rejectedTimestamp, rateLimited, paused, blocked, trafficErrors}` — **по дням**
+  (таблица `counters_daily`, ADR-0006);
+- `integrity {duplicates, rejected, accepted, dataGaps, dataGapsHealed}` — тоже по дням;
+- `systemEventsExcluded` — системные сессии (`sess_system*`) не входят в
+  пользовательскую статистику: иначе бот-трафик и bounce-rate раздуваются
+  событиями детекторов;
 - `breakdowns {byCampaign, bySource, byPage}` на каждый день и в totals;
 - раздельно `trafficType {real, bot, hybrid}` — бот-трафик нигде не смешивается с real.
 
@@ -316,7 +367,11 @@ POST|PUT|DELETE|PATCH /watchtower/*         -> 405 + Allow: GET, OPTIONS
 - `conversionFromPrev`/`conversionFromFirst`/`dropOffRate` — `null` при нулевом
   знаменателе (Watchtower отрисует прочерк, не 0% и не 100%);
 - `LandingReached` помечена `stageUnavailable: true` (нет эмиттера);
-- разрезы `byCampaign` и `bySource` обязательны и возвращаются.
+- разрезы `byCampaign` и `bySource` обязательны и возвращаются;
+- `acquisition` — сквозная воронка привлечения `ad_click → visit → page_view →
+  identity_bound → first_action → retained` (retained = сессии с активностью в
+  ≥ 2 разных днях). Шаг `ad_click` помечен `available: false`: реального клика по
+  объявлению мы не видим, это верхняя граница, а не факт клика.
 
 ### Prometheus (`GET /watchtower/metrics`, text 0.0.4)
 
@@ -366,15 +421,26 @@ POST|PUT|DELETE|PATCH /watchtower/*         -> 405 + Allow: GET, OPTIONS
 ## 9. Локальный запуск и верификация
 
 ```bash
-npm test                    # python3 scripts/test_watchtower.py  (17 контрактных тестов XX.XXs)
-npm run smoke               # python3 scripts/smoke_watchtower.py (45 e2e проверок)
-npm run scan                # python3 scripts/scan_secrets.py     (secret-сканер)
+npm test                    # python3 scripts/test_watchtower.py      (17 контрактных тестов)
+npm run test:max            # python3 scripts/test_watchtower_max.py  (20 тестов максимума)
+npm run smoke               # python3 scripts/smoke_watchtower.py     (77 e2e проверок)
+npm run scan                # python3 scripts/scan_secrets.py         (secret-сканер)
 npm start                   # python3 site/factory/watchtower_exporter.py  → 0.0.0.0:8000
+
+# отчёты и регламент (см. docs/SLO_TRAFFICGEN.md §5)
+python3 scripts/slo_report.py                     # reports/slo-trafficgen.{json,md}
+python3 scripts/load_test_traffic.py --report     # reports/load-test-trafficgen.json
+python3 scripts/backup_restore.py --report        # reports/dr-trafficgen.json
+python3 scripts/sbom.py                           # reports/sbom.json
+python3 scripts/unit_economics.py                 # reports/unit-economics.json
+TRAFFICGEN_API_BASE_URL=http://127.0.0.1:8000 node scripts/verify_hub_integration.mjs
 ```
 
-При старте сервер: прайнит retention, прогоняет реконсилёр каталогов (идемпотентно,
-первый запуск запишет ~24 lifecycle-события), поднимает HTTP на `0.0.0.0:8000`.
+При старте сервер: прогоняет реконсилёр каталогов (идемпотентно, первый запуск
+запишет ~24 lifecycle-события), поднимает фоновые детекторы
+(`TRAFFICGEN_DETECTORS=0` отключает) и HTTP на `0.0.0.0:8000`. Прайнинг
+retention отдельной командой (`--prune`), в старт он не входит.
 Для CI: job `watchtower-contract` в `.github/workflows/factory.yml` выполняет
-scan → tests → smoke.
+scan → tests → test:max → smoke.
 
 Реальные выводы прогонов — в отчёте об интеграции (уместилось в конце PROGRESS.md).
