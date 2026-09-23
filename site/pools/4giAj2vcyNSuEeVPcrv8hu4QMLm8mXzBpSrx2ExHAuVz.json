@@ -1,0 +1,76 @@
+{
+  "pool": {
+    "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
+    "name": "ARCHIBROWN / SOL",
+    "base_symbol": "ARCHIBROWN",
+    "base_name": "ARCHIBROWN",
+    "base_address": "HaYRgD7rjwj1AwoWjafokj4196sufYm4vKFamLZVpump",
+    "dex": "pumpswap",
+    "price_usd": 0.0004177112248539339,
+    "created_at": "2026-09-23T08:53:32Z",
+    "fdv_usd": 423455.4628,
+    "reserve_usd": 60587.4633,
+    "volume_h24": 2440276.38392702,
+    "change": {
+      "h1": -0.581,
+      "h6": -47.922,
+      "h24": 770.351
+    },
+    "tx_h1": {
+      "buys": 368,
+      "sells": 384
+    },
+    "whales": [
+      {
+        "kind": "sell",
+        "usd": 3041.59,
+        "mult": 253.5,
+        "whale": false,
+        "hours_ago": 0.4,
+        "addr8": "FHpcNSe6"
+      },
+      {
+        "kind": "buy",
+        "usd": 1614.9,
+        "mult": 134.6,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "DobENcMA"
+      },
+      {
+        "kind": "sell",
+        "usd": 1194.95,
+        "mult": 99.6,
+        "whale": false,
+        "hours_ago": 0.3,
+        "addr8": "9aFpfx3e"
+      },
+      {
+        "kind": "sell",
+        "usd": 1176.51,
+        "mult": 98.1,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "AgmLJBMD"
+      },
+      {
+        "kind": "buy",
+        "usd": 1155.12,
+        "mult": 96.3,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "8zuCd67Y"
+      }
+    ],
+    "first_seen": "2026-09-23T17:51:03+00:00",
+    "last_seen": "2026-09-23T17:51:03+00:00"
+  },
+  "narrative": "ARCHIBROWN разрывает: +770.4% за 24ч. объём $2.44M больше капы в 5.8× — бумага в огне. ликвидность тонкая ($60.6K) — движения будут резкими. пулу 0 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $3.0K (254× медианы, 0ч назад). нетто китов за сутки −$2.6K.",
+  "flags": [
+    "тонкая ликвидность",
+    "молодой пул",
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: продажа на $3.0K (254× медианы). Нетто-поток китов: $-2.6K.",
+  "updated_at": "2026-09-23T17:51:03Z"
+}
