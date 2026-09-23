@@ -32,6 +32,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Правила SW009/SW010/SW013/SW016/SW024 проверяются по исходнику ДО сборки:
+      # бессмысленно тратить 10 минут на тулчейн, если токен-аккаунт без
+      # `token::mint` можно увидеть за секунду. --self-test первым: он
+      # подтверждает, что правила вообще способны сработать, а не молчат.
+      - name: On-chain constraint audit
+        id: audit
+        run: |
+          set -uo pipefail
+          python3 scripts/check_solana_constraints.py --self-test
+          python3 scripts/check_solana_constraints.py --strict
+
       # Пин, а не @stable. Со stable среда сборки менялась без единого коммита:
       # выход нового Rust ломал сборку под sbpfv3-solana-solana (run 34922270030 —
       # «can't find crate for std», при том что за полчаса до этого всё собиралось).
@@ -413,7 +424,8 @@ jobs:
         run: |
           set -uo pipefail
           FAIL=0
-          for pair in "build:${{ steps.build.outcome }}" \
+          for pair in "audit:${{ steps.audit.outcome }}" \
+                      "build:${{ steps.build.outcome }}" \
                       "tests:${{ steps.tests.outcome }}" \
                       "itests:${{ steps.itests.outcome }}" \
                       "spec:${{ steps.spec.outcome }}" \
