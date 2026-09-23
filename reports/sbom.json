@@ -1,0 +1,77 @@
+{
+  "schema": "trafficgen-sbom/v1",
+  "generatedAt": "2026-09-23T18:22:22.882Z",
+  "component": "trafficgen (TalkChart Traffic Generator & Audience Layer)",
+  "toolchainPins": {
+    "ANCHOR_VERSION": "1.2.0",
+    "RUST_VERSION": "1.89.0",
+    "SOLANA_VERSION": "3.1.10",
+    "NODE_VERSION": "22",
+    "PYTHON_VERSION": "3.11"
+  },
+  "rust": {
+    "localPackages": [
+      {
+        "name": "sixsec",
+        "version": "0.1.0"
+      }
+    ],
+    "dependencyCount": 398,
+    "keyDependencies": [
+      {
+        "name": "anchor-lang",
+        "version": "1.2.0"
+      },
+      {
+        "name": "anchor-spl",
+        "version": "1.2.0"
+      },
+      {
+        "name": "litesvm",
+        "version": "0.10.0"
+      }
+    ]
+  },
+  "node": {
+    "dependencies": {},
+    "devDependencies": {
+      "@types/node": "^22.10.0",
+      "typescript": "^5.7.0"
+    }
+  },
+  "python": {
+    "thirdParty": {
+      "PIL": {
+        "version": null,
+        "usedIn": [
+          "make_cards.py",
+          "make_videos.py",
+          "make_vs.py"
+        ]
+      }
+    },
+    "stdlibOnly": [
+      "__future__",
+      "base64",
+      "datetime",
+      "hashlib",
+      "hmac",
+      "html",
+      "http",
+      "json",
+      "math",
+      "os",
+      "re",
+      "shutil",
+      "sqlite3",
+      "statistics",
+      "subprocess",
+      "sys",
+      "tempfile",
+      "threading",
+      "time",
+      "urllib",
+      "uuid"
+    ]
+  }
+}

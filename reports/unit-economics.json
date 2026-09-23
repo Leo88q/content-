@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-09-23T18:15:32.978Z",
+  "mode": "offline",
+  "windowDays": 7,
+  "traffic": {
+    "sessions": 6,
+    "pageViews": 5,
+    "byType": {
+      "real": 6,
+      "bot": 2,
+      "hybrid": 0
+    }
+  },
+  "costsMonthly": {
+    "infrastructure": null,
+    "ciAndFactory": null,
+    "toolsAndSubscriptions": null,
+    "teamShare": null,
+    "total": null,
+    "currency": "EUR"
+  },
+  "unit": {
+    "costPer1000Sessions": null,
+    "costPer1000PageViews": null
+  },
+  "unavailable": [
+    {
+      "metric": "costPer1000*",
+      "reason": "не заданы переменные стоимости: TRAFFICGEN_COST_INFRA, TRAFFICGEN_COST_CI, TRAFFICGEN_COST_TOOLS, TRAFFICGEN_COST_TEAM. Подставлять цену «по ощущениям» не стали."
+    }
+  ],
+  "sources": "визиты — метрики экспортёра (реальные события); стоимость — переменные окружения владельца",
+  "complete": false
+}

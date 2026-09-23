@@ -5,10 +5,17 @@
   "main": "site/app.js",
   "scripts": {
     "test": "python3 scripts/test_watchtower.py",
+    "test:max": "python3 scripts/test_watchtower_max.py",
     "smoke": "python3 scripts/smoke_watchtower.py",
     "scan": "python3 scripts/scan_secrets.py",
     "build": "python3 site/factory/generate_all.py",
-    "start": "python3 site/factory/watchtower_exporter.py"
+    "start": "python3 site/factory/watchtower_exporter.py",
+    "slo": "python3 scripts/slo_report.py",
+    "loadtest": "python3 scripts/load_test_traffic.py --report",
+    "dr": "python3 scripts/backup_restore.py --report",
+    "sbom": "python3 scripts/sbom.py",
+    "economics": "python3 scripts/unit_economics.py",
+    "hub:verify": "node scripts/verify_hub_integration.mjs"
   },
   "keywords": [
     "watchtower",
