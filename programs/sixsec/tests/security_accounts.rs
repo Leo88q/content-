@@ -46,6 +46,8 @@ enum ConstraintError {
     TokenMint,
     TokenOwner,
     AccountAlreadyInitialized,
+    /// Аккаунт не является канонической PDA-точкой для заявленных seeds/bump.
+    NotCanonicalPda,
 }
 
 /// Воспроизведение сгенерированного Anchor кода для `token::mint` /
@@ -60,6 +62,18 @@ fn check_token_account(
     }
     if account.owner != expected_authority {
         return Err(ConstraintError::TokenOwner);
+    }
+    Ok(())
+}
+
+/// Воспроизведение проверки `seeds` + `bump` (SW013): аккаунт обязан быть
+/// канонической точкой на кривой, а не «похожим» адресом.
+fn check_pda(pda: PdaModel, expected_address: Pubkey, expected_bump: u8) -> Result<(), ConstraintError> {
+    if pda.bump != expected_bump {
+        return Err(ConstraintError::NotCanonicalPda);
+    }
+    if pda.address != expected_address {
+        return Err(ConstraintError::NotCanonicalPda);
     }
     Ok(())
 }
@@ -149,6 +163,25 @@ fn model_reinitialization_of_existing_pda_is_rejected() {
 // ---------------------------------------------------------------------------
 // Guard: модель обязана расходиться с кодом при смене codegen'а Anchor
 // ---------------------------------------------------------------------------
+#[test]
+fn model_pda_substitution_is_rejected_by_seeds_and_bump() {
+    let pool = PdaModel { address: pubkey(31), bump: 254 };
+    assert!(
+        check_pda(pool, pubkey(31), 254).is_ok(),
+        "канонический PDA проходит проверку seeds+bump"
+    );
+    assert_eq!(
+        check_pda(pool, pubkey(32), 254),
+        Err(ConstraintError::NotCanonicalPda),
+        "подмена адреса PDA обязана отклоняться"
+    );
+    assert_eq!(
+        check_pda(pool, pubkey(31), 253),
+        Err(ConstraintError::NotCanonicalPda),
+        "подмена bump обязана отклоняться — иначе PDA не канонический"
+    );
+}
+
 #[test]
 fn model_matches_anchor_generated_comparison_semantics() {
     // Если Anchor перестанет сравнивать owner (или начнёт сравнивать что-то
