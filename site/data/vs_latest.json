@@ -2,16 +2,16 @@
   "slug": "archibrown-vs-sweep",
   "token1": {
     "symbol": "ARCHIBROWN",
-    "change_24h": 781.661,
+    "change_24h": 692.215,
     "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
-    "volume": 2451479.17225093
+    "volume": 2460092.05803526
   },
   "token2": {
     "symbol": "SWEEP",
-    "change_24h": 293.668,
+    "change_24h": 237.132,
     "address": "EzN9f2oGkMzkEJxdJtySURqvBd6Y8Ah2EoEXsbgutbc1",
-    "volume": 3984681.56206743
+    "volume": 3988604.63510047
   },
-  "verdict": "По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+781.7% против +293.7%). Краткосрочный фаворит по совокупности факторов: ARCHIBROWN.",
-  "updated_at": "2026-09-23 18:00 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+692.2% против +237.1%). Краткосрочный фаворит по совокупности факторов: ARCHIBROWN.",
+  "updated_at": "2026-09-23 18:15 UTC"
 }
