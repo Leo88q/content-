@@ -1,10 +1,10 @@
 Solana · история дня · 2026-09-23
-1. SWEEP +343.6% — SWEEP разрывает: +343.6% за 24ч. ускорение в последнем часе
-2. JEANPHIL +219.1% — JEANPHIL разрывает: +219.1% за 24ч. пулу 4 дн., история короткая
-3. based +199.5% — based разрывает: +199.5% за 24ч. давление продаж нарастает
-4. CATEWALK -99.5% — CATEWALK в обвале: -99.5% за 24ч. ускорение в последнем часе
-5. OTC +87.0% — OTC разрывает: +87.0% за 24ч. крупная сделка на фоне ленты: купил $2.4K (694× медианы, 0ч назад)
+1. ARCHIBROWN +575.3% — ARCHIBROWN разрывает: +575.3% за 24ч. давление продаж нарастает
+2. PUMPCAT +153.3% — PUMPCAT разрывает: +153.3% за 24ч. ускорение в последнем часе
+3. SWEEP +135.3% — SWEEP разрывает: +135.3% за 24ч. объём $4.03M больше капы в 39.1× — бумага в огне
+4. GP +125.8% — GP разрывает: +125.8% за 24ч. пулу 7 дн., история короткая
+5. based +120.2% — based разрывает: +120.2% за 24ч. объём $3.82M больше капы в 36.1× — бумага в огне
 
-⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/EzN9f2oGkMzkEJxdJtySURqvBd6Y8Ah2EoEXsbgutbc1.json
+⚡ Интерактивный Blink в X: https://dial.to/?action=solana-action:https://leo88q.github.io/content-/site/api/actions/4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz.json
 Графики, которые разговаривают ↓
 https://leo88q.github.io/content-/site
