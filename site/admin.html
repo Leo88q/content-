@@ -5,286 +5,142 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Командный Центр TalkChart — Панель управления</title>
 <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
 <style>
+/* ============================================================
+   Командный центр — тот же пиксель-язык, что и терминал.
+   Токены (--bg/--panel/--line/--tx/--mut/--acc/--green/--red) приходят из
+   style.css, здесь объявлены только специфичные для админки; значения
+   перечислены для обеих тем через [data-theme].
+   ============================================================ */
 :root {
-  --bg: #0a0e14;
-  --panel: #121820;
-  --panel-hover: #16202c;
-  --border: #1c2530;
-  --acc: #7cf03d;
+  --panel-hover: color-mix(in srgb, var(--panel) 88%, var(--tx));
   --warn: #fba43a;
   --info: #3dd9f0;
   --x-blue: #1d9bf0;
-  --text: #e8edf2;
-  --mut: #8b98a5;
-  --danger: #ff4d6a;
+  --danger: var(--red);
+  --ok: var(--green);
+  --radius: 0;
 }
+[data-theme="light"] { --warn: #b8860b; --info: #1c7fa8; --x-blue: #0d6efd; --panel-hover: #efe4cc; }
+
 body {
   background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, ui-monospace, Menlo, monospace;
-  margin: 0;
-  padding: 0;
-  line-height: 1.5;
+  background-image: repeating-conic-gradient(var(--bg2) 0% 25%, transparent 0% 50%) 0 0 / 8px 8px;
+  color: var(--tx);
+  font-family: var(--font-body);
+  margin: 0; padding: 0; line-height: 1.6; font-size: 13px;
 }
-.admin-shell {
-  display: flex;
-  min-height: 100vh;
-}
+.admin-shell { display: flex; min-height: 100vh; }
+
 /* Левое меню */
 .sidebar {
-  width: 260px;
-  background: #0d1219;
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
+  width: 264px; background: var(--panel);
+  border-right: 3px solid var(--line); box-shadow: 4px 0 0 0 var(--line-soft);
+  display: flex; flex-direction: column; flex-shrink: 0;
 }
-.sidebar-hdr {
-  padding: 20px;
-  border-bottom: 1px solid var(--border);
-}
-.brand {
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.sidebar-hdr { padding: 20px; border-bottom: 3px solid var(--line); }
+.brand { font-family: var(--font-pixel); font-size: 12px; color: var(--tx); display: flex; align-items: center; gap: 8px; line-height: 1.6; }
 .brand span { color: var(--acc); }
 .brand-badge {
-  font-size: 10px;
-  background: rgba(124, 240, 61, 0.15);
-  color: var(--acc);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(124, 240, 61, 0.4);
+  font-family: var(--font-pixel); font-size: 8px; background: var(--acc); color: #07110a;
+  padding: 4px 6px; border: 2px solid var(--line);
 }
-.nav-menu {
-  padding: 12px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
+.nav-menu { padding: 12px 8px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .nav-btn {
-  background: transparent;
-  color: var(--mut);
-  border: none;
-  border-radius: 6px;
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.15s;
+  background: transparent; color: var(--mut);
+  border: 3px solid transparent; padding: 10px 14px; text-align: left;
+  font-family: var(--font-pixel); font-size: 9px; line-height: 1.6;
+  cursor: pointer; display: flex; align-items: center; gap: 10px;
+  transition: transform 120ms steps(3, end);
 }
-.nav-btn:hover {
-  background: var(--panel);
-  color: var(--text);
-}
+.nav-btn:hover { background: var(--panel-hover); border-color: var(--line); transform: translate(-2px, -2px); }
 .nav-btn.active {
-  background: rgba(124, 240, 61, 0.12);
-  color: var(--acc);
-  border: 1px solid rgba(124, 240, 61, 0.3);
+  background: var(--acc); color: #07110a; border-color: var(--line);
+  box-shadow: 4px 4px 0 0 var(--shadow-color);
 }
-.sidebar-foot {
-  padding: 16px;
-  border-top: 1px solid var(--border);
-  font-size: 12px;
-}
-.sidebar-foot a {
-  color: var(--mut);
-  text-decoration: none;
-  display: block;
-  margin-bottom: 6px;
-}
-.sidebar-foot a:hover { color: var(--acc); }
+.sidebar-foot { padding: 16px; border-top: 3px solid var(--line); color: var(--mut); font-size: 11px; }
 
-/* Основной контент */
-.main-view {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
-  max-width: 1100px;
-}
-.tab-content { display: none; }
-.tab-content.active { display: block; animation: fadeIn 0.15s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-.page-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.page-subtitle {
-  color: var(--mut);
-  font-size: 14px;
-  margin: 0 0 24px 0;
-}
-
-/* Карточки и сетка */
-.grid-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-}
-.stat-val {
-  font-size: 26px;
-  font-weight: bold;
-  color: #fff;
-  margin-top: 4px;
-}
-.stat-lbl {
-  font-size: 12px;
-  color: var(--mut);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+/* Контент */
+.main-view { flex: 1; padding: 24px; overflow-x: hidden; }
+.page-title { font-family: var(--font-pixel); font-size: 16px; margin-bottom: 8px; line-height: 1.6; }
+.page-subtitle { color: var(--mut); font-size: 12px; margin-bottom: 20px; }
 
 .panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 22px;
-  margin-bottom: 24px;
+  background: var(--panel); border: 3px solid var(--line);
+  box-shadow: 4px 4px 0 0 var(--shadow-color); padding: 16px; margin-bottom: 16px;
 }
-.panel-hdr {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.panel-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0;
+.panel-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.panel-title { font-family: var(--font-pixel); font-size: 11px; line-height: 1.6; }
+.panel-title::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; background: var(--acc);
+  box-shadow: 0 0 0 2px var(--line); margin-right: 8px; vertical-align: 2px;
 }
 
-/* Формы и поля */
-.form-row {
-  margin-bottom: 14px;
+/* Статистика */
+.grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--panel); border: 3px solid var(--line);
+  box-shadow: 4px 4px 0 0 var(--shadow-color); padding: 12px;
 }
-.form-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--mut);
-  margin-bottom: 6px;
-}
-input[type="text"], input[type="url"], input[type="number"], textarea, select {
-  width: 100%;
-  box-sizing: border-box;
-  background: #0a0e14;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: #fff;
-  padding: 9px 12px;
-  font-size: 13px;
-  font-family: inherit;
-}
-input:focus, textarea:focus {
-  outline: none;
-  border-color: var(--acc);
-}
-.btn-primary {
-  background: var(--acc);
-  color: #000;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 18px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.btn-primary:hover { opacity: 0.9; }
-.btn-secondary {
-  background: #1c2530;
-  color: #e8edf2;
-  border: 1px solid #2e3e50;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 9px 16px;
-  font-size: 13px;
-  cursor: pointer;
-}
-.btn-secondary:hover { background: #263445; }
-.btn-x {
-  background: var(--x-blue);
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 18px;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.btn-x:hover { background: #1a8cd8; }
+.stat-lbl { font-family: var(--font-pixel); font-size: 8px; color: var(--mut); line-height: 1.6; }
+.stat-val { font-family: var(--font-pixel); font-size: 14px; margin-top: 8px; }
 
 /* Таблицы */
-table.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th, .data-table td { border: 2px solid var(--line); padding: 8px 10px; text-align: left; }
+.data-table th { font-family: var(--font-pixel); font-size: 8px; color: var(--mut); background: var(--panel2); line-height: 1.6; }
+.data-table tr:hover td { background: var(--panel-hover); }
+
+/* Формы и кнопки */
+.form-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+.form-label { font-family: var(--font-pixel); font-size: 8px; color: var(--mut); display: block; margin-bottom: 8px; line-height: 1.6; }
+input, select, textarea {
+  background: var(--panel2); color: var(--tx); border: 3px solid var(--line);
+  padding: 8px 10px; font-family: var(--font-body); font-size: 13px; border-radius: 0;
 }
-table.data-table th, table.data-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
+input:focus, select:focus, textarea:focus { outline: 3px solid var(--acc2); outline-offset: 1px; }
+.btn-primary, .btn-secondary, .btn-x {
+  font-family: var(--font-pixel); font-size: 9px; line-height: 1.6;
+  padding: 10px 14px; cursor: pointer; border: 3px solid var(--line);
+  box-shadow: 4px 4px 0 0 var(--shadow-color);
+  transition: transform 120ms steps(3, end);
 }
-table.data-table th {
-  color: var(--mut);
-  font-weight: 600;
-  font-size: 11px;
-  text-transform: uppercase;
-}
+.btn-primary { background: var(--acc); color: #07110a; }
+.btn-secondary { background: var(--panel2); color: var(--tx); }
+.btn-x { background: var(--x-blue); color: #fff; }
+.btn-primary:hover, .btn-secondary:hover, .btn-x:hover { transform: translate(-2px, -2px); }
+.btn-primary:active, .btn-secondary:active, .btn-x:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--shadow-color); }
 
 /* Бейджи */
-.badge-green { background: rgba(38, 208, 124, 0.15); color: #26d07c; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-.badge-red { background: rgba(255, 77, 106, 0.15); color: #ff4d6a; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-.badge-warn { background: rgba(251, 164, 58, 0.15); color: #fba43a; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-
-/* Редактор кода */
-pre.code-block {
-  background: #080b0f;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 14px;
-  font-family: ui-monospace, Menlo, monospace;
-  font-size: 12px;
-  color: #c0cad4;
-  overflow-x: auto;
-  white-space: pre-wrap;
+.badge-green, .badge-red {
+  font-family: var(--font-pixel); font-size: 8px; padding: 4px 6px;
+  border: 2px solid currentColor; display: inline-block;
 }
+.badge-green { color: var(--green); background: color-mix(in srgb, var(--green) 18%, transparent); }
+.badge-red { color: var(--red); background: color-mix(in srgb, var(--red) 18%, transparent); }
 
-/* Игры в редакторе */
+/* Код и карточки игр */
+.code-block {
+  background: var(--bg2); border: 3px solid var(--line); padding: 12px;
+  font-family: var(--font-body); font-size: 12px; color: var(--tx);
+  white-space: pre-wrap; word-break: break-all;
+}
 .game-edit-card {
-  background: #0a0e14;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background: var(--panel); border: 3px solid var(--line);
+  box-shadow: 4px 4px 0 0 var(--shadow-color); padding: 12px; margin-bottom: 12px;
+}
+.game-name { font-family: var(--font-pixel); font-size: 10px; line-height: 1.6; }
+.game-tagline { color: var(--mut); font-size: 12px; margin: 8px 0; }
+.game-url { color: var(--acc); font-size: 11px; word-break: break-all; }
+.game-cta { font-family: var(--font-pixel); font-size: 8px; color: var(--acc); margin-top: 8px; }
+.game-color { width: 24px; height: 24px; border: 3px solid var(--line); padding: 0; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (max-width: 860px) {
+  .admin-shell { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 3px solid var(--line); }
 }
 </style>
 <script src="games.js"></script>
@@ -307,6 +163,7 @@ pre.code-block {
       <button class="nav-btn" data-tab="tab-analytics">📈 Аналитика воронки</button>
     </nav>
     <div class="sidebar-foot">
+      <button class="btn-secondary" data-theme-toggle title="Светлая тема" aria-label="Светлая тема" aria-pressed="false" style="width:100%;margin-bottom:12px">☀️ ДЕНЬ</button>
       <div style="font-weight:600;margin-bottom:8px;color:#fff;">Быстрый переход:</div>
       <a href="index.html" target="_blank">🖥 Открыть терминал TalkChart ↗</a>
       <a href="queue.html" target="_blank">📢 Очередь постов ↗</a>
@@ -464,7 +321,7 @@ pre.code-block {
           <h2 class="panel-title">🖼 Свежая карточка дня для прикрепления к посту</h2>
         </div>
         <div style="max-width:650px;">
-          <img id="social-card-img" src="" alt="Карточка дня" style="width:100%;border-radius:8px;border:1px solid var(--border);margin-bottom:10px;">
+          <img id="social-card-img" src="" alt="Карточка дня" style="width:100%;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);margin-bottom:10px;">
           <a id="social-card-dl" class="btn-secondary" href="#" download style="text-decoration:none;display:inline-block;">⬇ Скачать PNG карточки (1200×630)</a>
         </div>
       </div>
@@ -474,7 +331,7 @@ pre.code-block {
           <h2 class="panel-title">🤖 Статус автоматической публикации</h2>
         </div>
         <p style="color:var(--mut);font-size:13px;margin:0 0 10px 0;">Модуль <code>site/factory/post_x.py</code> работает в пайплайне GitHub Actions.</p>
-        <div style="background:#0a0e14;border:1px solid var(--border);border-radius:6px;padding:12px;font-size:12px;line-height:1.7;">
+        <div style="background:var(--bg2);border:2px solid var(--line);padding:12px;font-size:12px;line-height:1.7;">
           <div><b>Как включить автопостинг каждые 4 часа:</b></div>
           <div style="color:var(--mut);">1. В репозитории откройте <b>Settings → Secrets and variables → Actions</b>.</div>
           <div style="color:var(--mut);">2. Добавьте 4 секрета Twitter API: <code>TWITTER_API_KEY</code>, <code>TWITTER_API_SECRET</code>, <code>TWITTER_ACCESS_TOKEN</code>, <code>TWITTER_ACCESS_SECRET</code>.</div>
@@ -525,7 +382,7 @@ pre.code-block {
           Загрузка данных баттла…
         </div>
         <div style="margin-top:14px;">
-          <img id="battle-card-img" src="cards/vs/zebra-vs-stamp.png" alt="Баттл-карточка" style="max-width:650px;width:100%;border-radius:8px;border:1px solid var(--border);display:block;margin-bottom:10px;">
+          <img id="battle-card-img" src="cards/vs/zebra-vs-stamp.png" alt="Баттл-карточка" style="max-width:650px;width:100%;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);display:block;margin-bottom:10px;">
           <a id="battle-card-dl" class="btn-secondary" href="cards/vs/zebra-vs-stamp.png" download style="text-decoration:none;display:inline-block;">⬇ Скачать PNG баттл-карточки</a>
         </div>
       </div>

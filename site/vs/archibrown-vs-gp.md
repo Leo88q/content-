@@ -2,7 +2,7 @@
 
 > Algorithmic Verdict: По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+660.4% против +172.2%). Кроме того, у GP более надёжная ликвидность ($870.2K против $56.9K). Кроме того, у ARCHIBROWN объём превышает ликвидность в 44.7× — признак экстремального хайпа и волатильности. Краткосрочный фаворит по совокупности факторов: GP.
 
-## Head-to-Head Metrics (Snapshot: 2026-09-23 20:34 UTC)
+## Head-to-Head Metrics (Snapshot: 2026-09-23 20:45 UTC)
 | Metric | ARCHIBROWN | GP | Edge |
 |---|---|---|---|
 | 24h Price Change | +660.4% | +172.2% | ARCHIBROWN |

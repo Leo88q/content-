@@ -2,7 +2,7 @@
 
 > Algorithmic Verdict: По ончейн-метрикам TalkChart: ARCHIBROWN опережает по ценовому импульсу (+660.4% против +169.6%). Краткосрочный фаворит по совокупности факторов: ARCHIBROWN.
 
-## Head-to-Head Metrics (Snapshot: 2026-09-23 20:34 UTC)
+## Head-to-Head Metrics (Snapshot: 2026-09-23 20:45 UTC)
 | Metric | ARCHIBROWN | SWEEP | Edge |
 |---|---|---|---|
 | 24h Price Change | +660.4% | +169.6% | ARCHIBROWN |

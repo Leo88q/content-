@@ -24,6 +24,58 @@ import config  # noqa: E402
 from narrative import fmt_pct, fmt_usd, headline, narrative  # noqa: E402
 
 
+# =============================================================================
+# ПИКСЕЛЬ-ОФОРМЛЕНИЕ ГЕНЕРИРУЕМЫХ СТРАНИЦ
+# Токены приходят из style.css (темa: data-theme), поэтому SEO-страницы
+# перекрашиваются вместе с терминалом. Свои значения — только для уникальных
+# элементов страницы.
+# =============================================================================
+GEO_CSS = """
+body{background:var(--bg);background-image:repeating-conic-gradient(var(--bg2) 0% 25%,transparent 0% 50%) 0 0/8px 8px;color:var(--tx);font-family:var(--font-body);margin:0 auto;padding:40px 20px;max-width:820px;line-height:1.8;font-size:14px}
+h1{font-family:var(--font-pixel);font-size:20px;line-height:1.5;margin:12px 0}
+h2{font-family:var(--font-pixel);font-size:13px;line-height:1.6;margin:28px 0 12px}
+h3{font-family:var(--font-pixel);font-size:11px;line-height:1.6}
+.chg{font-family:var(--font-pixel);font-size:14px}
+.mut{color:var(--mut);font-size:12px}
+.mut a{color:var(--acc)}
+a{color:var(--acc)}
+code{background:var(--panel2);border:2px solid var(--line);padding:2px 6px;font-size:12px}
+hr{border:none;border-top:3px solid var(--line);margin:30px 0}
+ul,ol{padding-left:24px}
+table{border-collapse:collapse;width:100%;margin:20px 0}
+td,th{border:2px solid var(--line);padding:8px 12px;text-align:left;font-size:13px}
+th{font-family:var(--font-pixel);font-size:8px;line-height:1.8;background:var(--panel2);color:var(--mut)}
+tr:hover td{background:var(--panel2)}
+.narr,.geo-tldr{background:var(--panel);border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);padding:16px;margin:20px 0}
+.narr{border-left:8px solid var(--green)}
+.geo-tldr{border-left:8px solid var(--acc)}
+.geo-tldr h2{color:var(--acc);font-size:12px;margin:0 0 12px}
+.flags{margin-top:12px}
+.flags span{font-family:var(--font-pixel);font-size:8px;line-height:1.6;border:2px solid var(--red);color:var(--red);padding:4px 6px;margin:0 6px 6px 0;display:inline-block}
+.faq-item{margin:16px 0;border-bottom:2px solid var(--line);padding-bottom:12px}
+.faq-item h3{margin-bottom:8px}
+.faq-item p{color:var(--mut);font-size:13px;margin:0}
+a.cta{display:inline-block;background:var(--acc);color:#07110a;font-family:var(--font-pixel);font-size:9px;line-height:1.6;padding:12px 16px;border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);text-decoration:none;margin:8px 8px 8px 0;transition:transform 120ms steps(3,end)}
+a.cta:hover{transform:translate(-2px,-2px)}
+.px-toggle{font-family:var(--font-pixel);font-size:8px;line-height:1.6;background:var(--panel2);color:var(--tx);border:3px solid var(--line);box-shadow:4px 4px 0 0 var(--shadow-color);padding:8px 10px;cursor:pointer}
+.px-toggle:hover{transform:translate(-2px,-2px);border-color:var(--acc)}
+@media (prefers-reduced-motion: reduce){a.cta:hover,.px-toggle:hover{transform:none}}
+"""
+
+GEO_HEAD = (
+    '<link rel="stylesheet" href="{up}style.css">\n'
+    '<script src="{up}theme.js"></script>\n'
+    '<style>{css}</style>'
+)
+
+GEO_TOGGLE = (
+    '<div style="display:flex;justify-content:flex-end;margin-bottom:12px">'
+    '<button class="px-toggle" data-theme-toggle title="Светлая тема" '
+    'aria-label="Светлая тема" aria-pressed="false">☀️ ДЕНЬ</button></div>'
+)
+
+
+
 def load_pools():
     reg_path = os.path.join(config.DATA_DIR, "registry.json")
     snap_path = os.path.join(config.DATA_DIR, "snapshot.json")
@@ -131,7 +183,7 @@ def build_html_page(p, narr, flags, faq, whale_summary, now_iso):
     sells = (p.get("tx_h1") or {}).get("sells", "—")
     created = p.get("created_at") or "—"
     seen = p.get("last_seen") or now_iso
-    chgcolor = "#26d07c" if h24 >= 0 else "#ff4d6a"
+    chgcolor = "var(--green)" if h24 >= 0 else "var(--red)"
 
     canonical = f"{config.SITE_URL}/pools/{addr}.html"
     canonical_md = f"{config.SITE_URL}/pools/{addr}.md"
@@ -202,23 +254,10 @@ def build_html_page(p, narr, flags, faq, whale_summary, now_iso):
 <script type="application/ld+json">
 {schema_json}
 </script>
-<style>
-body{{background:#0a0e14;color:#e8edf2;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0;padding:40px 20px;max-width:820px;margin:auto;line-height:1.7}}
-h1{{font-size:26px;margin-bottom:8px}} .chg{{color:{chgcolor};font-weight:bold}} .mut{{color:#8b98a5;font-size:13px}}
-table{{border-collapse:collapse;margin:18px 0;width:100%}}td,th{{border:1px solid #1c2530;padding:8px 14px;text-align:left}}
-.narr{{background:#101a10;border:1px solid #24331f;border-radius:10px;padding:16px;margin:18px 0}}
-.geo-tldr{{background:#141a24;border:1px solid #253347;border-left:4px solid #7cf03d;border-radius:8px;padding:16px;margin:20px 0}}
-.geo-tldr h2{{font-size:16px;color:#7cf03d;margin-top:0}}
-.flags span{{background:rgba(255,77,106,.12);border:1px solid rgba(255,77,106,.4);color:#ff8fa3;padding:3px 10px;border-radius:20px;font-size:12px;margin-right:6px;display:inline-block;margin-bottom:4px}}
-.faq-item{{margin:16px 0;border-bottom:1px solid #1c2530;padding-bottom:12px}}
-.faq-item h3{{font-size:16px;color:#e8edf2;margin:0 0 6px 0}}
-.faq-item p{{color:#b0bcc8;margin:0;font-size:14px}}
-a.cta{{display:inline-block;background:#7cf03d;color:#000;font-weight:bold;padding:12px 22px;border-radius:8px;text-decoration:none;margin:8px 8px 8px 0}}
-a{{color:#7cf03d}}
-code{{background:#161c24;padding:2px 6px;border-radius:4px;font-size:12px}}
-</style>
+{GEO_HEAD.format(up="../", css=GEO_CSS)}
 </head>
 <body>
+{GEO_TOGGLE}
 <p class="mut"><a href="../index.html">📈 TalkChart — живой терминал</a> · <a href="index.html">каталог чартов</a> · <a href="../gainers/latest.html">топ-ганнеры</a> · <a href="{canonical_md}">[md для AI]</a></p>
 <h1>{sym} / {quote} — график и курс <span class="chg">{chg}</span></h1>
 <p class="mut">Пул {name} на {dex} · Solana · адрес пула <code>{addr}</code> · токен <code>{baddr}</code></p>
@@ -252,7 +291,7 @@ code{{background:#161c24;padding:2px 6px;border-radius:4px;font-size:12px}}
 <p>Живой чарт с тикером сделок, китовым радаром и бумажными прогнозами — в терминале:</p>
 <a class="cta" href="../index.html#pool={addr}">Открыть живой терминал {sym} →</a>
 
-<hr style="border-color:#1c2530;margin:30px 0">
+<hr>
 <p class="mut">Страница сгенерирована ончейн-фабрикой контента TalkChart. Обновляется по расписанию каждые 4 часа. Данные: DEX aggregate Solana. Не является инвестиционной рекомендацией.</p>
 <p class="mut">Машинночитаемые форматы для LLM / API: <a href="{canonical_md}">markdown-двойник</a> · <a href="{canonical_json}">json-двойник</a> · <a href="../llms.txt">спецификация llms.txt</a>.</p>
 <p class="mut">🎮 Игры студии — в терминале: <a href="../index.html#games">слоты крипто-игр</a>.</p>
@@ -552,8 +591,8 @@ def main():
 
     rows = "\n".join(
         f'<tr><td>{i}</td><td><a href="../pools/{p["address"]}.html">{p.get("base_symbol", "?")}</a> '
-        f'<small><a href="../pools/{p["address"]}.md" style="color:#8b98a5">[md]</a></small></td>'
-        f'<td style="color:{"#26d07c" if ((p.get("change") or {}).get("h24") or 0) >= 0 else "#ff4d6a"}">'
+        f'<small><a href="../pools/{p["address"]}.md" style="color:var(--mut)">[md]</a></small></td>'
+        f'<td style="color:{"var(--green)" if ((p.get("change") or {}).get("h24") or 0) >= 0 else "var(--red)"}">'
         f'{fmt_pct((p.get("change") or {}).get("h24") or 0)}</td><td>{fmt_usd(p.get("volume_h24"))}</td>'
         f'<td>{headline(p)}</td></tr>'
         for i, p in enumerate(gainers, 1)
@@ -564,19 +603,17 @@ def main():
 <meta name="description" content="Кто растёт на Solana прямо сейчас: топ-10 пулов за 24 часа с автоматическим ончейн-разбором и китами. Обновляется каждые 4 часа.">
 <link rel="canonical" href="{config.SITE_URL}/gainers/latest.html">
 <link rel="alternate" type="text/markdown" href="{config.SITE_URL}/gainers/latest.md">
+{GEO_HEAD.format(up="../", css=GEO_CSS)}
 </head>
-<body style="background:#0a0e14;color:#e8edf2;font-family:monospace;max-width:920px;margin:auto;padding:40px 20px;line-height:1.8">
-<p><a href="../index.html" style="color:#7cf03d">📈 TalkChart</a> / ганнеры дня · <a href="latest.md" style="color:#7cf03d">[md версия]</a></p>
+<body>
+{GEO_TOGGLE}
+<p class="mut"><a href="../index.html">📈 TalkChart</a> / ганнеры дня · <a href="latest.md">[md версия]</a></p>
 <h1>Топ-ганнеры Solana за 24ч · {day}</h1>
-<table style="border-collapse:collapse;width:100%"><tr>
-<th style="border:1px solid #1c2530;padding:8px">#</th>
-<th style="border:1px solid #1c2530;padding:8px">Токен</th>
-<th style="border:1px solid #1c2530;padding:8px">24ч</th>
-<th style="border:1px solid #1c2530;padding:8px">Объём</th>
-<th style="border:1px solid #1c2530;padding:8px">Что говорит график</th></tr>
+<table><tr>
+<th>#</th><th>Токен</th><th>24ч</th><th>Объём</th><th>Что говорит график</th></tr>
 {rows}</table>
-<p style="color:#8b98a5">Обновляется автоматически каждые 4 часа через GeckoTerminal DEX tape.
-<a href="latest.html" style="color:#7cf03d">Свежая версия →</a></p>
+<p class="mut">Обновляется автоматически каждые 4 часа через GeckoTerminal DEX tape.
+<a href="latest.html">Свежая версия →</a></p>
 </body></html>"""
 
     gainers_md = (
@@ -603,9 +640,9 @@ def main():
     # Каталог пулов (HTML + MD)
     items_html = "\n".join(
         f'<li><a href="{p["address"]}.html">{p.get("base_symbol", "?")} ({p.get("name", "?")})</a> '
-        f'<span style="color:{"#26d07c" if ((p.get("change") or {}).get("h24") or 0) >= 0 else "#ff4d6a"}">'
+        f'<span style="color:{"var(--green)" if ((p.get("change") or {}).get("h24") or 0) >= 0 else "var(--red)"}">'
         f'{fmt_pct((p.get("change") or {}).get("h24") or 0)}</span> — объём {fmt_usd(p.get("volume_h24"))} '
-        f'<small><a href="{p["address"]}.md" style="color:#8b98a5">[md]</a></small></li>'
+        f'<small><a href="{p["address"]}.md" style="color:var(--mut)">[md]</a></small></li>'
         for p in ranked
     )
     with open(os.path.join(config.POOLS_DIR, "index.html"), "w", encoding="utf-8") as f:
@@ -615,12 +652,14 @@ def main():
 <meta name="description" content="Каталог автоматических ончейн-страниц Solana: цена, объём, ликвидность, киты и разбор динамики. Доступно для поиска и AI-агентов.">
 <link rel="canonical" href="{config.SITE_URL}/pools/index.html">
 <link rel="alternate" type="text/markdown" href="{config.SITE_URL}/pools/index.md">
+{GEO_HEAD.format(up="../", css=GEO_CSS)}
 </head>
-<body style="background:#0a0e14;color:#e8edf2;font-family:monospace;max-width:820px;margin:auto;padding:40px 20px;line-height:2">
-<p><a href="../index.html" style="color:#7cf03d">📈 TalkChart</a> / каталог чартов Solana ({len(ranked)} активов) · <a href="index.md" style="color:#7cf03d">[md версия]</a></p>
+<body>
+{GEO_TOGGLE}
+<p class="mut"><a href="../index.html">📈 TalkChart</a> / каталог чартов Solana ({len(ranked)} активов) · <a href="index.md">[md версия]</a></p>
 <h1>Каталог ончейн-страниц Solana</h1>
 <ul>{items_html}</ul>
-<p style="color:#8b98a5">Сгенерировано фабрикой контента {now_str}.</p>
+<p class="mut">Сгенерировано фабрикой контента {now_str}.</p>
 </body></html>""")
 
     items_md = "\n".join(
