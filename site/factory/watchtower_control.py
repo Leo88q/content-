@@ -497,13 +497,13 @@ class ControlStore:
             if not self._consume_totp(conn, f"rollback:{pid}:{actor}", code):
                 return None, {"code": "totp_replay", "message": "этот TOTP-код уже использован"}
 
-            revert_effect(conn, view["kind"], view["payload"], view["prev_state"] or {}, actor, pid)
+            revert_effect(conn, view["kind"], view["payload"], view["prevState"] or {}, actor, pid)
             conn.execute(
                 "UPDATE proposals SET status = 'rolled_back', rolled_back_at = ?, "
                 "rolled_back_by = ? WHERE id = ?",
                 (now_utc_iso(), actor, pid))
             self.audit(conn, actor, "proposal.rollback", "proposal", pid,
-                       {"kind": view["kind"], "restored": view["prev_state"], "reason": reason})
+                       {"kind": view["kind"], "restored": view["prevState"], "reason": reason})
             conn.commit()
         if emit_fn:
             emit_fn(view["kind"], view["payload"], {"rolledBack": True}, pid, actor)

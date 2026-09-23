@@ -427,7 +427,16 @@ class AnomalyDetector:
             q3 = statistics.quantiles(baseline, n=4)[2] if len(baseline) >= 4 else 0
             scale = (q3 - q1) / 1.349 if (q3 - q1) else 0.0
         if not scale:
-            return None, med, mad
+            # База константа (MAD = 0 и IQR = 0): классический z не определён.
+            # Молчать здесь нельзя — ровно такой фон типичен для ночного
+            # трафика, и всплеск на нём самый показательный. Поэтому при
+            # нулевой дисперсии используем относительное отклонение от медианы,
+            # масштабированное в «сигмы»: любое отклонение от константы
+            # считается значимым, его величина определяет только силу сигнала.
+            if value == med:
+                return 0.0, med, mad
+            direction = 1.0 if value > med else -1.0
+            return direction * (abs(value - med) / max(1.0, abs(med))) * 10.0, med, mad
         return (value - med) / scale, med, mad
 
     def run(self):

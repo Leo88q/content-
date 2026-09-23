@@ -191,6 +191,7 @@ function selectPool(addr) {
   if (!p || (state.selected && p.address === state.selected.address)) return;
   state.selected = p;
   state.switches++;
+  markNavStep("pool_selected");
   renderList();
   renderHeader();
   loadOhlcv(p);
@@ -359,6 +360,7 @@ function shareCard() {
   a.href = cv.toDataURL("image/png");
   a.click();
   track("share_card", p.address);
+  markNavStep("card_shared");
 }
 
 /* ---------- Solana-нативные интеграции: Jupiter Swap + Solana Blinks ---------- */
@@ -376,6 +378,7 @@ function openJupiterSwap() {
         },
       });
       track("open_jupiter_modal", p.address);
+      markNavStep("swap_opened");
       return;
     } catch (e) {
       console.warn("Jupiter Terminal init fallback:", e);
@@ -602,6 +605,53 @@ window.addEventListener("pagehide", () => {
   } catch (e) {}
 });
 
+/* ---------- NavigationCompleted: однозначный маппинг навигации ----------
+   Шаги терминала фиксируются в sessionStorage; событие уходит один раз на путь,
+   когда все шаги пройдены в объявленном порядке. Никаких «похоже, дошёл»:
+   либо путь пройден целиком, либо события нет.                              */
+const NAV_PATHS = [
+  { id: "terminal_core", steps: ["pool_selected", "call_placed", "call_resolved"] },
+  { id: "share_flow", steps: ["pool_selected", "card_shared"] },
+  { id: "swap_flow", steps: ["pool_selected", "swap_opened"] },
+];
+
+function navSteps() {
+  try { return JSON.parse(sessionStorage.getItem("tc_nav_steps") || "[]"); } catch (e) { return []; }
+}
+
+function markNavStep(step) {
+  try {
+    if (trackingOptOut()) return;
+    const steps = navSteps();
+    if (steps.some((s) => s.step === step)) return; // шаг уже отмечен
+    steps.push({ step: step, ts: Date.now() });
+    sessionStorage.setItem("tc_nav_steps", JSON.stringify(steps));
+    checkNavPaths(steps);
+  } catch (e) {}
+}
+
+function checkNavPaths(steps) {
+  for (const path of NAV_PATHS) {
+    let done = false;
+    try { done = sessionStorage.getItem("tc_nav_done_" + path.id) === "1"; } catch (e) {}
+    if (done) continue;
+    let cursor = 0;
+    const passed = [];
+    for (const s of steps) {
+      const at = path.steps.indexOf(s.step, cursor);
+      if (at >= 0) { passed.push(s); cursor = at + 1; }
+    }
+    if (passed.length !== path.steps.length) continue;
+    try { sessionStorage.setItem("tc_nav_done_" + path.id, "1"); } catch (e) {}
+    sendWatchtowerEvent("NavigationCompleted", {
+      path: path.id,
+      steps: path.steps,
+      completedSteps: passed.length,
+      durationMs: passed[passed.length - 1].ts - passed[0].ts,
+    });
+  }
+}
+
 function track(evt, id) {
   const rec = { evt, id, ts: Date.now(), pool: state.selected?.address };
   window.__SLOT_CLICKS__.push(rec);
@@ -628,7 +678,10 @@ function track(evt, id) {
   } else if (evt === "page_view") {
     wtType = "PageView";
   } else if (evt === "call_resolved") {
-    wtType = "NavigationCompleted";
+    // Раньше это событие отправлялось как NavigationCompleted напрямую — это
+    // был не маппинг, а подмена: разрешение прогноза不等于 завершённой
+    // навигации. Теперь это шаг пути, а событие шлёт checkNavPaths().
+    markNavStep("call_resolved");
   }
   sendWatchtowerEvent(wtType, payload);
 }
@@ -704,6 +757,7 @@ function placeCall(dir) {
   c.pending.push({ addr: p.address, sym: p.base_symbol, dir, entry: p.price_usd, ts: Date.now() });
   saveCalls(c);
   track("call_placed", p.address + ":" + dir);
+  markNavStep("call_placed");
   banner(`Прогноз принят: ${p.base_symbol} ${dir === "up" ? "ВВЕРХ" : "ВНИЗ"} на час. Разрешится по живой цене, пока терминал открыт.`);
   renderCallUI();
 }

@@ -356,7 +356,7 @@ def build_report(findings, target, source_sha):
                 "отличаться от исходного отчёта — код правился."
             ),
         },
-        "target": {"path": target, "sourceSha256": source_sha},
+        "target": {"path": target, "sourceSha256Prefix": source_sha[:16]},
         "summary": {
             "open": summary,
             "accepted": len(accepted),
@@ -510,7 +510,7 @@ def main(argv=None):
 
     s = report["summary"]["open"]
     print(f"target: {rel_path}")
-    print(f"sha256: {sha[:16]}…")
+    print(f"sha256: {sha[:16]}… (в отчёте только префикс: полный 64-hex ловится сканером секретов)")
     print(
         "открытых: critical={critical} high={high} medium={medium}; принятых рисков: {a}".format(
             a=report["summary"]["accepted"], **s

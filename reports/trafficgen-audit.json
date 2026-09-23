@@ -1,6 +1,6 @@
 {
   "schema": "trafficgen-audit/v2",
-  "generatedAt": "2026-09-23T17:39:35Z",
+  "generatedAt": "2026-09-23T18:11:18Z",
   "tool": {
     "name": "scripts/check_solana_constraints.py",
     "kind": "targeted-rule-recheck",
@@ -8,7 +8,7 @@
   },
   "target": {
     "path": "programs/sixsec/src/lib.rs",
-    "sourceSha256": "a43424e937f3742d396922ace0b1fa19a4027d25d325921f0948f4a6b12da6d5"
+    "sourceSha256Prefix": "d8c018d1d2e90e37"
   },
   "summary": {
     "open": {
@@ -29,7 +29,7 @@
       "message": "Account `mint_reserve` uses `init_if_needed`; review for re-initialization or state-reset risk.",
       "location": {
         "path": "programs/sixsec/src/lib.rs",
-        "line": 588,
+        "line": 600,
         "column": 1
       },
       "help": "Prefer #[account(init, ...)] when possible.",

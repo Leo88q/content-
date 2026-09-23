@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
+from watchtower_client import emit_traffic_error
 
 HEADERS = {"User-Agent": "talkchart-factory/0.2", "Accept": "application/json"}
 
@@ -31,8 +32,13 @@ def get(url, retries=2):
                 return json.loads(r.read().decode())
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             last = e
+            # Телеметрия ошибки конвейера (событие TrafficError): точка эмиссии,
+            # которой раньше не существовало.
+            emit_traffic_error("fetch_data", e, {"attempt": i + 1, "retries": retries}, url=url)
             time.sleep(3 * (i + 1))
-    raise RuntimeError(f"GET {url} failed: {last}")
+    err = RuntimeError(f"GET {url} failed: {last}")
+    emit_traffic_error("fetch_data", err, {"stage": "get_exhausted"}, url=url)
+    raise err
 
 
 def fetch_trending():
@@ -78,6 +84,7 @@ def fetch_ohlcv(address):
         return [[t, o, h, l, c, v] for t, o, h, l, c, v in lst]  # новые -> старые (как в API)
     except Exception as e:  # noqa: BLE001 — один пул без свечей не роняет прогон
         print(f"  ! ohlcv {address[:8]}…: {e}", file=sys.stderr)
+        emit_traffic_error("fetch_data", e, {"step": "ohlcv", "pool": address[:8]})
         return None
 
 
@@ -95,6 +102,7 @@ def fetch_whales(address):
         j = get(url, retries=1)
     except Exception as e:  # noqa: BLE001
         print(f"  ! trades {address[:8]}…: {e}", file=sys.stderr)
+        emit_traffic_error("fetch_data", e, {"step": "trades", "pool": address[:8]})
         return None
     trades = []
     for d in j.get("data", []):
