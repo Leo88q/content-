@@ -146,6 +146,9 @@ pub mod sixsec {
             .reserved
             .checked_add(reserve)
             .ok_or(SixsecError::ReserveOverflow)?;
+        // SW016: пришиваем резерв к его mint — повторный вызов init_if_needed
+        // под другим mint отклонится constraint'ом выше и не сможет «сбросить» учёт.
+        mint_reserve.mint = reward_mint.key();
 
         let task = &mut ctx.accounts.task;
         task.task_id = task_id;
@@ -586,12 +589,17 @@ pub struct CreateTask<'info> {
         payer = creator,
         space = RESERVE_SPACE,
         seeds = [RESERVE_SEED, reward_mint.key().as_ref()],
-        bump
+        bump,
+        constraint = (mint_reserve.mint == reward_mint.key()
+            || mint_reserve.mint == Pubkey::default())
+            @ SixsecError::ReserveMintMismatch
     )]
     pub mint_reserve: Account<'info, MintReserve>,
     #[account(
         seeds = [PRIZE_POOL_SEED, reward_mint.key().as_ref()],
-        bump
+        bump,
+        token::mint = reward_mint,
+        token::authority = prize_pool
     )]
     pub prize_pool: InterfaceAccount<'info, TokenAccount>,
     pub system_program: Program<'info, System>,
@@ -683,13 +691,21 @@ pub struct Payout<'info> {
     #[account(mut, seeds = [RESERVE_SEED, reward_mint.key().as_ref()], bump)]
     pub mint_reserve: Account<'info, MintReserve>,
     pub reward_mint: InterfaceAccount<'info, Mint>,
+    /// SW009/SW010: mint и authority пула пришпилены — иначе подменяемый
+    /// token-аккаунт другого mint мог бы опустошить чужой баланс.
     #[account(
         mut,
         seeds = [PRIZE_POOL_SEED, reward_mint.key().as_ref()],
-        bump
+        bump,
+        token::mint = reward_mint,
+        token::authority = prize_pool
     )]
     pub prize_pool: InterfaceAccount<'info, TokenAccount>,
-    #[account(mut, constraint = worker_ata.owner == submission.worker)]
+    #[account(
+        mut,
+        constraint = worker_ata.owner == submission.worker,
+        token::mint = reward_mint
+    )]
     pub worker_ata: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Interface<'info, TokenInterface>,
 }
@@ -705,9 +721,20 @@ pub struct PayoutRankBonus<'info> {
     #[account(seeds = [PROFILE_SEED, submission.worker.as_ref()], bump)]
     pub worker_profile: Account<'info, WorkerProfile>,
     pub skr_mint: InterfaceAccount<'info, Mint>,
-    #[account(mut, seeds = [PRIZE_POOL_SEED, skr_mint.key().as_ref()], bump)]
+    /// SW009/SW010: SKR-пул пришпилен к своему mint и self-authority PDA.
+    #[account(
+        mut,
+        seeds = [PRIZE_POOL_SEED, skr_mint.key().as_ref()],
+        bump,
+        token::mint = skr_mint,
+        token::authority = skr_pool
+    )]
     pub skr_pool: InterfaceAccount<'info, TokenAccount>,
-    #[account(mut, constraint = worker_skr_ata.owner == submission.worker)]
+    #[account(
+        mut,
+        constraint = worker_skr_ata.owner == submission.worker,
+        token::mint = skr_mint
+    )]
     pub worker_skr_ata: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Interface<'info, TokenInterface>,
 }
@@ -732,9 +759,20 @@ pub struct WithdrawFromPool<'info> {
     pub reward_mint: InterfaceAccount<'info, Mint>,
     #[account(seeds = [RESERVE_SEED, reward_mint.key().as_ref()], bump)]
     pub mint_reserve: Account<'info, MintReserve>,
-    #[account(mut, seeds = [PRIZE_POOL_SEED, reward_mint.key().as_ref()], bump)]
+    /// SW009/SW010: mint и authority пула пришпилены.
+    #[account(
+        mut,
+        seeds = [PRIZE_POOL_SEED, reward_mint.key().as_ref()],
+        bump,
+        token::mint = reward_mint,
+        token::authority = prize_pool
+    )]
     pub prize_pool: InterfaceAccount<'info, TokenAccount>,
-    #[account(mut, constraint = destination.owner == admin.key())]
+    #[account(
+        mut,
+        constraint = destination.owner == admin.key(),
+        token::mint = reward_mint
+    )]
     pub destination: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Interface<'info, TokenInterface>,
 }

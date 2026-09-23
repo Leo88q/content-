@@ -42,4 +42,6 @@ pub enum SixsecError {
     NoRankBonus,
     #[msg("Исчерпан лимит объёма SKR-бонусов за текущую эпоху")]
     SkrPayoutLimitExceeded,
+    #[msg("Резерв открыт под другой mint — несоответствие при повторном вызове")]
+    ReserveMintMismatch,
 }
