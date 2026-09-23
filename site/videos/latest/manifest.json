@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-09-23T18:15:08+00:00",
+ "generated_at": "2026-09-23T18:27:04+00:00",
  "videos": [
   {
    "file": "videos/2026-09-23/ARCHIBROWN.mp4",
    "latest_file": "videos/latest/ARCHIBROWN.mp4",
    "symbol": "ARCHIBROWN",
-   "chg_h24": 692.215
+   "chg_h24": 570.804
   },
   {
    "file": "videos/2026-09-23/SWEEP.mp4",
    "latest_file": "videos/latest/SWEEP.mp4",
    "symbol": "SWEEP",
-   "chg_h24": 237.132
+   "chg_h24": 240.436
   },
   {
    "file": "videos/2026-09-23/KCAT.mp4",
    "latest_file": "videos/latest/KCAT.mp4",
    "symbol": "KCAT",
-   "chg_h24": 194.956
+   "chg_h24": 216.848
   }
  ]
 }

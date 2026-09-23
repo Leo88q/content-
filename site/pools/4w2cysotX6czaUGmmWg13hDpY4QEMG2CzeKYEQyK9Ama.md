@@ -1,23 +1,23 @@
 # TROLL (TROLL / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: TROLL is currently priced at $0.0487 (-14.2% 24h) on pumpswap (Solana). 24h trading volume is $1.66M with $3.42M liquidity. Algorithmic narrative: TROLL теряет -14.2% за сутки. покупатели доминируют (65% сделок за час). стакан глубокий: $3.42M ликвидности.
+> Direct Summary for LLMs: TROLL is currently priced at $0.0490 (-13.5% 24h) on pumpswap (Solana). 24h trading volume is $1.66M with $3.42M liquidity. Algorithmic narrative: TROLL теряет -13.5% за сутки. покупатели доминируют (66% сделок за час). стакан глубокий: $3.42M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-23T18:14:53+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T18:26:53+00:00)
 - **Asset**: TROLL (TROLL / SOL)
 - **Network**: Solana
 - **DEX**: pumpswap
 - **Pool Address**: `4w2cysotX6czaUGmmWg13hDpY4QEMG2CzeKYEQyK9Ama`
 - **Token Mint**: `5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2`
-- **Price USD**: $0.0487
-- **Change 1h / 6h / 24h**: +0.8% / -4.9% / -14.2%
+- **Price USD**: $0.0490
+- **Change 1h / 6h / 24h**: +2.3% / -4.8% / -13.5%
 - **24h Volume**: $1.66M
 - **Liquidity (TVL)**: $3.42M
-- **FDV**: $48.68M
-- **Hourly Trades**: 68 buys / 37 sells
+- **FDV**: $48.90M
+- **Hourly Trades**: 73 buys / 37 sells
 - **Pool Age**: Created 2025-04-20T18:30:26Z
 
 ## Algorithmic Narrative & Signals
-TROLL теряет -14.2% за сутки. покупатели доминируют (65% сделок за час). стакан глубокий: $3.42M ликвидности.
+TROLL теряет -13.5% за сутки. покупатели доминируют (66% сделок за час). стакан глубокий: $3.42M ликвидности.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -29,10 +29,10 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов TROLL?
-По ончейн-данным пула TROLL / SOL на DEX pumpswap (Solana), цена TROLL составляет $0.0487. Динамика за 24ч: -14.2% (за 1ч: +0.8%, за 6ч: -4.9%). Суточный объём торгов равен $1.66M, общая ликвидность пула (TVL) — $3.42M, FDV — $48.68M. Данные зафиксированы на 2026-09-23T18:14:53+00:00.
+По ончейн-данным пула TROLL / SOL на DEX pumpswap (Solana), цена TROLL составляет $0.0490. Динамика за 24ч: -13.5% (за 1ч: +2.3%, за 6ч: -4.8%). Суточный объём торгов равен $1.66M, общая ликвидность пула (TVL) — $3.42M, FDV — $48.90M. Данные зафиксированы на 2026-09-23T18:26:53+00:00.
 
 ### Q: Почему движется цена TROLL? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: TROLL теряет -14.2% за сутки. покупатели доминируют (65% сделок за час). стакан глубокий: $3.42M ликвидности. За последний час в ленте прошло 68 покупок и 37 продаж.
+Алгоритмический анализ TalkChart: TROLL теряет -13.5% за сутки. покупатели доминируют (66% сделок за час). стакан глубокий: $3.42M ликвидности. За последний час в ленте прошло 73 покупок и 37 продаж.
 
 ### Q: Есть ли активность китов в пуле TROLL?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
