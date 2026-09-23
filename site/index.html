@@ -21,18 +21,23 @@
     "operatingSystem": "All"
   }
   </script>
+  <link rel="preload" href="fonts/press-start-2p-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/press-start-2p-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
+  <!-- Тема применяется до отрисовки body: иначе на загрузке мигает чужая палитра -->
+  <script src="theme.js"></script>
   <script src="games.js"></script>
 </head>
 <body>
   <header class="top">
-    <div class="logo">📈 <b>Talk</b>Chart <span class="beta">MVP</span></div>
+    <div class="logo"><span class="pic"></span> <b>Talk</b>Chart <span class="beta">MVP</span></div>
     <div class="tagline">графики, которые разговаривают</div>
     <div class="top-right">
       <a href="queue.html" class="btn ghost" style="text-decoration:none" title="Очередь постов для X и каналов">📢 Посты</a>
       <a href="vs/latest.html" class="btn ghost" style="text-decoration:none" title="Ончейн-баттлы токенов">⚔️ Баттлы</a>
       <a href="admin.html" class="btn ghost" style="text-decoration:none;border-color:var(--acc);color:var(--acc)" title="Командный центр управления">⚙️ Админка</a>
       <span id="status"></span>
+      <button id="theme-btn" class="btn ghost" data-theme-toggle title="Светлая тема" aria-label="Светлая тема" aria-pressed="false">☀️ ДЕНЬ</button>
       <button id="lang-btn" class="btn ghost">EN</button>
     </div>
   </header>
