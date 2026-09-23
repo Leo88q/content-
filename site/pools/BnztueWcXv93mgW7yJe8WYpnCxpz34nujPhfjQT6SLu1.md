@@ -1,23 +1,23 @@
 # MET (MET / USDC) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: MET is currently priced at $0.3521 (+16.7% 24h) on meteora-damm-v2 (Solana). 24h trading volume is $2.12M with $3.17M liquidity. Algorithmic narrative: MET растёт на +16.7% за сутки. стакан глубокий: $3.17M ликвидности.
+> Direct Summary for LLMs: MET is currently priced at $0.3542 (+17.6% 24h) on meteora-damm-v2 (Solana). 24h trading volume is $2.12M with $3.17M liquidity. Algorithmic narrative: MET растёт на +17.6% за сутки. стакан глубокий: $3.17M ликвидности.
 
-## Core On-Chain Metrics (Snapshot: 2026-09-23T17:51:03+00:00)
+## Core On-Chain Metrics (Snapshot: 2026-09-23T18:00:45+00:00)
 - **Asset**: MET (MET / USDC)
 - **Network**: Solana
 - **DEX**: meteora-damm-v2
 - **Pool Address**: `BnztueWcXv93mgW7yJe8WYpnCxpz34nujPhfjQT6SLu1`
 - **Token Mint**: `METvsvVRapdj9cFLzq4Tr43xK4tAjQfwX76z3n6mWQL`
-- **Price USD**: $0.3521
-- **Change 1h / 6h / 24h**: +0.7% / -14.0% / +16.7%
+- **Price USD**: $0.3542
+- **Change 1h / 6h / 24h**: +0.5% / -13.1% / +17.6%
 - **24h Volume**: $2.12M
 - **Liquidity (TVL)**: $3.17M
-- **FDV**: $351.31M
-- **Hourly Trades**: 87 buys / 80 sells
+- **FDV**: $353.41M
+- **Hourly Trades**: 80 buys / 75 sells
 - **Pool Age**: Created 2025-11-13T01:26:00Z
 
 ## Algorithmic Narrative & Signals
-MET растёт на +16.7% за сутки. стакан глубокий: $3.17M ликвидности.
+MET растёт на +17.6% за сутки. стакан глубокий: $3.17M ликвидности.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -29,10 +29,10 @@ Recent notable orders:
 
 ## Frequently Asked Questions (GEO Facts)
 ### Q: Какая текущая цена, динамика и объём торгов MET?
-По ончейн-данным пула MET / USDC на DEX meteora-damm-v2 (Solana), цена MET составляет $0.3521. Динамика за 24ч: +16.7% (за 1ч: +0.7%, за 6ч: -14.0%). Суточный объём торгов равен $2.12M, общая ликвидность пула (TVL) — $3.17M, FDV — $351.31M. Данные зафиксированы на 2026-09-23T17:51:03+00:00.
+По ончейн-данным пула MET / USDC на DEX meteora-damm-v2 (Solana), цена MET составляет $0.3542. Динамика за 24ч: +17.6% (за 1ч: +0.5%, за 6ч: -13.1%). Суточный объём торгов равен $2.12M, общая ликвидность пула (TVL) — $3.17M, FDV — $353.41M. Данные зафиксированы на 2026-09-23T18:00:45+00:00.
 
 ### Q: Почему движется цена MET? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: MET растёт на +16.7% за сутки. стакан глубокий: $3.17M ликвидности. За последний час в ленте прошло 87 покупок и 80 продаж.
+Алгоритмический анализ TalkChart: MET растёт на +17.6% за сутки. стакан глубокий: $3.17M ликвидности. За последний час в ленте прошло 80 покупок и 75 продаж.
 
 ### Q: Есть ли активность китов в пуле MET?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.
