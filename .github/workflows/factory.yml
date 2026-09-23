@@ -12,7 +12,7 @@ on:
     - cron: "17 */4 * * *"   # каждый 4-й час в :17 UTC
   workflow_dispatch:
   push:
-    branches: [arena/01a0c170-content, main]
+    branches: [arena/01a0c170-content, main, arena/01a0cf4a-talkchart-traffic-generator]
     paths:
       - "site/**"
       - ".github/workflows/factory.yml"

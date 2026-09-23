@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [arena/01a0a1f6-content, main]
+    branches: [arena/01a0a1f6-content, main, arena/01a0cf4a-talkchart-traffic-generator]
   pull_request:
   workflow_dispatch:
 
