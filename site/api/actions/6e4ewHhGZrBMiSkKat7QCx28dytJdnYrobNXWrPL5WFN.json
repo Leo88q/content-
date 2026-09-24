@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/EMBER_-4.png",
+  "title": "TalkChart: EMBER (-3.6%) — Solana On-Chain Radar",
+  "description": "EMBER в боковике: -3.6% за сутки. ускорение в последнем часе. пулу 14 дн., история короткая.\n\nОбъём: $838.9K · Ликвидность: $285.7K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп EMBER (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-5dvXTZ5qwgafnHtwu3Ls3QrWx1U4LQsFeCuJgkk4QEC6"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=6e4ewHhGZrBMiSkKat7QCx28dytJdnYrobNXWrPL5WFN"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

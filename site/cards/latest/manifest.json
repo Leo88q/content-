@@ -1,64 +1,64 @@
 {
- "generated_at": "2026-09-24T13:38:16+00:00",
+ "generated_at": "2026-09-24T16:30:17+00:00",
  "cards": [
   {
-   "file": "cards/2026-09-24/familiars_+4173.png",
+   "file": "cards/2026-09-24/familiars_+4742.png",
    "symbol": "familiars",
-   "chg_h24": 4173.555,
+   "chg_h24": 4742.068,
    "address": "ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4",
    "pool_url": "https://leo88q.github.io/content-/site/pools/ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4.html",
-   "latest_file": "cards/latest/familiars_+4173.png"
+   "latest_file": "cards/latest/familiars_+4742.png"
   },
   {
-   "file": "cards/2026-09-24/SHARTCOIN_+1230.png",
+   "file": "cards/2026-09-24/SHARTCOIN_+815.png",
    "symbol": "SHARTCOIN",
-   "chg_h24": 1230.202,
+   "chg_h24": 815.645,
    "address": "82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc",
    "pool_url": "https://leo88q.github.io/content-/site/pools/82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc.html",
-   "latest_file": "cards/latest/SHARTCOIN_+1230.png"
+   "latest_file": "cards/latest/SHARTCOIN_+815.png"
   },
   {
-   "file": "cards/2026-09-24/SI_+645.png",
+   "file": "cards/2026-09-24/SI_+697.png",
    "symbol": "SI",
-   "chg_h24": 645.485,
+   "chg_h24": 697.102,
    "address": "3odkxoFB7KvujaRFoLbCQbbZv93R9njJr9KQTH5cKDKT",
    "pool_url": "https://leo88q.github.io/content-/site/pools/3odkxoFB7KvujaRFoLbCQbbZv93R9njJr9KQTH5cKDKT.html",
-   "latest_file": "cards/latest/SI_+645.png"
+   "latest_file": "cards/latest/SI_+697.png"
   },
   {
-   "file": "cards/2026-09-24/BLUF_+395.png",
-   "symbol": "BLUF",
-   "chg_h24": 395.031,
-   "address": "BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y.html"
-  },
-  {
-   "file": "cards/2026-09-24/FUNKOS_+74.png",
-   "symbol": "FUNKOS",
-   "chg_h24": 74.446,
-   "address": "Hhe2TY1dGPr7SdMJC2hTACq7dTxfr5f6BF3n2nWwkoce",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/Hhe2TY1dGPr7SdMJC2hTACq7dTxfr5f6BF3n2nWwkoce.html"
-  },
-  {
-   "file": "cards/2026-09-24/ARCHIBROWN_-74.png",
-   "symbol": "ARCHIBROWN",
-   "chg_h24": -74.188,
-   "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz.html"
-  },
-  {
-   "file": "cards/2026-09-24/CALI_+62.png",
+   "file": "cards/2026-09-24/CALI_+220.png",
    "symbol": "CALI",
-   "chg_h24": 62.712,
+   "chg_h24": 220.474,
    "address": "2i2iULr7UwK1SDRB17T5FUtiMnFQL7fyy7rh69brZihc",
    "pool_url": "https://leo88q.github.io/content-/site/pools/2i2iULr7UwK1SDRB17T5FUtiMnFQL7fyy7rh69brZihc.html"
   },
   {
-   "file": "cards/2026-09-24/JEANPHIL_-42.png",
-   "symbol": "JEANPHIL",
-   "chg_h24": -42.037,
-   "address": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.html"
+   "file": "cards/2026-09-24/goon_+129.png",
+   "symbol": "goon",
+   "chg_h24": 129.582,
+   "address": "9PYormkWiWYAALGWkNNBjSEqKk79HPoRaLgQhMfY4fuv",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/9PYormkWiWYAALGWkNNBjSEqKk79HPoRaLgQhMfY4fuv.html"
+  },
+  {
+   "file": "cards/2026-09-24/FUNKOS_+126.png",
+   "symbol": "FUNKOS",
+   "chg_h24": 126.387,
+   "address": "Hhe2TY1dGPr7SdMJC2hTACq7dTxfr5f6BF3n2nWwkoce",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/Hhe2TY1dGPr7SdMJC2hTACq7dTxfr5f6BF3n2nWwkoce.html"
+  },
+  {
+   "file": "cards/2026-09-24/SI_+95.png",
+   "symbol": "SI",
+   "chg_h24": 95.656,
+   "address": "B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/B4VFURUHHzyt8YzBGBV9jiarBvjh1EbMAbRNBnNqaxUD.html"
+  },
+  {
+   "file": "cards/2026-09-24/BLUF_-71.png",
+   "symbol": "BLUF",
+   "chg_h24": -71.296,
+   "address": "BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y.html"
   }
  ]
 }
