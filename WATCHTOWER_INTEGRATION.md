@@ -30,38 +30,38 @@ integration_type: direct_adapter
 source_type: offchain
 data_quality: partial
 read_only: true
-last_synced_at: 2026-09-22T18:00:00.000Z
+last_synced_at: 2026-09-24T15:00:00.000Z  # списки событий генерируются из EVENTS_CATALOG
 implemented_events:
+  - AbuseBlocked
+  - AnomalyDetected
+  - BotFlagged
+  - CTAClicked
   - CampaignCreated
   - CampaignStarted
   - CampaignStopped
   - CampaignUpdated
+  - Click
+  - DataGapDetected
+  - DataGapHealed
+  - EmergencyPause
+  - ExporterHealth
+  - LandingReached
+  - NavigationCompleted
+  - PageAssigned
+  - PageRemoved
+  - PageView
+  - RateLimited
+  - SessionAbandoned
+  - SessionEnded
+  - SessionStarted
   - SourceConnected
   - SourceDisconnected
   - SourceHealthChanged
-  - PageAssigned
-  - PageRemoved
-  - SessionStarted
-  - PageView
-  - Click
-  - CTAClicked
-  - SessionEnded
-  - RateLimited
-  - DataGapDetected
-  - DataGapHealed
+  - TrafficError
 unavailable_events:
-  - LandingReached
-  - Abandoned
-  - NavigationCompleted
+  - ConfigUpdated
   - DeliveryFailed
   - RetryScheduled
-  - TrafficError
-  - ExporterHealth
-  - BotFlagged
-  - AnomalyDetected
-  - AbuseBlocked
-  - ConfigUpdated
-  - EmergencyPause
 ---
 
 # Games Watchtower Integration Passport: TalkChart Traffic Generator (`trafficgen`)
@@ -278,11 +278,27 @@ POST /api/control/consent                   записать решение по
 | Блокировка злоупотребления | `AbuseBlocked` | предложение `block_source` / `block_session` (два подтверждения + 2FA) |
 | Аварийная пауза | `EmergencyPause` | предложение `emergency_pause` (два подтверждения + 2FA) |
 
-### Unavailable (4) — причины
+### Реализовано: 26 / недоступно: 3
+
+Списки выше генерируются из `EVENTS_CATALOG` — документация не может разъехаться с кодом.
+
+### `LandingReached` — как подтверждается переход (раньше был unavailable)
+
+1. CTA ведёт на `GET /r/<clickId>?to=<target>`; `target` берётся только из allowlist
+   целей, произвольный URL отклоняется `400` (иначе это open-redirect).
+2. Проход через `/r/` регистрирует клик в `site/data/landings.sqlite3` и отдаёт
+   `302` на свою страницу с `?wt_click=<clickId>`.
+3. Игра/лендинг шлёт `POST /api/track` с `eventType: LandingReached` и
+   `payload.clickId`. Нет зарегистрированного клика → `rejected: landing_unconfirmed`.
+4. Статистика — `GET /watchtower/landings` (`clicks`, `confirmed`, `pending`,
+   `confirmationRate`; при нулевом знаменателе `null`, а не `0`).
+
+Журнал ведёт экспортёр, хаб остаётся read-only: он только потребляет события.
+
+### Unavailable (3) — причины
 
 | Событие | Причина |
 |---|---|
-| `LandingReached` | нет подтверждения перехода (нужен redirect-proxy/beacon игры); знаменатель воронки остаётся `null` (ADR-0001) |
 | `DeliveryFailed` / `RetryScheduled` | приём синхронный, очереди доставки нет — нечем эмитить |
 | `ConfigUpdated` | осознанно не вводим: покрывается granular-событиями реконсилёра и журналом proposal (ADR-0003) |
 

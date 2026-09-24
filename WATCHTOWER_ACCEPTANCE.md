@@ -20,8 +20,8 @@ PASS event_retention: 30d
 ```
 
 Плюс `campaign_store: config`, `auth: none`, `read_only: true`, `data_quality: partial`
-(12 типов событий честно помечены unavailable), списки `implemented_events` (17) и
-`unavailable_events` (12, с причинами).
+(3 типов событий честно помечены unavailable), списки `implemented_events`
+(26) и `unavailable_events` (3, с причинами) — они генерируются из `EVENTS_CATALOG`.
 
 ## 2. «Нет секретов в git» — уточнённо и честно
 
@@ -88,7 +88,9 @@ export WATCHTOWER_READ_TOKEN=   # в этой среде не установле
 | `GET /watchtower/events?limit=10` | конверт события полный (см. ниже), hasMore:true |
 | `GET /watchtower/events?cursor=MA==&limit=5` | **200, replay с первого события** (MA== → id 0; каноника `cursor:<id>` тоже поддерживается) |
 | `GET /watchtower/metrics/daily?period=7d` | 7 дней непрерывно; per-day errors/integrity/разрезы; bot/real отдельно |
-| `GET /watchtower/funnels` | 5 ступеней; LandingReached `stageUnavailable:true` |
+| `GET /watchtower/funnels` | 5 ступеней; `LandingReached` реализован и считает только подтверждённые переходы (флага `stageUnavailable` больше нет) |
+| `GET /watchtower/landings` | `clicks`, `confirmed`, `pending`, `confirmationRate` (null при нулевом знаменателе) |
+| `GET /r/<clickId>?to=target_sixsec` | 302 на свою страницу с `?wt_click=`; чужой `to` → 400 |
 | `GET /watchtower/alerts` | activeCount: 0, totalCount: 0 (пусто — нормально) |
 
 ### Конверт события (`events[0]`, сокращённо)

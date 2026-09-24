@@ -461,11 +461,12 @@ class TestDataQuality(BaseCase):
     def test_20_catalog_closed_events_are_marked_implemented(self):
         implemented = set(we.IMPLEMENTED_EVENTS)
         for et in ("ExporterHealth", "SessionAbandoned", "BotFlagged", "AnomalyDetected",
-                   "TrafficError", "EmergencyPause", "AbuseBlocked", "NavigationCompleted"):
+                   "TrafficError", "EmergencyPause", "AbuseBlocked", "NavigationCompleted",
+                   "LandingReached"):
             self.assertIn(et, implemented, f"{et} заявлен реализованным, но его нет в каталоге")
         # честно недоступное осталось недоступным с причиной
         unavailable = {u["eventType"]: u["reason"] for u in we.UNAVAILABLE_EVENTS}
-        for et in ("LandingReached", "DeliveryFailed", "RetryScheduled", "ConfigUpdated"):
+        for et in ("DeliveryFailed", "RetryScheduled", "ConfigUpdated"):
             self.assertIn(et, unavailable)
             self.assertTrue(unavailable[et])
 

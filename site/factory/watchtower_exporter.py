@@ -24,6 +24,7 @@ import hashlib
 import hmac
 import json
 import math
+import contextlib
 import os
 import re
 import sqlite3
@@ -38,6 +39,7 @@ from urllib.parse import parse_qs, urlparse
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import config
+import landings
 from watchtower_control import (  # контроль-плейн: proposal → 2 подтверждения → apply
     CONTROL, SEVERITY_DICTIONARY, EVENT_SEVERITY, authenticate, control_enabled,
     totp_code, PROPOSAL_TTL_SECONDS,
@@ -76,9 +78,7 @@ EVENTS_CATALOG = [
     ("PageView", True, None),               # site/app.js
     ("Click", True, None),                  # site/app.js (общие клики)
     ("CTAClicked", True, None),             # site/app.js (click_slot, promo)
-    ("LandingReached", False,
-     "Нет подтверждённого перехода: нужен redirect-proxy/beacon со стороны игры. "
-     "Воронку не дорисовываем — нулевые знаменатели остаются null."),
+    ("LandingReached", True, None),          # click-id round-trip: /r/<clickId> + beacon игры (landings.py)
     ("SessionEnded", True, None),           # site/app.js pagehide + sendBeacon
     ("SessionAbandoned", True, None),       # планировщик таймаутов (watchtower_detectors.SessionSweeper)
     ("NavigationCompleted", True, None),    # site/app.js: явный маппинг внутренней навигации терминала
@@ -121,7 +121,7 @@ PAGE_ID_ALIASES = {"terminal": "target_terminal"}
 EVENT_TYPE_ALIASES = {"Abandoned": "SessionAbandoned"}
 VALID_SOURCE_TYPES = {"real", "bot", "hybrid"}
 REJECTED_REASON_KEYS = ("schema", "pii", "invalid_timestamp", "non_utc_timestamp",
-                        "unknown_type", "paused", "blocked")
+                        "unknown_type", "paused", "blocked", "landing_unconfirmed")
 # Минимальный объём явных завершений сессий, при котором длительность перестаёт
 # быть оценкой (W2: убрать estimate:true, но только по факту, а не по желанию).
 MIN_SESSIONS_FOR_DURATION = int(os.environ.get("TRAFFICGEN_MIN_SESSIONS_FOR_DURATION", "30"))
@@ -469,7 +469,8 @@ def _default_metrics():
         "data_gaps_healed_total": 0,
         # не выводимые из events (персистятся в metrics_state):
         "events_duplicate_total": 0,
-        "events_rejected_total": {"schema": 0, "pii": 0, "unknown_type": 0},
+        "events_rejected_total": {"schema": 0, "pii": 0, "unknown_type": 0,
+                                      "landing_unconfirmed": 0},
         "events_unknown_type": {},
         "delivery_failures_total": 0,
         "exporter_errors_total": 0,
@@ -478,7 +479,10 @@ def _default_metrics():
 
 
 class EventStore:
-    def __init__(self, db_path=DB_PATH):
+    def __init__(self, db_path=DB_PATH, ledger_path=None):
+        # Журнал «CTA → игра» рядом с базой событий: у каждого хранилища свой, поэтому
+        # тесты в temp-каталоге не трогают боевые данные. Если журнал недоступен,
+        # LandingReached отклоняется с явной причиной, но экспортёр не падает.
         self.db_path = db_path
         parent = os.path.dirname(db_path)
         if parent:
@@ -487,13 +491,28 @@ class EventStore:
         self.metrics = _default_metrics()
         self.init_db()
         self.load_initial_metrics()
+        ledger_db = ledger_path or os.path.join(parent or ".", "landings.sqlite3")
+        try:
+            self.ledger = landings.LandingLedger(ledger_db)
+        except Exception as err:  # журнал не критичен для приёма событий
+            self.ledger = None
+            print(f"WARN: landings ledger недоступен: {err}", file=sys.stderr)
 
+    @contextlib.contextmanager
     def get_conn(self):
+        """`with store.get_conn() as conn:` — commit/rollback и ЗАКРЫТИЕ соединения.
+        Раньше возвращался голый sqlite3.Connection: его `with` коммитит, но не закрывает,
+        и на macOS (ulimit -n 256) тесты/экспортёр упирались в «unable to open database file»."""
+        import sqlite3
         conn = sqlite3.connect(self.db_path, timeout=10.0)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-        return conn
+        try:
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def get_connection(self):
         return self.get_conn()
@@ -690,11 +709,31 @@ class EventStore:
                     "identity": None, "id": None}
 
         ev = canonicalize_event(raw_pii)
+
+        # LandingReached принимается только по зарегистрированному clickId: подтверждение
+        # приходит из реального прохода через /r/, аналитика ничего не дорисовывает.
+        if self.ledger is not None:
+            blocked = landings.gate_event(self.ledger, ev)
+            if blocked is not None:
+                self.bump_metric("events_rejected_total", "landing_unconfirmed")
+                self.bump_daily_counter("rejected.landing_unconfirmed")
+                self.record_rejected(raw, "landing_unconfirmed", blocked["message"])
+                return {"status": "rejected", "reason": "landing_unconfirmed",
+                        "message": blocked["message"],
+                        "eventId": raw.get("eventId") if isinstance(raw, dict) else None,
+                        "identity": None, "id": None}
+
         unknown_type = ev["eventType"] not in CATALOG_EVENT_TYPES
         if unknown_type:
             self.bump_metric("events_rejected_total", "unknown_type")
             self.bump_unknown_type(ev["eventType"])
             self.bump_daily_counter("rejected.unknown_type")
+
+        if self.ledger is not None:
+            try:
+                landings.observe_event(self.ledger, ev)
+            except Exception as _obs_err:
+                print(f"WARN: landings.observe_event: {_obs_err}", file=sys.stderr)
 
         is_synth = 1 if ev["payload"].get("synthetic") is True else 0
         payload_str = json.dumps(ev["payload"], ensure_ascii=False)
@@ -2127,6 +2166,30 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
         path = parsed.path
         qs = parse_qs(parsed.query)
 
+        # Подтверждение перехода: CTA ведёт сюда, отсюда — на целевую страницу.
+        # Проход по этому маршруту и есть «пользователь реально ушёл в игру»:
+        # регистрирует clickId и редиректит 302. Произвольный URL не принимается.
+        if path.startswith("/r/"):
+            click_id = path[3:].strip("/")
+            target = (qs.get("to") or [""])[0]
+            allowed = landings.targets()
+            if not landings.valid_click_id(click_id) or target not in allowed:
+                return self.send_json(400, error_envelope(
+                    "unknown click id or target", "landing_bad_request", period="live"))
+            if STORE.ledger is not None:
+                try:
+                    STORE.ledger.register_click(click_id, target=target, source_id="direct_web")
+                except Exception as _e:
+                    print(f"WARN: register_click: {_e}", file=sys.stderr)
+            # wt_click — обычным query-параметром ДО хеша: его видит любая страница,
+            # а маршрут SPA остаётся в хеше.
+            location = f"{config.SITE_URL.rstrip('/')}?wt_click={click_id}{allowed[target]}"
+            self.send_response(302)
+            self.send_header("Location", location)
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
+
         if path in ("/watchtower/metrics", "/metrics"):
             if path.startswith("/watchtower") and not self.verify_auth():
                 return self.send_json(401, error_envelope(
@@ -2139,6 +2202,15 @@ class WatchtowerHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(metrics_txt.encode("utf-8"))
             return
+
+        if path == "/watchtower/landings":
+            if not self.verify_auth():
+                return self.send_json(401, error_envelope(
+                    "Unauthorized. Provide valid read token.", "unauthorized", period="live"))
+            stats = STORE.ledger.stats() if STORE.ledger is not None else {
+                "clicks": 0, "confirmed": 0, "pending": 0, "confirmationRate": None,
+                "ledger": "unavailable"}
+            return self.send_json(200, wrap_envelope(dict(stats, endpoint="landings"), "complete", 1.0, "live"))
 
         if not path.startswith("/watchtower"):
             return super().do_GET()

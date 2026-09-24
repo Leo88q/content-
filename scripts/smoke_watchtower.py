@@ -3,7 +3,7 @@
 Smoke test (end-to-end) for the Games Watchtower Integration Adapter.
 
 Поднимает эфемерный инстанс сервера и проверяет живьём (PROMPT §11.2):
-- все 12 GET-эндпоинтов + Prometheus /watchtower/metrics
+- все 13 GET-эндпоинтов + Prometheus /watchtower/metrics
 - единый конверт {data, generatedAt, period, source, dataQuality, confidence, parserVersion}
 - strict read-only: POST/PUT/DELETE/PATCH -> 405 + Allow: GET, OPTIONS
 - ingestion POST /api/track со scrub PII (grep утечек по выданным событиям)
@@ -11,7 +11,8 @@ Smoke test (end-to-end) for the Games Watchtower Integration Adapter.
 - rate limit: при заниженном лимите 1 rps быстрые запросы дают 429 + Retry-After
 - invalid cursor -> 400 с code=invalid_cursor
 - replay: чтение с нуля после прохода курсором возвращает тот же набор
-- честность воронки: LandingReached -> stageUnavailable=true, нулевой знаменатель -> null
+- честность воронки: LandingReached принимается только по подтверждённому clickId (/r/ + beacon),
+  неподтверждённый -> rejected:landing_unconfirmed; нулевой знаменатель -> null
 - forecast: всегда unavailable + confidence 0.0 + forecast/model = null
 """
 
@@ -38,6 +39,13 @@ from watchtower_control import ControlStore
 
 ENVELOPE_KEYS = ("data", "generatedAt", "period", "source",
                  "dataQuality", "confidence", "parserVersion")
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Не ходить по 302 наружу: проверяем заголовок Location, а не грузим чужой хост."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 PII_FRAGMENTS = ("1.2.3.4", "user@example.com", "fp-12345",
                  "sess_cookie_secret", "deadbeef" * 8, "my_wallet_secret_key")
@@ -118,7 +126,7 @@ def run_smoke_tests():
           and cfg.get("trafficType") == "hybrid" and cfg.get("readOnly") is True)
     check("config: implementedEvents + unavailableEvents = полный каталог, без пересечения",
           set(cfg.get("implementedEvents", [])) & set(cfg.get("unavailableEvents", [])) == set()
-          and "LandingReached" in cfg.get("unavailableEvents", []))
+          and "LandingReached" in cfg.get("implementedEvents", []))
     check("config: 8 sourceSystems, 6 targetPages",
           len(cfg.get("sourceSystems", [])) == 8 and len(cfg.get("targetPages", [])) == 6)
     # совместимость с чек-листом Watchtower: jq .data.campaigns
@@ -247,8 +255,53 @@ def run_smoke_tests():
     _, body, _ = request(f"{base}/watchtower/funnels")
     fdata = json.loads(body)["data"]
     steps = {s["stage"]: s for s in fdata["steps"]}
-    check("воронка: LandingReached -> stageUnavailable=true",
-          steps.get("LandingReached", {}).get("stageUnavailable") is True)
+    # LandingReached реализован: неподтверждённый переход не имеет права попасть в воронку.
+    code, body, _ = request(f"{base}/api/track", method="POST",
+                            data={"eventType": "LandingReached", "campaignId": "talkchart_interactive_radar",
+                                  "sourceId": "x_twitter", "sourceType": "real", "pageId": "target_sixsec",
+                                  "sessionId": "sess_smoke_landing_unconfirmed", "seq": 1, "payload": {}})
+    rejected = json.loads(body)
+    check("LandingReached без clickId -> rejected landing_unconfirmed",
+          rejected.get("results", [{}])[0].get("reason") == "landing_unconfirmed",
+          f"получено {rejected}")
+
+    # подтверждённый переход: сначала клик через /r/<clickId> (302 + регистрация), затем beacon игры
+    click = "smoke-click-0001"
+    opener = urllib.request.build_opener(_NoRedirect())
+    try:
+        resp = opener.open(urllib.request.Request(f"{base}/r/{click}?to=target_sixsec", method="GET"), timeout=5)
+        status, location = resp.status, ""
+    except urllib.error.HTTPError as e:
+        status, location = e.code, e.headers.get("Location", "")
+    check("/r/<clickId> -> 302 на свою целевую страницу с wt_click",
+          status == 302 and location.startswith(we.config.SITE_URL.rstrip("/"))
+          and f"wt_click={click}" in location and "#/sixsec" in location,
+          f"{status} {location}")
+    # чужой/произвольный URL редирект не принимает (иначе это open-redirect)
+    code, body, _ = request(f"{base}/r/{click}?to=https://evil.example/x", method="GET")
+    check("/r/ отказывает на target вне allowlist", code == 400, f"получено {code}")
+
+    code, body, _ = request(f"{base}/api/track", method="POST",
+                            data={"eventType": "LandingReached", "campaignId": "talkchart_interactive_radar",
+                                  "sourceId": "x_twitter", "sourceType": "real", "pageId": "target_sixsec",
+                                  "sessionId": "sess_smoke_landing_ok", "seq": 1,
+                                  "payload": {"clickId": click}})
+    check("LandingReached по зарегистрированному clickId -> accepted",
+          json.loads(body).get("results", [{}])[0].get("status") == "accepted", f"{body}")
+
+    _, body, _ = request(f"{base}/watchtower/funnels")
+    steps = {s["stage"]: s for s in json.loads(body)["data"]["steps"]}
+    check("воронка: LandingReached реализован (без stageUnavailable) и считает подтверждённые переходы",
+          steps.get("LandingReached", {}).get("stageUnavailable") is None
+          and steps["LandingReached"]["count"] >= 1,
+          f"{steps.get('LandingReached')}")
+    code, body, _ = request(f"{base}/watchtower/landings")
+    envelope = json.loads(body)
+    lnd = envelope["data"]
+    check("GET /watchtower/landings — клик зарегистрирован и подтверждён",
+          lnd.get("clicks", 0) >= 1 and lnd.get("confirmed", 0) >= 1
+          and 0 < lnd.get("confirmationRate", 0) <= 1 and envelope.get("dataQuality") == "complete",
+          f"{lnd}")
     check("воронка: count числом, конверсии null при нулевом знаменателе",
           isinstance(steps.get("CampaignStarted", {}).get("count"), int))
     check("воронка: byCampaign + bySource присутствуют",
