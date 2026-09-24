@@ -36,6 +36,7 @@ import base64
 import hashlib
 import hmac
 import json
+import contextlib
 import os
 import time
 import uuid
@@ -170,13 +171,20 @@ class ControlStore:
             os.makedirs(parent, exist_ok=True)
         self.init_db()
 
+    @contextlib.contextmanager
     def get_conn(self):
+        """`with store.get_conn() as conn:` — commit/rollback и ЗАКРЫТИЕ соединения.
+        Раньше возвращался голый sqlite3.Connection: его `with` коммитит, но не закрывает,
+        и на macOS (ulimit -n 256) тесты/экспортёр упирались в «unable to open database file»."""
         import sqlite3
-
         conn = sqlite3.connect(self.db_path, timeout=10.0)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        return conn
+        try:
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def init_db(self):
         with self.get_conn() as conn:

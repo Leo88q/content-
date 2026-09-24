@@ -23,6 +23,7 @@ import os
 import re
 import sqlite3
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 
 CLICK_ID_RE = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
@@ -78,11 +79,19 @@ class LandingLedger:
             )
             c.execute("CREATE INDEX IF NOT EXISTS idx_landing_created ON landing_clicks(created_at)")
 
+    @contextmanager
     def _conn(self):
+        """Соединение с commit/rollback И закрытием. Голый `with sqlite3.connect()`
+        только коммитит, но не закрывает: каждое событие оставляло открытый файл, и на
+        macOS (ulimit -n 256) экспортёр падал с «unable to open database file»."""
         conn = sqlite3.connect(self.db_path, timeout=10)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA busy_timeout=5000")
-        return conn
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def register_click(self, click_id, *, session_id=None, campaign_id=None,
                        source_id=None, page_id=None, target=None):

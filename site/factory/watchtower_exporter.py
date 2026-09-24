@@ -24,6 +24,7 @@ import hashlib
 import hmac
 import json
 import math
+import contextlib
 import os
 import re
 import sqlite3
@@ -497,12 +498,21 @@ class EventStore:
             self.ledger = None
             print(f"WARN: landings ledger недоступен: {err}", file=sys.stderr)
 
+    @contextlib.contextmanager
     def get_conn(self):
+        """`with store.get_conn() as conn:` — commit/rollback и ЗАКРЫТИЕ соединения.
+        Раньше возвращался голый sqlite3.Connection: его `with` коммитит, но не закрывает,
+        и на macOS (ulimit -n 256) тесты/экспортёр упирались в «unable to open database file»."""
+        import sqlite3
         conn = sqlite3.connect(self.db_path, timeout=10.0)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-        return conn
+        try:
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def get_connection(self):
         return self.get_conn()
