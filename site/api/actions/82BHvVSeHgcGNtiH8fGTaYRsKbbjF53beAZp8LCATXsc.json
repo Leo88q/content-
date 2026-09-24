@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/SHARTCOIN_+1230.png",
+  "title": "TalkChart: SHARTCOIN (+1230.2%) — Solana On-Chain Radar",
+  "description": "SHARTCOIN разрывает: +1230.2% за 24ч. объём $5.91M больше капы в 1.6× — бумага в огне. пулу 1 дн. — чистая рулетка.\n\nОбъём: $5.91M · Ликвидность: $863.3K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп SHARTCOIN (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-UpBBfyC75u3kxDGWmmmW2yauk9YY3CqZhdt1KUDkids"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/SI_+645.png",
+  "title": "TalkChart: SI (+645.5%) — Solana On-Chain Radar",
+  "description": "SI разрывает: +645.5% за 24ч. давление продаж нарастает. объём $2.73M больше капы в 7.7× — бумага в огне. ликвидность тонкая ($58.2K) — движения будут резкими. пулу 0 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $3.0K (151× медианы, 0ч назад). нетто китов за сутки −$511.20.\n\nОбъём: $2.73M · Ликвидность: $58.2K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп SI (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-82ezhRLKdKwkSC9jkM3js1yf93VbmvLXNMPkBmompump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=3odkxoFB7KvujaRFoLbCQbbZv93R9njJr9KQTH5cKDKT"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

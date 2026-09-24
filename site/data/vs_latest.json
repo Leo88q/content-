@@ -1,17 +1,17 @@
 {
-  "slug": "familiars-vs-archibrown",
+  "slug": "familiars-vs-shartcoin",
   "token1": {
     "symbol": "familiars",
-    "change_24h": 4427.139,
+    "change_24h": 4173.555,
     "address": "ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4",
-    "volume": 7586027.37040197
+    "volume": 8918500.78222533
   },
   "token2": {
-    "symbol": "ARCHIBROWN",
-    "change_24h": 676.056,
-    "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
-    "volume": 2715573.41436142
+    "symbol": "SHARTCOIN",
+    "change_24h": 1230.202,
+    "address": "82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc",
+    "volume": 5911364.80123188
   },
-  "verdict": "По ончейн-метрикам TalkChart: familiars опережает по ценовому импульсу (+4427.1% против +676.1%). Кроме того, у familiars существенно глубже пул ликвидности ($151.8K против $57.8K), что снижает риск проскальзывания. Краткосрочный фаворит по совокупности факторов: familiars.",
-  "updated_at": "2026-09-24 05:01 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: familiars опережает по ценовому импульсу (+4173.6% против +1230.2%). Кроме того, у SHARTCOIN более надёжная ликвидность ($863.3K против $152.0K). Кроме того, у familiars объём превышает ликвидность в 58.7× — признак экстремального хайпа и волатильности. Краткосрочный фаворит по совокупности факторов: SHARTCOIN.",
+  "updated_at": "2026-09-24 13:38 UTC"
 }

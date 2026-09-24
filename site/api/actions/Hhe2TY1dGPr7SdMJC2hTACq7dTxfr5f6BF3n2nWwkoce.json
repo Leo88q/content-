@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/FUNKOS_+74.png",
+  "title": "TalkChart: FUNKOS (+74.4%) — Solana On-Chain Radar",
+  "description": "FUNKOS разрывает: +74.4% за 24ч. давление продаж нарастает. объём $2.83M больше капы в 34.1× — бумага в огне. ликвидность тонкая ($27.3K) — движения будут резкими. пулу 0 дн. — чистая рулетка.\n\nОбъём: $2.83M · Ликвидность: $27.3K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп FUNKOS (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-BDKC1AV3saXrN8jKnWB2TTQmDD6z8CFdY55ku7eAfunk"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Hhe2TY1dGPr7SdMJC2hTACq7dTxfr5f6BF3n2nWwkoce"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

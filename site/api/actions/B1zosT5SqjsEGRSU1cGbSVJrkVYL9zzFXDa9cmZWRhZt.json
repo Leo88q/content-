@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/UNTXD_-25.png",
+  "title": "TalkChart: UNTXD (-24.9%) — Solana On-Chain Radar",
+  "description": "UNTXD теряет -24.9% за сутки. объём $1.73M больше капы в 48.3× — бумага в огне. ликвидность тонкая ($16.8K) — движения будут резкими. пулу 1 дн. — чистая рулетка.\n\nОбъём: $1.73M · Ликвидность: $16.8K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп UNTXD (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-3tzkdxJ1qVCaPAuWmd8FjRFKUbwMYpLUAq5gg4Vopump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=B1zosT5SqjsEGRSU1cGbSVJrkVYL9zzFXDa9cmZWRhZt"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
