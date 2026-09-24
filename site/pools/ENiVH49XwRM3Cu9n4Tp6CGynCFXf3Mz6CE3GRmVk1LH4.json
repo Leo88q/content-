@@ -1,0 +1,76 @@
+{
+  "pool": {
+    "address": "ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4",
+    "name": "familiars / SOL",
+    "base_symbol": "familiars",
+    "base_name": "familiars",
+    "base_address": "2PENPmfgJfq6CG3k4byj4oWwHf8SerqakmYHMkUupump",
+    "dex": "pumpswap",
+    "price_usd": 0.0021972325301844015,
+    "created_at": "2026-09-23T23:22:54Z",
+    "fdv_usd": 2104690.70615271,
+    "reserve_usd": 151847.5571,
+    "volume_h24": 7586027.37040197,
+    "change": {
+      "h1": 39.595,
+      "h6": 4427.139,
+      "h24": 4427.139
+    },
+    "tx_h1": {
+      "buys": 1265,
+      "sells": 1278
+    },
+    "whales": [
+      {
+        "kind": "buy",
+        "usd": 1748.35,
+        "mult": 166.6,
+        "whale": false,
+        "hours_ago": 0.2,
+        "addr8": "EUUa6dKr"
+      },
+      {
+        "kind": "sell",
+        "usd": 1621.44,
+        "mult": 154.5,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "hmrMmA2t"
+      },
+      {
+        "kind": "buy",
+        "usd": 1576.67,
+        "mult": 150.2,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "EUUa6dKr"
+      },
+      {
+        "kind": "buy",
+        "usd": 1419.76,
+        "mult": 135.2,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "FYzD5ZZg"
+      },
+      {
+        "kind": "buy",
+        "usd": 1360.08,
+        "mult": 129.6,
+        "whale": false,
+        "hours_ago": 0.2,
+        "addr8": "EUUa6dKr"
+      }
+    ],
+    "first_seen": "2026-09-24T05:01:05+00:00",
+    "last_seen": "2026-09-24T05:01:05+00:00"
+  },
+  "narrative": "familiars разрывает: +4427.1% за 24ч. ускорение в последнем часе. объём $7.59M больше капы в 3.6× — бумага в огне. ликвидность тонкая ($151.8K) — движения будут резкими. пулу 0 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $1.7K (167× медианы, 0ч назад). нетто китов за сутки +$4.5K.",
+  "flags": [
+    "тонкая ликвидность",
+    "молодой пул",
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Зафиксировано крупных сделок: 5 (4 покупок, 1 продаж). Крупнейшая: покупка на $1.7K (167× медианы). Нетто-поток китов: +$4.5K.",
+  "updated_at": "2026-09-24T05:01:05Z"
+}

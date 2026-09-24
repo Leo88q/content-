@@ -1,17 +1,17 @@
 {
-  "slug": "bluf-vs-archibrown",
+  "slug": "familiars-vs-archibrown",
   "token1": {
-    "symbol": "BLUF",
-    "change_24h": 732.015,
-    "address": "BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y",
-    "volume": 5020377.39403097
+    "symbol": "familiars",
+    "change_24h": 4427.139,
+    "address": "ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4",
+    "volume": 7586027.37040197
   },
   "token2": {
     "symbol": "ARCHIBROWN",
-    "change_24h": 705.749,
+    "change_24h": 676.056,
     "address": "4giAj2vcyNSuEeVPcrv8hu4QMLm8mXzBpSrx2ExHAuVz",
-    "volume": 2617910.70299086
+    "volume": 2715573.41436142
   },
-  "verdict": "По ончейн-метрикам TalkChart: BLUF опережает по ценовому импульсу (+732.0% против +705.7%). Краткосрочный фаворит по совокупности факторов: BLUF.",
-  "updated_at": "2026-09-23 23:01 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: familiars опережает по ценовому импульсу (+4427.1% против +676.1%). Кроме того, у familiars существенно глубже пул ликвидности ($151.8K против $57.8K), что снижает риск проскальзывания. Краткосрочный фаворит по совокупности факторов: familiars.",
+  "updated_at": "2026-09-24 05:01 UTC"
 }

@@ -1,0 +1,76 @@
+{
+  "pool": {
+    "address": "72tZoSAHAutvD7dP2fNC56aASLxbPXro9jBPohZ8aAvY",
+    "name": "GIGACAT / SOL",
+    "base_symbol": "GIGACAT",
+    "base_name": "GIGACAT",
+    "base_address": "2jcvq8QcJ8TzEYJKYMCjR61kXVSzib4mEkz89tQxpump",
+    "dex": "pumpswap",
+    "price_usd": 0.00012925839504483952,
+    "created_at": "2026-09-23T08:32:21Z",
+    "fdv_usd": 126796.338789152,
+    "reserve_usd": 31565.1999,
+    "volume_h24": 2371998.34900506,
+    "change": {
+      "h1": -2.39,
+      "h6": -16.709,
+      "h24": 167.902
+    },
+    "tx_h1": {
+      "buys": 229,
+      "sells": 180
+    },
+    "whales": [
+      {
+        "kind": "buy",
+        "usd": 1894.81,
+        "mult": 207.1,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "H6dytPDJ"
+      },
+      {
+        "kind": "sell",
+        "usd": 609.85,
+        "mult": 66.7,
+        "whale": false,
+        "hours_ago": 0.6,
+        "addr8": "Gtw5QKLn"
+      },
+      {
+        "kind": "buy",
+        "usd": 563.24,
+        "mult": 61.6,
+        "whale": false,
+        "hours_ago": 0.2,
+        "addr8": "7J4YCFGq"
+      },
+      {
+        "kind": "buy",
+        "usd": 511.89,
+        "mult": 56.0,
+        "whale": false,
+        "hours_ago": 0.2,
+        "addr8": "CDcQEgWP"
+      },
+      {
+        "kind": "sell",
+        "usd": 443.26,
+        "mult": 48.4,
+        "whale": false,
+        "hours_ago": 0.6,
+        "addr8": "98jY7CtR"
+      }
+    ],
+    "first_seen": "2026-09-24T05:01:05+00:00",
+    "last_seen": "2026-09-24T05:01:05+00:00"
+  },
+  "narrative": "GIGACAT разрывает: +167.9% за 24ч. объём $2.37M больше капы в 18.7× — бумага в огне. ликвидность тонкая ($31.6K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $1.9K (207× медианы, 0ч назад). нетто китов за сутки +$1.9K.",
+  "flags": [
+    "тонкая ликвидность",
+    "молодой пул",
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Зафиксировано крупных сделок: 5 (3 покупок, 2 продаж). Крупнейшая: покупка на $1.9K (207× медианы). Нетто-поток китов: +$1.9K.",
+  "updated_at": "2026-09-24T05:01:05Z"
+}

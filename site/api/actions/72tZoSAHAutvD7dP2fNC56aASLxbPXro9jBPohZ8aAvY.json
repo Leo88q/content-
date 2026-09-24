@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/GIGACAT_+168.png",
+  "title": "TalkChart: GIGACAT (+167.9%) — Solana On-Chain Radar",
+  "description": "GIGACAT разрывает: +167.9% за 24ч. объём $2.37M больше капы в 18.7× — бумага в огне. ликвидность тонкая ($31.6K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $1.9K (207× медианы, 0ч назад). нетто китов за сутки +$1.9K.\n\nОбъём: $2.37M · Ликвидность: $31.6K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп GIGACAT (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-2jcvq8QcJ8TzEYJKYMCjR61kXVSzib4mEkz89tQxpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=72tZoSAHAutvD7dP2fNC56aASLxbPXro9jBPohZ8aAvY"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
