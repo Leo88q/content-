@@ -335,20 +335,36 @@ class TestWatchtowerAdapter(unittest.TestCase):
     def test_12_funnel_honesty(self):
         # 5/4/3/2/1: CampaignStarted..LandingReached по одному лесенкой
         stages5 = ["CampaignStarted", "SessionStarted", "PageView", "CTAClicked", "LandingReached"]
-        # LandingReached не в каталоге implemented — отправляем как известный тип каталога,
-        # но он помечен unavailable: ступень обязана нести stageUnavailable и честный count.
+        # LandingReached теперь реализован через click-id round-trip (landings.py): событие
+        # принимается только по зарегистрированному клику. Честность воронки проверяется двумя
+        # сторонами: подтверждённый переход считается, неподтверждённый — отклоняется.
         seq = 1
+        click_ids = []
         for n, et in enumerate(stages5):
             for k in range(5 - n):
-                self.store.record_event(make_event(seq=seq, sessionId=f"f_sess_{n}_{k}", eventType=et))
+                ev = make_event(seq=seq, sessionId=f"f_sess_{n}_{k}", eventType=et)
+                if et == "CTAClicked":
+                    click_ids.append(f"click-{n}-{k}")
+                    ev["payload"]["clickId"] = click_ids[-1]
+                elif et == "LandingReached":
+                    ev["payload"]["clickId"] = click_ids[0]
+                self.store.record_event(ev)
                 seq += 1
         f = compute_funnel(self.store, period_days=7)
         steps = {s["stage"]: s for s in f["steps"]}
         self.assertEqual(steps["CampaignStarted"]["count"], 5)
         self.assertEqual(steps["SessionStarted"]["count"], 4)
         self.assertNotIn("stageUnavailable", steps["CampaignStarted"])
-        self.assertTrue(steps["LandingReached"]["stageUnavailable"],
-                        "LandingReached has no emitter -> stageUnavailable")
+        self.assertEqual(steps["LandingReached"]["count"], 1,
+                         "подтверждённый переход обязан попасть в воронку")
+        self.assertNotIn("stageUnavailable", steps["LandingReached"])
+        # переход без подтверждения: rejected, в воронку не попал
+        bad = self.store.record_event(make_event(seq=seq, sessionId="f_noclick", eventType="LandingReached"))
+        self.assertEqual(bad["status"], "rejected")
+        self.assertEqual(bad["reason"], "landing_unconfirmed")
+        after = {s["stage"]: s for s in compute_funnel(self.store, period_days=7)["steps"]}
+        self.assertEqual(after["LandingReached"]["count"], 1,
+                         "неподтверждённый LandingReached не имеет права менять счётчик")
         self.assertEqual(steps["SessionStarted"]["conversionFromPrev"], round(4 / 5, 3))
         self.assertEqual(steps["PageView"]["dropOffRate"], round(1 - round(3 / 4, 3), 3))
         self.assertIn("byCampaign", f)

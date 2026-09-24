@@ -44,6 +44,10 @@ jobs:
         run: python3 scripts/test_watchtower_max.py
       - name: End-to-end smoke (77 checks)
         run: python3 scripts/smoke_watchtower.py
+      - name: Landing-ledger tests (10, click-id round-trip)
+        run: python3 scripts/test_landing_ledger.py
+      - name: X posting tests (10, сеть не используется)
+        run: python3 scripts/test_post_x.py
       - name: SBOM
         run: python3 scripts/sbom.py
 
@@ -65,6 +69,9 @@ jobs:
             sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && command -v ffmpeg;
           }
 
+      - name: Проверка плана сборки (регрессия «generate_all.py не существует»)
+        run: python3 site/factory/generate_all.py --check
+
       - name: Fetch live market data (GeckoTerminal)
         run: python site/factory/fetch_data.py
 
@@ -83,8 +90,9 @@ jobs:
       - name: Generate daily digest (md + txt для постов)
         run: python site/factory/make_digest.py
 
-      - name: Auto-post to X / Twitter (вежливо скипается без TWITTER_* токенов)
+      - name: Auto-post to X / Twitter (журнал дублей; без TWITTER_* — SKIP; падение API не ломает сборку)
         if: github.event_name != 'pull_request'
+        continue-on-error: true
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}

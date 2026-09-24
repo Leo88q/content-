@@ -81,3 +81,11 @@ backend/data/
 
 # отчёт разового прайнинга (генерируется cron'ом)
 site/data/prune-report.json
+
+# Локальное состояние журнала кликов LandingReached: бинарный sqlite, пересоздаётся,
+# в git не нужен (CI коммитит весь site/ — из-за этого файл разрастался бы каждый прогон).
+# x_posts.json, наоборот,.trackается: это журналAlready-published, его CI обязан сохранять.
+site/data/landings.sqlite3
+site/data/landings.sqlite3-*
+site/data/watchtower.db
+site/data/watchtower.db-*
