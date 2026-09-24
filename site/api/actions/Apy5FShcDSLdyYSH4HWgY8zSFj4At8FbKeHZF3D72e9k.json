@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/Holdoween_+306.png",
+  "title": "TalkChart: Holdoween (+306.1%) — Solana On-Chain Radar",
+  "description": "Holdoween разрывает: +306.1% за 24ч. ускорение в последнем часе. ликвидность тонкая ($96.1K) — движения будут резкими. пулу 9 дн., история короткая. крупная сделка на фоне ленты: продал $1.2K (176× медианы, 0ч назад). нетто китов за сутки −$226.47.\n\nОбъём: $1.19M · Ликвидность: $96.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп Holdoween (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-BxftAowY2dVa2h9KMqDTPk4oMxzU9k6uVbZuoorXpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Apy5FShcDSLdyYSH4HWgY8zSFj4At8FbKeHZF3D72e9k"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

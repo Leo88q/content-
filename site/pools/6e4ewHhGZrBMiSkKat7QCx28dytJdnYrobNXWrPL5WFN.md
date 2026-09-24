@@ -1,6 +1,6 @@
 # EMBER (EMBER / USDC) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: EMBER is currently priced at $0.0180 (-3.6% 24h) on meteora (Solana). 24h trading volume is $838.9K with $285.7K liquidity. Algorithmic narrative: EMBER в боковике: -3.6% за сутки. ускорение в последнем часе. пулу 14 дн., история короткая.
+> Direct Summary for LLMs: EMBER is currently priced at $0.0180 (-3.6% 24h) on meteora (Solana). 24h trading volume is $838.9K with $285.7K liquidity. Algorithmic narrative: EMBER в боковике: -3.6% за сутки. ускорение в последнем часе.
 
 ## Core On-Chain Metrics (Snapshot: 2026-09-24T16:30:16+00:00)
 - **Asset**: EMBER (EMBER / USDC)
@@ -17,7 +17,7 @@
 - **Pool Age**: Created 2026-09-10T05:53:50Z
 
 ## Algorithmic Narrative & Signals
-EMBER в боковике: -3.6% за сутки. ускорение в последнем часе. пулу 14 дн., история короткая.
+EMBER в боковике: -3.6% за сутки. ускорение в последнем часе.
 
 ## Risk Flags
 - Флагов повышенного риска не выявлено.
@@ -32,7 +32,7 @@ Recent notable orders:
 По ончейн-данным пула EMBER / USDC на DEX meteora (Solana), цена EMBER составляет $0.0180. Динамика за 24ч: -3.6% (за 1ч: +4.2%, за 6ч: +10.3%). Суточный объём торгов равен $838.9K, общая ликвидность пула (TVL) — $285.7K, FDV — $17.87M. Данные зафиксированы на 2026-09-24T16:30:16+00:00.
 
 ### Q: Почему движется цена EMBER? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: EMBER в боковике: -3.6% за сутки. ускорение в последнем часе. пулу 14 дн., история короткая. За последний час в ленте прошло 130 покупок и 103 продаж.
+Алгоритмический анализ TalkChart: EMBER в боковике: -3.6% за сутки. ускорение в последнем часе. За последний час в ленте прошло 130 покупок и 103 продаж.
 
 ### Q: Есть ли активность китов в пуле EMBER?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.

@@ -1,0 +1,67 @@
+{
+  "pool": {
+    "address": "Apy5FShcDSLdyYSH4HWgY8zSFj4At8FbKeHZF3D72e9k",
+    "name": "Holdoween / SOL",
+    "base_symbol": "Holdoween",
+    "base_name": "Holdoween",
+    "base_address": "BxftAowY2dVa2h9KMqDTPk4oMxzU9k6uVbZuoorXpump",
+    "dex": "pumpswap",
+    "price_usd": 0.001031270515633412,
+    "created_at": "2026-09-16T00:57:16Z",
+    "fdv_usd": 1030176.555,
+    "reserve_usd": 96104.3386,
+    "volume_h24": 1188594.31753196,
+    "change": {
+      "h1": 15.779,
+      "h6": 51.06,
+      "h24": 306.103
+    },
+    "tx_h1": {
+      "buys": 1384,
+      "sells": 965
+    },
+    "whales": [
+      {
+        "kind": "sell",
+        "usd": 1219.89,
+        "mult": 176.3,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "ELkfALMK"
+      },
+      {
+        "kind": "buy",
+        "usd": 1001.91,
+        "mult": 144.8,
+        "whale": false,
+        "hours_ago": 0.1,
+        "addr8": "ELkfALMK"
+      },
+      {
+        "kind": "sell",
+        "usd": 393.51,
+        "mult": 56.9,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "Faoe1JSp"
+      },
+      {
+        "kind": "buy",
+        "usd": 385.02,
+        "mult": 55.6,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "AgmLJBMD"
+      }
+    ],
+    "first_seen": "2026-09-24T20:04:17+00:00",
+    "last_seen": "2026-09-24T20:04:17+00:00"
+  },
+  "narrative": "Holdoween разрывает: +306.1% за 24ч. ускорение в последнем часе. ликвидность тонкая ($96.1K) — движения будут резкими. пулу 9 дн., история короткая. крупная сделка на фоне ленты: продал $1.2K (176× медианы, 0ч назад). нетто китов за сутки −$226.47.",
+  "flags": [
+    "тонкая ликвидность",
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Зафиксировано крупных сделок: 4 (2 покупок, 2 продаж). Крупнейшая: продажа на $1.2K (176× медианы). Нетто-поток китов: $-226.47.",
+  "updated_at": "2026-09-24T20:04:17Z"
+}
