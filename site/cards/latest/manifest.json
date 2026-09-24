@@ -1,64 +1,64 @@
 {
- "generated_at": "2026-09-24T20:04:18+00:00",
+ "generated_at": "2026-09-24T23:17:39+00:00",
  "cards": [
   {
-   "file": "cards/2026-09-24/familiars_+5348.png",
+   "file": "cards/2026-09-24/GO_+4078.png",
+   "symbol": "GO",
+   "chg_h24": 4078.917,
+   "address": "CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH.html",
+   "latest_file": "cards/latest/GO_+4078.png"
+  },
+  {
+   "file": "cards/2026-09-24/familiars_+3642.png",
    "symbol": "familiars",
-   "chg_h24": 5348.74,
+   "chg_h24": 3642.596,
    "address": "ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4",
    "pool_url": "https://leo88q.github.io/content-/site/pools/ENiVH49XwRM3Cu9n4Tp6CGynCFXf3Mz6CE3GRmVk1LH4.html",
-   "latest_file": "cards/latest/familiars_+5348.png"
+   "latest_file": "cards/latest/familiars_+3642.png"
   },
   {
-   "file": "cards/2026-09-24/NPC_+1307.png",
+   "file": "cards/2026-09-24/NPC_+1854.png",
    "symbol": "NPC",
-   "chg_h24": 1307.016,
+   "chg_h24": 1854.811,
    "address": "BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs",
    "pool_url": "https://leo88q.github.io/content-/site/pools/BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs.html",
-   "latest_file": "cards/latest/NPC_+1307.png"
+   "latest_file": "cards/latest/NPC_+1854.png"
   },
   {
-   "file": "cards/2026-09-24/SHARTCOIN_+816.png",
+   "file": "cards/2026-09-24/SHARTCOIN_+468.png",
    "symbol": "SHARTCOIN",
-   "chg_h24": 816.333,
+   "chg_h24": 468.498,
    "address": "82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc.html",
-   "latest_file": "cards/latest/SHARTCOIN_+816.png"
+   "pool_url": "https://leo88q.github.io/content-/site/pools/82BHvVSeHgcGNtiH8fGTaYRsKbbjF53beAZp8LCATXsc.html"
   },
   {
-   "file": "cards/2026-09-24/SI_+439.png",
+   "file": "cards/2026-09-24/SI_+432.png",
    "symbol": "SI",
-   "chg_h24": 439.439,
+   "chg_h24": 432.935,
    "address": "3odkxoFB7KvujaRFoLbCQbbZv93R9njJr9KQTH5cKDKT",
    "pool_url": "https://leo88q.github.io/content-/site/pools/3odkxoFB7KvujaRFoLbCQbbZv93R9njJr9KQTH5cKDKT.html"
   },
   {
-   "file": "cards/2026-09-24/Holdoween_+306.png",
+   "file": "cards/2026-09-24/Holdoween_+324.png",
    "symbol": "Holdoween",
-   "chg_h24": 306.103,
+   "chg_h24": 324.82,
    "address": "Apy5FShcDSLdyYSH4HWgY8zSFj4At8FbKeHZF3D72e9k",
    "pool_url": "https://leo88q.github.io/content-/site/pools/Apy5FShcDSLdyYSH4HWgY8zSFj4At8FbKeHZF3D72e9k.html"
   },
   {
-   "file": "cards/2026-09-24/goon_+168.png",
+   "file": "cards/2026-09-24/goon_+215.png",
    "symbol": "goon",
-   "chg_h24": 168.105,
+   "chg_h24": 215.312,
    "address": "9PYormkWiWYAALGWkNNBjSEqKk79HPoRaLgQhMfY4fuv",
    "pool_url": "https://leo88q.github.io/content-/site/pools/9PYormkWiWYAALGWkNNBjSEqKk79HPoRaLgQhMfY4fuv.html"
   },
   {
-   "file": "cards/2026-09-24/BLUF_-73.png",
+   "file": "cards/2026-09-24/BLUF_-78.png",
    "symbol": "BLUF",
-   "chg_h24": -73.758,
+   "chg_h24": -78.428,
    "address": "BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y",
    "pool_url": "https://leo88q.github.io/content-/site/pools/BJ6pFMwat4EG3UE6eSXY2Qtt8t74JAwioDE2T4WE233Y.html"
-  },
-  {
-   "file": "cards/2026-09-24/PUMPCAT_-51.png",
-   "symbol": "PUMPCAT",
-   "chg_h24": -51.655,
-   "address": "6HLorrkY3vqPsyTZDFvTGTnwnZsLM343Jxw6XvEPTKRt",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/6HLorrkY3vqPsyTZDFvTGTnwnZsLM343Jxw6XvEPTKRt.html"
   }
  ]
 }

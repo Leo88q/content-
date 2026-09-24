@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-09-24T20:04:33+00:00",
+ "generated_at": "2026-09-24T23:17:54+00:00",
  "videos": [
+  {
+   "file": "videos/2026-09-24/GO.mp4",
+   "latest_file": "videos/latest/GO.mp4",
+   "symbol": "GO",
+   "chg_h24": 4078.917
+  },
   {
    "file": "videos/2026-09-24/familiars.mp4",
    "latest_file": "videos/latest/familiars.mp4",
    "symbol": "familiars",
-   "chg_h24": 5348.74
+   "chg_h24": 3642.596
   },
   {
    "file": "videos/2026-09-24/NPC.mp4",
    "latest_file": "videos/latest/NPC.mp4",
    "symbol": "NPC",
-   "chg_h24": 1307.016
-  },
-  {
-   "file": "videos/2026-09-24/SHARTCOIN.mp4",
-   "latest_file": "videos/latest/SHARTCOIN.mp4",
-   "symbol": "SHARTCOIN",
-   "chg_h24": 816.333
+   "chg_h24": 1854.811
   }
  ]
 }

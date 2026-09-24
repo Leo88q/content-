@@ -1,0 +1,75 @@
+{
+  "pool": {
+    "address": "CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH",
+    "name": "GO / SOL",
+    "base_symbol": "GO",
+    "base_name": "GO",
+    "base_address": "D1YZZg9dBZ7AbfknZVbaeVLto36eySwoFYEVhZrD4F4n",
+    "dex": "raydium",
+    "price_usd": 0.008953475438232328,
+    "created_at": "2026-09-23T13:49:47Z",
+    "fdv_usd": 9117269.922,
+    "reserve_usd": 272035.3735,
+    "volume_h24": 7966793.35292109,
+    "change": {
+      "h1": 13.376,
+      "h6": 972.0,
+      "h24": 4078.917
+    },
+    "tx_h1": {
+      "buys": 2987,
+      "sells": 2757
+    },
+    "whales": [
+      {
+        "kind": "buy",
+        "usd": 1858.07,
+        "mult": 53.2,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "7ietYnDq"
+      },
+      {
+        "kind": "buy",
+        "usd": 1511.67,
+        "mult": 43.3,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "79EUGx3R"
+      },
+      {
+        "kind": "sell",
+        "usd": 1363.88,
+        "mult": 39.1,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "9WD97rEZ"
+      },
+      {
+        "kind": "sell",
+        "usd": 1173.73,
+        "mult": 33.6,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "ADC1QV9r"
+      },
+      {
+        "kind": "sell",
+        "usd": 1054.04,
+        "mult": 30.2,
+        "whale": false,
+        "hours_ago": 0.0,
+        "addr8": "AgmLJBMD"
+      }
+    ],
+    "first_seen": "2026-09-24T23:17:38+00:00",
+    "last_seen": "2026-09-24T23:17:38+00:00"
+  },
+  "narrative": "GO разрывает: +4078.9% за 24ч. ускорение в последнем часе. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: купил $1.9K (53× медианы, 0ч назад). нетто китов за сутки −$221.91.",
+  "flags": [
+    "молодой пул",
+    "перегрет за 24ч"
+  ],
+  "whale_summary": "Зафиксировано крупных сделок: 5 (2 покупок, 3 продаж). Крупнейшая: покупка на $1.9K (53× медианы). Нетто-поток китов: $-221.91.",
+  "updated_at": "2026-09-24T23:17:38Z"
+}
