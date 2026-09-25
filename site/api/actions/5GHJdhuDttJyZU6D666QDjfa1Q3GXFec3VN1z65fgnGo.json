@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/AXIS_+176.png",
+  "title": "TalkChart: AXIS (+175.6%) — Solana On-Chain Radar",
+  "description": "AXIS разрывает: +175.6% за 24ч. объём $44.14M больше капы в 15.6× — бумага в огне. ликвидность тонкая ($6.1e-07) — движения будут резкими. пулу 0 дн. — чистая рулетка.\n\nОбъём: $44.14M · Ликвидность: $6.1e-07",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп AXIS (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-Fj3hX1NrpFAiz31HGi8YTWUNhVTJeDG9KUzEv3N21bTy"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=5GHJdhuDttJyZU6D666QDjfa1Q3GXFec3VN1z65fgnGo"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

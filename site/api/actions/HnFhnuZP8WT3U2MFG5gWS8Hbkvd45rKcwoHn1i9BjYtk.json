@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/BRAIN_+769.png",
+  "title": "TalkChart: BRAIN (+769.4%) — Solana On-Chain Radar",
+  "description": "BRAIN разрывает: +769.4% за 24ч. объём $4.35M больше капы в 10.5× — бумага в огне. ликвидность тонкая ($66.0K) — движения будут резкими. пулу 1 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $2.4K (380× медианы, 0ч назад). нетто китов за сутки +$372.31.\n\nОбъём: $4.35M · Ликвидность: $66.0K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп BRAIN (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-3znS89gifim2Hhhu8wjb2PfSgaCDdma187D5NMkDpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=HnFhnuZP8WT3U2MFG5gWS8Hbkvd45rKcwoHn1i9BjYtk"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

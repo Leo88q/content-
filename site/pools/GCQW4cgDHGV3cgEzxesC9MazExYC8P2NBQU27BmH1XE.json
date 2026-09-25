@@ -1,0 +1,33 @@
+{
+  "pool": {
+    "address": "GCQW4cgDHGV3cgEzxesC9MazExYC8P2NBQU27BmH1XE",
+    "name": "company / SOL",
+    "base_symbol": "company",
+    "base_name": "company",
+    "base_address": "6sEf597zqUxoJeW1znjtx8MUPsXFFF7zjjH2KSG8zF9y",
+    "dex": "pumpswap",
+    "price_usd": 1.7502698805836916e-05,
+    "created_at": "2026-09-25T05:16:30Z",
+    "fdv_usd": 17502.69881,
+    "reserve_usd": 11056.2022,
+    "volume_h24": 1737182.15416457,
+    "change": {
+      "h1": -27.273,
+      "h6": -58.808,
+      "h24": -62.914
+    },
+    "tx_h1": {
+      "buys": 78,
+      "sells": 99
+    },
+    "first_seen": "2026-09-25T13:55:08+00:00",
+    "last_seen": "2026-09-25T13:55:08+00:00"
+  },
+  "narrative": "company в обвале: -62.9% за 24ч. давление продаж нарастает. объём $1.74M больше капы в 99.3× — бумага в огне. ликвидность тонкая ($11.1K) — движения будут резкими. пулу 0 дн. — чистая рулетка.",
+  "flags": [
+    "тонкая ликвидность",
+    "молодой пул"
+  ],
+  "whale_summary": "Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.",
+  "updated_at": "2026-09-25T13:55:08Z"
+}

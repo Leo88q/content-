@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/CACKLE_+16.png",
+  "title": "TalkChart: CACKLE (+16.5%) — Solana On-Chain Radar",
+  "description": "CACKLE растёт на +16.5% за сутки. продают в рынок (100% сделок за час). суточный памп остывает. ликвидность тонкая ($49.3K) — движения будут резкими.\n\nОбъём: $47.4K · Ликвидность: $49.3K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп CACKLE (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-BQJfL1yiHbJQ8AciHLcKxaCbQrWP2ws8oZHHYgbBpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=39e3inYn9tDu4GAeBJ4L1MZrRW8hMhu2yqJ59vhPeCai"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}

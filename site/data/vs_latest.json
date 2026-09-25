@@ -1,17 +1,17 @@
 {
-  "slug": "go-vs-npc",
+  "slug": "ttp-vs-npc",
   "token1": {
-    "symbol": "GO",
-    "change_24h": 4828.328,
-    "address": "CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH",
-    "volume": 9104633.14512445
+    "symbol": "TTP",
+    "change_24h": 1178.664,
+    "address": "359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR",
+    "volume": 4252664.52562565
   },
   "token2": {
     "symbol": "NPC",
-    "change_24h": 434.327,
+    "change_24h": 989.258,
     "address": "BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs",
-    "volume": 4093623.7539376
+    "volume": 3964401.86587001
   },
-  "verdict": "По ончейн-метрикам TalkChart: GO опережает по ценовому импульсу (+4828.3% против +434.3%). Краткосрочный фаворит по совокупности факторов: GO.",
-  "updated_at": "2026-09-25 05:06 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: TTP опережает по ценовому импульсу (+1178.7% против +989.3%). Кроме того, у NPC более надёжная ликвидность ($176.5K против $79.9K). Краткосрочный фаворит по совокупности факторов: TTP.",
+  "updated_at": "2026-09-25 13:55 UTC"
 }

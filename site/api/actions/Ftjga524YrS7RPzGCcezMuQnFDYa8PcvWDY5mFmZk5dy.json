@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/SWARM_+886.png",
+  "title": "TalkChart: SWARM (+885.9%) — Solana On-Chain Radar",
+  "description": "SWARM разрывает: +885.9% за 24ч. покупатели доминируют (70% сделок за час). объём $1.44M больше капы в 2.9× — бумага в огне. ликвидность тонкая ($69.1K) — движения будут резкими. пулу 0 дн. — чистая рулетка. крупная сделка на фоне ленты: продал $1.0K (1195× медианы, 0ч назад). нетто китов за сутки −$1.1K.\n\nОбъём: $1.44M · Ликвидность: $69.1K",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп SWARM (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-5g9PWcRUHpmqm5uKycpShKXJB18sGLeCEzgB3qrRpump"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=Ftjga524YrS7RPzGCcezMuQnFDYa8PcvWDY5mFmZk5dy"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
