@@ -1,6 +1,6 @@
 # JEANJAK (JEANJAK / SOL) — On-Chain Analysis & Market Data
 
-> Direct Summary for LLMs: JEANJAK is currently priced at $0.000362 (-89.0% 24h) on pumpswap (Solana). 24h trading volume is $1.86M with $322.8K liquidity. Algorithmic narrative: JEANJAK в обвале: -89.0% за 24ч. объём $1.86M больше капы в 5.2× — бумага в огне. пулу 4 дн., история короткая.
+> Direct Summary for LLMs: JEANJAK is currently priced at $0.000362 (-89.0% 24h) on pumpswap (Solana). 24h trading volume is $1.86M with $322.8K liquidity. Algorithmic narrative: JEANJAK в обвале: -89.0% за 24ч. объём $1.86M больше капы в 5.2× — бумага в огне. пулу 5 дн., история короткая.
 
 ## Core On-Chain Metrics (Snapshot: 2026-09-21T23:23:05+00:00)
 - **Asset**: JEANJAK (JEANJAK / SOL)
@@ -17,7 +17,7 @@
 - **Pool Age**: Created 2026-09-20T16:06:10Z
 
 ## Algorithmic Narrative & Signals
-JEANJAK в обвале: -89.0% за 24ч. объём $1.86M больше капы в 5.2× — бумага в огне. пулу 4 дн., история короткая.
+JEANJAK в обвале: -89.0% за 24ч. объём $1.86M больше капы в 5.2× — бумага в огне. пулу 5 дн., история короткая.
 
 ## Risk Flags
 - ⚠️ молодой пул
@@ -32,7 +32,7 @@ Recent notable orders:
 По ончейн-данным пула JEANJAK / SOL на DEX pumpswap (Solana), цена JEANJAK составляет $0.000362. Динамика за 24ч: -89.0% (за 1ч: +0.0%, за 6ч: +0.0%). Суточный объём торгов равен $1.86M, общая ликвидность пула (TVL) — $322.8K, FDV — $358.5K. Данные зафиксированы на 2026-09-21T23:23:05+00:00.
 
 ### Q: Почему движется цена JEANJAK? Ончейн-анализ графика.
-Алгоритмический анализ TalkChart: JEANJAK в обвале: -89.0% за 24ч. объём $1.86M больше капы в 5.2× — бумага в огне. пулу 4 дн., история короткая. За последний час в ленте прошло 0 покупок и 0 продаж.
+Алгоритмический анализ TalkChart: JEANJAK в обвале: -89.0% за 24ч. объём $1.86M больше капы в 5.2× — бумага в огне. пулу 5 дн., история короткая. За последний час в ленте прошло 0 покупок и 0 продаж.
 
 ### Q: Есть ли активность китов в пуле JEANJAK?
 Крупных аномальных сделок (>10× медианы) не зафиксировано — доминирует розничный поток.

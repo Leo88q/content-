@@ -1,0 +1,22 @@
+{
+  "icon": "https://leo88q.github.io/content-/site/cards/latest/CARDS_+5.png",
+  "title": "TalkChart: CARDS (+5.3%) — Solana On-Chain Radar",
+  "description": "CARDS в боковике: +5.3% за сутки. стакан глубокий: $3.23M ликвидности.\n\nОбъём: $6.99M · Ликвидность: $3.23M",
+  "label": "Своп через Jupiter",
+  "links": {
+    "actions": [
+      {
+        "label": "⚡ Своп CARDS (Jupiter)",
+        "href": "https://jup.ag/swap/SOL-CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp"
+      },
+      {
+        "label": "📈 Живой график + киты",
+        "href": "https://leo88q.github.io/content-/site/index.html#pool=HnhpJPJgBG2KwniMTNW8cVBHvk1hFog3RC3kjnyc23tD"
+      },
+      {
+        "label": "🎁 TipLink: вход без сид-фраз",
+        "href": "https://leo88q.github.io/content-/site/index.html#games"
+      }
+    ]
+  }
+}
