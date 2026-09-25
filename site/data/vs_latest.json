@@ -1,17 +1,17 @@
 {
-  "slug": "ttp-vs-npc",
+  "slug": "swarm-vs-ttp",
   "token1": {
-    "symbol": "TTP",
-    "change_24h": 1178.664,
-    "address": "359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR",
-    "volume": 4252664.52562565
+    "symbol": "SWARM",
+    "change_24h": 1152.574,
+    "address": "Ftjga524YrS7RPzGCcezMuQnFDYa8PcvWDY5mFmZk5dy",
+    "volume": 4227837.46227965
   },
   "token2": {
-    "symbol": "NPC",
-    "change_24h": 989.258,
-    "address": "BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs",
-    "volume": 3964401.86587001
+    "symbol": "TTP",
+    "change_24h": 515.736,
+    "address": "359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR",
+    "volume": 4556485.33489976
   },
-  "verdict": "По ончейн-метрикам TalkChart: TTP опережает по ценовому импульсу (+1178.7% против +989.3%). Кроме того, у NPC более надёжная ликвидность ($176.5K против $79.9K). Краткосрочный фаворит по совокупности факторов: TTP.",
-  "updated_at": "2026-09-25 13:55 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: SWARM опережает по ценовому импульсу (+1152.6% против +515.7%). Краткосрочный фаворит по совокупности факторов: SWARM.",
+  "updated_at": "2026-09-25 20:07 UTC"
 }

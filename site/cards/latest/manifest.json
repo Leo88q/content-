@@ -1,43 +1,36 @@
 {
- "generated_at": "2026-09-25T13:55:09+00:00",
+ "generated_at": "2026-09-25T20:06:57+00:00",
  "cards": [
   {
-   "file": "cards/2026-09-25/TTP_+1178.png",
-   "symbol": "TTP",
-   "chg_h24": 1178.664,
-   "address": "359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR.html",
-   "latest_file": "cards/latest/TTP_+1178.png"
-  },
-  {
-   "file": "cards/2026-09-25/NPC_+989.png",
-   "symbol": "NPC",
-   "chg_h24": 989.258,
-   "address": "BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs.html",
-   "latest_file": "cards/latest/NPC_+989.png"
-  },
-  {
-   "file": "cards/2026-09-25/SWARM_+885.png",
+   "file": "cards/2026-09-25/SWARM_+1152.png",
    "symbol": "SWARM",
-   "chg_h24": 885.889,
+   "chg_h24": 1152.574,
    "address": "Ftjga524YrS7RPzGCcezMuQnFDYa8PcvWDY5mFmZk5dy",
    "pool_url": "https://leo88q.github.io/content-/site/pools/Ftjga524YrS7RPzGCcezMuQnFDYa8PcvWDY5mFmZk5dy.html",
-   "latest_file": "cards/latest/SWARM_+885.png"
+   "latest_file": "cards/latest/SWARM_+1152.png"
   },
   {
-   "file": "cards/2026-09-25/BRAIN_+769.png",
+   "file": "cards/2026-09-25/TTP_+515.png",
+   "symbol": "TTP",
+   "chg_h24": 515.736,
+   "address": "359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR.html",
+   "latest_file": "cards/latest/TTP_+515.png"
+  },
+  {
+   "file": "cards/2026-09-25/NPC_+372.png",
+   "symbol": "NPC",
+   "chg_h24": 372.153,
+   "address": "BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/BRjMA8UALNp3diTKHfdeAn5riQrYPoaYez7KhYWD4oEs.html",
+   "latest_file": "cards/latest/NPC_+372.png"
+  },
+  {
+   "file": "cards/2026-09-25/BRAIN_+226.png",
    "symbol": "BRAIN",
-   "chg_h24": 769.414,
+   "chg_h24": 226.347,
    "address": "HnFhnuZP8WT3U2MFG5gWS8Hbkvd45rKcwoHn1i9BjYtk",
    "pool_url": "https://leo88q.github.io/content-/site/pools/HnFhnuZP8WT3U2MFG5gWS8Hbkvd45rKcwoHn1i9BjYtk.html"
-  },
-  {
-   "file": "cards/2026-09-25/GO_+576.png",
-   "symbol": "GO",
-   "chg_h24": 576.172,
-   "address": "CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH.html"
   },
   {
    "file": "cards/2026-09-25/AXIS_+175.png",
@@ -47,18 +40,25 @@
    "pool_url": "https://leo88q.github.io/content-/site/pools/5GHJdhuDttJyZU6D666QDjfa1Q3GXFec3VN1z65fgnGo.html"
   },
   {
-   "file": "cards/2026-09-25/JEANPHIL_+138.png",
-   "symbol": "JEANPHIL",
-   "chg_h24": 138.05,
-   "address": "4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj",
-   "pool_url": "https://leo88q.github.io/content-/site/pools/4R8CiMnJWDNoes3fQi1ccPFJygPXazaHaWpHrN3rZeNj.html"
-  },
-  {
-   "file": "cards/2026-09-25/COLLECT_+128.png",
+   "file": "cards/2026-09-25/COLLECT_+173.png",
    "symbol": "COLLECT",
-   "chg_h24": 128.505,
+   "chg_h24": 173.575,
    "address": "99C6TUp7WgTvnwQVVhAbD8HbxPdo5LJCXr7VFCvTmJf1",
    "pool_url": "https://leo88q.github.io/content-/site/pools/99C6TUp7WgTvnwQVVhAbD8HbxPdo5LJCXr7VFCvTmJf1.html"
+  },
+  {
+   "file": "cards/2026-09-25/GO_+132.png",
+   "symbol": "GO",
+   "chg_h24": 132.236,
+   "address": "CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/CheJUxVQrmpeb4UFWHZ72afQPTKM7AEb8giyzNR7cPvH.html"
+  },
+  {
+   "file": "cards/2026-09-25/Holdoween_+106.png",
+   "symbol": "Holdoween",
+   "chg_h24": 106.584,
+   "address": "Apy5FShcDSLdyYSH4HWgY8zSFj4At8FbKeHZF3D72e9k",
+   "pool_url": "https://leo88q.github.io/content-/site/pools/Apy5FShcDSLdyYSH4HWgY8zSFj4At8FbKeHZF3D72e9k.html"
   }
  ]
 }
