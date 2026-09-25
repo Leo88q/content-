@@ -1,17 +1,17 @@
 {
-  "slug": "swarm-vs-ttp",
+  "slug": "swarm-vs-collect",
   "token1": {
     "symbol": "SWARM",
-    "change_24h": 1152.574,
+    "change_24h": 592.595,
     "address": "Ftjga524YrS7RPzGCcezMuQnFDYa8PcvWDY5mFmZk5dy",
-    "volume": 4227837.46227965
+    "volume": 4513666.33485507
   },
   "token2": {
-    "symbol": "TTP",
-    "change_24h": 515.736,
-    "address": "359UV3H3g2ZVff14AnZTWGeKaykLGdd7Ze3Kar68n6xR",
-    "volume": 4556485.33489976
+    "symbol": "COLLECT",
+    "change_24h": 435.327,
+    "address": "99C6TUp7WgTvnwQVVhAbD8HbxPdo5LJCXr7VFCvTmJf1",
+    "volume": 4438881.14404415
   },
-  "verdict": "По ончейн-метрикам TalkChart: SWARM опережает по ценовому импульсу (+1152.6% против +515.7%). Краткосрочный фаворит по совокупности факторов: SWARM.",
-  "updated_at": "2026-09-25 20:07 UTC"
+  "verdict": "По ончейн-метрикам TalkChart: SWARM опережает по ценовому импульсу (+592.6% против +435.3%). Кроме того, у COLLECT более надёжная ликвидность ($208.4K против $61.4K). Краткосрочный фаворит по совокупности факторов: COLLECT.",
+  "updated_at": "2026-09-25 23:22 UTC"
 }

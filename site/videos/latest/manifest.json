@@ -1,23 +1,23 @@
 {
- "generated_at": "2026-09-25T20:07:12+00:00",
+ "generated_at": "2026-09-25T23:22:09+00:00",
  "videos": [
   {
    "file": "videos/2026-09-25/SWARM.mp4",
    "latest_file": "videos/latest/SWARM.mp4",
    "symbol": "SWARM",
-   "chg_h24": 1152.574
+   "chg_h24": 592.595
+  },
+  {
+   "file": "videos/2026-09-25/COLLECT.mp4",
+   "latest_file": "videos/latest/COLLECT.mp4",
+   "symbol": "COLLECT",
+   "chg_h24": 435.327
   },
   {
    "file": "videos/2026-09-25/TTP.mp4",
    "latest_file": "videos/latest/TTP.mp4",
    "symbol": "TTP",
-   "chg_h24": 515.736
-  },
-  {
-   "file": "videos/2026-09-25/NPC.mp4",
-   "latest_file": "videos/latest/NPC.mp4",
-   "symbol": "NPC",
-   "chg_h24": 372.153
+   "chg_h24": 383.681
   }
  ]
 }
